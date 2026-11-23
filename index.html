@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategy &amp; Operations Operator Handbook</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#141a22; --panel2:#1b232e; --panel3:#232d3a; --line:#2b3644;
+    --txt:#e8eef5; --muted:#93a1b3; --dim:#63718400;
+    --accent:#3fb6ff; --accent2:#7ee787; --warn:#ffcb6b; --pink:#ff7b9c; --purple:#b892ff; --red:#ff6b6b;
+    --hy:#f5a524;
+    --radius:12px; --mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--txt);line-height:1.65;font-size:15.5px}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .app{display:flex;min-height:100vh}
+  /* Sidebar */
+  .sidebar{width:320px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);
+    position:sticky;top:0;height:100vh;overflow-y:auto;padding:0 0 40px}
+  .brand{padding:20px 22px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:5}
+  .brand h1{font-size:15.5px;margin:0 0 4px;letter-spacing:.2px;line-height:1.35}
+  .brand .sub{font-size:11.5px;color:var(--muted)}
+  .brand .hy{color:var(--hy);font-weight:700}
+  .progwrap{padding:12px 22px 6px}
+  .progbar{height:7px;background:var(--panel3);border-radius:5px;overflow:hidden}
+  .progfill{height:100%;width:0;background:linear-gradient(90deg,var(--hy),var(--accent2));transition:width .4s}
+  .progtxt{font-size:11px;color:var(--muted);margin-top:6px;display:flex;justify-content:space-between}
+  .pagecount{font-size:11px;color:var(--warn);padding:2px 22px 10px}
+  .searchwrap{padding:6px 16px 10px}
+  #navSearch{width:100%;padding:9px 12px;background:var(--panel3);border:1px solid var(--line);border-radius:8px;color:var(--txt);font-size:13px}
+  nav .part{font-size:10.5px;text-transform:uppercase;letter-spacing:1.3px;padding:16px 22px 5px;color:var(--hy);font-weight:700}
+  nav a.navlink{display:flex;gap:9px;padding:7px 22px 7px 22px;color:var(--muted);font-size:13.3px;cursor:pointer;border-left:3px solid transparent;align-items:baseline}
+  nav a.navlink:hover{background:var(--panel2);color:var(--txt)}
+  nav a.navlink.active{background:var(--panel2);color:var(--txt);border-left-color:var(--hy)}
+  nav .cnum{font-family:var(--mono);font-size:10.5px;color:var(--accent);min-width:26px}
+  nav a.done .cnum::after{content:'✓';color:var(--accent2);margin-left:3px}
+  nav a.tool .cnum{color:var(--warn)}
+  /* Content */
+  .wrap{flex:1;min-width:0}
+  .topbar{display:none}
+  .content{max-width:900px;margin:0 auto;padding:34px 48px 120px}
+  .chapter{display:none}
+  .chapter.active{display:block;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .crumb{font-size:12px;color:var(--muted);margin-bottom:6px}
+  .crumb .hy{color:var(--hy)}
+  h2.ctitle{font-size:29px;margin:0 0 6px;letter-spacing:.2px;line-height:1.2}
+  .cmeta{font-size:12px;color:var(--muted);margin-bottom:22px;display:flex;gap:14px;flex-wrap:wrap}
+  .cmeta span{display:inline-flex;gap:5px;align-items:center}
+  h3{font-size:20px;margin:34px 0 10px;padding-top:8px;border-top:1px solid var(--line)}
+  h3:first-of-type{border-top:none}
+  h4{font-size:16px;margin:22px 0 6px;color:var(--accent2)}
+  h5{font-size:14px;margin:16px 0 4px;color:var(--warn);text-transform:uppercase;letter-spacing:.5px}
+  p{margin:11px 0}
+  ul,ol{margin:11px 0;padding-left:24px} li{margin:6px 0}
+  code{font-family:var(--mono);background:var(--panel3);padding:1.5px 6px;border-radius:5px;font-size:13px;color:var(--warn)}
+  pre{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.5}
+  pre code{background:none;padding:0;color:var(--txt)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;margin:16px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .callout{border-left:3px solid var(--accent);background:var(--panel2);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+  .callout.tip{border-left-color:var(--accent2)} .callout.warn{border-left-color:var(--warn)}
+  .callout.danger{border-left-color:var(--red)} .callout.hy{border-left-color:var(--hy)}
+  .callout.example{border-left-color:var(--purple)}
+  .callout .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;font-weight:800;color:var(--accent);display:block;margin-bottom:3px}
+  .callout.tip .lbl{color:var(--accent2)} .callout.warn .lbl{color:var(--warn)}
+  .callout.danger .lbl{color:var(--red)} .callout.hy .lbl{color:var(--hy)} .callout.example .lbl{color:var(--purple)}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.3px}
+  th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+  th{background:var(--panel3);font-weight:600}
+  tr:nth-child(even) td{background:rgba(255,255,255,.015)}
+  .diagwrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:18px 0;overflow-x:auto}
+  .diagcap{font-size:12px;color:var(--muted);text-align:center;margin-top:8px;font-style:italic}
+  svg{max-width:100%;height:auto}
+  .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:12px;font-weight:600;background:var(--panel3);color:var(--accent)}
+  .kbd{font-family:var(--mono);font-size:12px;background:var(--panel3);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px}
+  .navbtns{display:flex;justify-content:space-between;gap:12px;margin:40px 0 0;padding-top:20px;border-top:1px solid var(--line)}
+  .navbtns button{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:12px 18px;border-radius:9px;cursor:pointer;font-size:13.5px;flex:1;text-align:left}
+  .navbtns button:hover{border-color:var(--hy)} .navbtns button.next{text-align:right}
+  .navbtns .dir{font-size:11px;color:var(--muted);display:block}
+  /* Quiz */
+  .quiz{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;margin:16px 0}
+  .quiz .q{font-weight:600;margin-bottom:8px}
+  .quiz .opt{display:block;width:100%;text-align:left;background:var(--panel3);border:1px solid var(--line);color:var(--txt);padding:9px 13px;border-radius:8px;margin:6px 0;cursor:pointer;font-size:13.6px}
+  .quiz .opt:hover{border-color:var(--accent)}
+  .quiz .opt.correct{border-color:var(--accent2);background:rgba(126,231,135,.12)}
+  .quiz .opt.wrong{border-color:var(--pink);background:rgba(255,123,156,.12)}
+  .quiz .opt:disabled{cursor:default}
+  .quiz .exp{font-size:13px;color:var(--muted);margin-top:9px;padding:10px 12px;background:var(--panel2);border-radius:8px;display:none}
+  .quiz .exp.show{display:block}
+  /* interactive tools */
+  .tool{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin:16px 0}
+  .tool label{font-size:12.5px;color:var(--muted);display:block;margin:8px 0 3px}
+  .tool input,.tool select{background:var(--panel3);border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:8px 10px;font-size:13.5px;font-family:var(--mono)}
+  .tool input[type=range]{width:100%;padding:0}
+  .btn{background:linear-gradient(90deg,var(--hy),#e0821c);color:#1a1002;border:none;font-weight:700;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13.5px}
+  .btn:hover{opacity:.92}
+  .out{font-family:var(--mono);font-size:13px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:10px;white-space:pre-wrap}
+  .flashrow{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+  .flash{background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:11px 13px;min-width:140px;flex:1;cursor:pointer}
+  .flash .front{font-family:var(--mono);color:var(--accent);font-weight:700;font-size:13px}
+  .flash .back{font-size:12.5px;color:var(--muted);margin-top:5px;display:none}
+  .flash.flip .back{display:block} .flash.flip .front{color:var(--accent2)}
+  .gterm{border-bottom:1px solid var(--line);padding:10px 0} .gterm b{color:var(--accent)}
+  .stat{display:inline-block;background:var(--panel3);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:4px 6px 4px 0;font-size:12.5px}
+  .stat b{color:var(--hy);font-size:16px;display:block}
+  .toc-part{margin:22px 0 8px;font-size:13px;color:var(--hy);font-weight:700;text-transform:uppercase;letter-spacing:1px}
+  .toc-item{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);cursor:pointer}
+  .toc-item:hover{color:var(--accent)} .toc-item .n{font-family:var(--mono);color:var(--accent);min-width:34px}
+  @media(max-width:880px){
+    .sidebar{position:fixed;left:-330px;z-index:40;transition:left .3s} .sidebar.open{left:0}
+    .topbar{display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30;background:var(--panel);border-bottom:1px solid var(--line);padding:11px 15px}
+    .menubtn{background:var(--panel3);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:7px 12px;cursor:pointer}
+    .content{padding:20px 16px 90px} .grid2,.grid3{grid-template-columns:1fr}
+  }
+  details{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:10px 16px;margin:16px 0}
+  details summary{cursor:pointer;font-weight:700;color:var(--hy)}
+  details[open] summary{margin-bottom:8px}
+  .timer{font-family:var(--mono);font-size:34px;font-weight:800;color:var(--hy);margin:8px 0}
+  .btn.ghost{background:var(--panel3);color:var(--txt);border:1px solid var(--line)}
+  .tool textarea{width:100%;min-height:90px;background:var(--panel3);border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:8px 10px;font-size:13.5px}
+  nav a.navlink.tool{background:none;border:none;border-left:3px solid transparent;border-radius:0;padding:7px 22px;margin:0}
+  nav a.navlink.tool:hover,nav a.navlink.tool.active{background:var(--panel2)} nav a.navlink.tool.active{border-left-color:var(--hy)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <h1><span class="hy">S&amp;O</span> Strategy &amp; Operations<br>Operator Handbook</h1>
+      <div class="sub">BizOps training · Datadog · Spotify · Google · DoorDash · Uber</div>
+      <div class="progwrap">
+        <div class="progbar"><div class="progfill" id="progfill"></div></div>
+        <div class="progtxt"><span id="progtxt">0 read</span><span id="progpct">0%</span></div>
+      </div>
+    </div>
+    <div class="pagecount" id="pagecount">Measuring content…</div>
+    <div class="searchwrap"><input id="navSearch" placeholder="🔍 Search chapters…" oninput="filterNav(this.value)"></div>
+    <nav id="nav"></nav>
+  </aside>
+  <div class="wrap">
+    <div class="topbar">
+      <button class="menubtn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <strong id="mobTitle" style="font-size:14px">Contents</strong>
+    </div>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   HANDBOOK ENGINE
+   Chapters are pushed into CH[] by content blocks below.
+   Each: {part, id, num, title, mins, tag, html}
+   Tools/quizzes are wired by id after render.
+   At boot, chapters are ordered by PART_ORDER then num, so a
+   chapter appended later still lands under its own Part heading.
+   ============================================================ */
+const CH = [];
+function chapter(o){ CH.push(o); }
+const PART_ORDER = ["Front matter","Part I","Part II","Part III","Part IV","Part V","Part VI","Part VII","Part VIII","Part IX","Part X","Reference"];
+function partRank(p){
+  const key = (p||'').split(' · ')[0].trim();
+  const i = PART_ORDER.indexOf(key);
+  return i<0 ? 50 : i;
+}
+function sortChapters(){
+  const idx = new Map(CH.map((c,i)=>[c,i]));
+  CH.sort((a,b)=>{
+    const pr = partRank(a.part)-partRank(b.part); if(pr) return pr;
+    const na = parseFloat(a.num), nb = parseFloat(b.num);
+    if(!isNaN(na) && !isNaN(nb) && na!==nb) return na-nb;
+    if(String(a.num)!==String(b.num)) return String(a.num).localeCompare(String(b.num));
+    return idx.get(a)-idx.get(b);
+  });
+}
+
+/* ---- Interactive tool builders (referenced from chapter html) ---- */
+const TOOLS = {};
+
+/* Unit economics: AOV, take rate, CAC, contribution margin, retention -> LTV, LTV/CAC, payback */
+TOOLS.unitEconomics = () => `
+<div class="tool" id="ueTool">
+  <h4 style="margin-top:0">📐 Unit Economics Calculator (LTV · LTV/CAC · Payback)</h4>
+  <p style="font-size:13px;color:var(--muted)">Works for marketplaces (set take rate below 100%) and subscriptions (set take rate to 100% and AOV to the monthly price, 1 order per month). All math is monthly.</p>
+  <div style="display:flex;gap:16px;flex-wrap:wrap">
+    <div><label>AOV / price per order ($)</label><input id="ueAov" value="35" size="7"></div>
+    <div><label>Take rate (% of AOV kept as revenue)</label><input id="ueTake" value="13" size="5"></div>
+    <div><label>Contribution margin (% of revenue)</label><input id="ueCm" value="40" size="5"></div>
+    <div><label>Orders per customer per month</label><input id="ueFreq" value="3" size="5"></div>
+    <div><label>Monthly retention (%)</label><input id="ueRet" value="92" size="5"></div>
+    <div><label>CAC ($ per new customer)</label><input id="ueCac" value="45" size="6"></div>
+    <div><label>Annual discount rate (%)</label><input id="ueDisc" value="10" size="5"></div>
+  </div>
+  <div style="margin-top:12px"><button class="btn" onclick="runUnitEcon()">Compute</button></div>
+  <div class="out" id="ueOut">—</div>
+</div>`;
+
+/* Market sizing: top-down and bottom-up TAM / SAM / SOM */
+TOOLS.marketSizing = () => `
+<div class="tool" id="msTool">
+  <h4 style="margin-top:0">🌐 Market Sizing Builder (TAM · SAM · SOM)</h4>
+  <p style="font-size:13px;color:var(--muted)">Build the number two ways and compare. If top-down and bottom-up differ by more than about 2x, one of your assumptions is wrong; find it before you present.</p>
+  <h5>Top-down</h5>
+  <div style="display:flex;gap:16px;flex-wrap:wrap">
+    <div><label>Total category spend ($M / yr)</label><input id="msTot" value="50000" size="9"></div>
+    <div><label>Serviceable share (% of TAM you can reach)</label><input id="msSamPct" value="30" size="5"></div>
+    <div><label>Obtainable share (% of SAM in 3-5 yrs)</label><input id="msSomPct" value="8" size="5"></div>
+  </div>
+  <h5>Bottom-up</h5>
+  <div style="display:flex;gap:16px;flex-wrap:wrap">
+    <div><label>Number of potential buyers (units)</label><input id="msN" value="2000000" size="10"></div>
+    <div><label>Annual spend per buyer ($)</label><input id="msSpend" value="12000" size="8"></div>
+    <div><label>Reachable (% in your segments / geos)</label><input id="msReach" value="35" size="5"></div>
+    <div><label>Win share of reachable (%)</label><input id="msWin" value="7" size="5"></div>
+  </div>
+  <div style="margin-top:12px"><button class="btn" onclick="runMarketSizing()">Build</button></div>
+  <div class="out" id="msOut">—</div>
+</div>`;
+
+/* Case practice timer */
+const CASES = [
+  {co:"DoorDash", p:"DoorDash grocery order volume in one metro has been flat for three months while restaurant orders grew 12%. Diagnose and recommend.",
+   o:"1) Clarify: flat orders vs flat GOV? new vs repeat customers? which retailers?\n2) Decompose orders = active grocery consumers x order frequency. Consumers = reach x trial conversion x repeat.\n3) Supply side: retailer coverage, in-stock rate, substitution rate, Dasher shop-and-deliver times.\n4) Demand side: price gap vs in-store, fees, DashPass penetration, competitor promos (Instacart, Walmart, Amazon).\n5) Experience: missing items, late orders, refunds -> repeat rate.\n6) Likely root cause pattern: trial is fine but 30-day repeat fell because substitution/missing-item rate rose after a retailer catalog change.\n7) Recommend: fix catalog + in-stock signals, targeted credits for affected cohort, measure repeat rate weekly; size impact."},
+  {co:"Spotify", p:"Should Spotify raise the Premium Individual price by 1 unit of local currency in a mid-size European market?",
+   o:"1) Objective: revenue and gross profit, without hurting long-run subscriber growth.\n2) Revenue math: subs x ARPU. Price up p% -> need churn+lost-adds below the break-even volume loss = p/(p+margin effect).\n3) Evidence: past price-increase cohorts (churn spike, recovery), elasticity by plan (Individual, Duo, Family, Student), competitor prices.\n4) Royalty structure: label payouts scale with revenue, so gross margin % changes less than revenue.\n5) Mitigations: grandfathering, lead-time notices, push plan mix (Family/Duo), bundle value (audiobooks hours).\n6) Recommend: yes if modeled churn uplift < break-even; stage rollout, monitor churn and downgrade to Free weekly."},
+  {co:"Datadog", p:"Datadog trailing-12-month net revenue retention dipped by two points. Why, and what would you do?",
+   o:"1) Define NRR = (start ARR + expansion - contraction - churn) / start ARR for a cohort.\n2) Decompose the dip: expansion slower? contraction (usage optimization) up? logo churn up?\n3) Slice: by customer size (enterprise vs SMB), by product (infra, APM, logs, security), by cohort year, by industry.\n4) Usage-based nuance: customers optimize log volume/retention; commits vs on-demand; ramp timing.\n5) Leading indicators: product adoption count per customer, commit renewals, usage growth per host.\n6) Actions: cost-optimization tools that keep customers on platform, multi-product attach plays, pricing for high-volume logs, CSM coverage on at-risk accounts."},
+  {co:"Uber", p:"Rider wait times in a large city spike every Friday 5-8pm and surge is firing constantly. Fix driver supply.",
+   o:"1) Measure: ETA, unfulfilled requests, surge multiplier, driver hours online, utilization, by 15-min bucket and zone.\n2) Diagnose: is it total hours, positioning, or acceptance? Compare demand curve vs supply curve.\n3) Levers on supply: scheduled incentives (quests), heat maps, advance notice of events, earnings guarantees, bring in Eats couriers / multi-apping, product mix (shared, wait-and-save).\n4) Levers on demand: reserve in advance, price products differently, AV fleet in zones if available.\n5) Economics: cost of incentives per incremental trip vs contribution per trip; avoid paying for hours that would happen anyway (incrementality test).\n6) Recommend a geo-holdout test of targeted Friday incentives; success = ETA and completion rate, cost per incremental hour."},
+  {co:"Google", p:"Size the market for Google Cloud selling AI and data platform services to US regional banks.",
+   o:"1) Define: US banks below the top ~20 by assets; product = cloud data/AI platform spend (not core banking software).\n2) Bottom-up: number of banks x IT budget per bank x share for cloud data/AI x share addressable by a hyperscaler.\n3) Top-down cross-check: US bank IT spend x regional share x cloud share x data/AI share.\n4) Constraints: regulation, vendor-risk reviews, core-banking vendors, partner (SI) channel.\n5) SOM: realistic share vs AWS/Azure given partner reach; 3-5 year ramp.\n6) Output: TAM/SAM/SOM table, key assumptions, the two assumptions that move the answer most."},
+  {co:"Uber", p:"Uber One membership growth has slowed. Should Uber lower the price or add benefits?",
+   o:"1) Objective: total contribution from members vs non-members, not just member count.\n2) Funnel: eligible users -> trial -> paid -> retained. Find which step slowed.\n3) Member value: incremental trips/orders per member, cross-platform usage (Rides + Eats).\n4) Price cut: more members but subsidizes already-loyal users (cannibalization).\n5) Benefit add: targeted to segments with low perceived value; cost per benefit.\n6) Recommend test cells: price, benefit, trial length; read incremental contribution per eligible user."},
+];
+TOOLS.caseTimer = () => `
+<div class="tool" id="ctTool">
+  <h4 style="margin-top:0">⏱ Case Practice Timer (25 min)</h4>
+  <p style="font-size:13px;color:var(--muted)">Pick a prompt (or Random), start the timer, and write your structure in the box. The model outline unlocks when time is up, or reveal early if you are stuck.</p>
+  <label>Prompt</label>
+  <select id="ctSel" style="width:100%">${CASES.map((c,i)=>'<option value="'+i+'">'+c.co+' · '+c.p.slice(0,80)+'…</option>').join('')}</select>
+  <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn" onclick="ctStart(false)">Start 25:00</button>
+    <button class="btn ghost" onclick="ctStart(true)">Random prompt</button>
+    <button class="btn ghost" onclick="ctReveal()">Reveal outline</button>
+    <button class="btn ghost" onclick="ctReset()">Reset</button>
+  </div>
+  <div class="timer" id="ctClock">25:00</div>
+  <div class="out" id="ctPrompt">Choose a prompt and press Start.</div>
+  <label>Your notes (not saved)</label>
+  <textarea id="ctNotes" placeholder="Clarifying questions, structure, hypotheses, math, recommendation…"></textarea>
+  <div class="out" id="ctOutline" style="display:none"></div>
+</div>`;
+
+/* ---- render nav ---- */
+function buildNav(){
+  const nav = document.getElementById('nav');
+  nav.innerHTML='';
+  let lastPart='';
+  CH.forEach(c=>{
+    if(c.part!==lastPart){
+      const d=document.createElement('div'); d.className='part'; d.textContent=c.part; nav.appendChild(d); lastPart=c.part;
+    }
+    const a=document.createElement('a'); a.className='navlink'+(c.tool?' tool':''); a.dataset.id=c.id; a.dataset.title=c.title.toLowerCase();
+    a.innerHTML=`<span class="cnum">${c.num}</span><span>${c.title}</span>`;
+    a.onclick=()=>show(c.id); nav.appendChild(a);
+  });
+}
+function filterNav(v){
+  v=v.toLowerCase();
+  document.querySelectorAll('#nav .navlink').forEach(a=>{a.style.display=a.dataset.title.includes(v)?'':'none';});
+}
+
+const visited=new Set();
+function renderChapter(c){
+  const sec=document.createElement('section'); sec.className='chapter'; sec.id='ch-'+c.id;
+  const idx=CH.findIndex(x=>x.id===c.id);
+  const prev=CH[idx-1], next=CH[idx+1];
+  sec.innerHTML=`
+    <div class="crumb"><span class="hy">${c.part}</span> &nbsp;›&nbsp; Chapter ${c.num}</div>
+    <h2 class="ctitle">${c.title}</h2>
+    <div class="cmeta">${c.mins?`<span>⏱ ${c.mins} min read</span>`:''}${c.tag?`<span>🏷 ${c.tag}</span>`:''}</div>
+    ${c.html}
+    <div class="navbtns">
+      ${prev?`<button onclick="show('${prev.id}')"><span class="dir">‹ Previous</span>${prev.num} · ${prev.title}</button>`:'<span></span>'}
+      ${next?`<button class="next" onclick="show('${next.id}')"><span class="dir">Next ›</span>${next.num} · ${next.title}</button>`:'<span></span>'}
+    </div>`;
+  document.getElementById('content').appendChild(sec);
+  return sec;
+}
+const rendered={};
+function show(id){
+  const c=CH.find(x=>x.id===id); if(!c) return;
+  if(!rendered[id]){ renderChapter(c); rendered[id]=true; wireInteractive(id); if(id==='intro') buildTOC(); }
+  document.querySelectorAll('.chapter').forEach(s=>s.classList.remove('active'));
+  document.getElementById('ch-'+id).classList.add('active');
+  document.querySelectorAll('#nav .navlink').forEach(a=>a.classList.toggle('active',a.dataset.id===id));
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mobTitle').textContent=c.num+' · '+c.title;
+  visited.add(id); markProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+  location.hash=id;
+}
+function markProgress(){
+  const total=CH.filter(c=>!c.tool).length||1;
+  const done=[...visited].filter(v=>{const c=CH.find(x=>x.id===v);return c&&!c.tool;}).length;
+  document.getElementById('progfill').style.width=(done/total*100)+'%';
+  document.getElementById('progtxt').textContent=`${done}/${total} chapters`;
+  document.getElementById('progpct').textContent=Math.round(done/total*100)+'%';
+  visited.forEach(v=>{const l=[...document.querySelectorAll('#nav .navlink')].find(a=>a.dataset.id===v);if(l)l.classList.add('done');});
+}
+
+/* measure total words -> page estimate (350 words/page) */
+function measurePages(){
+  let words=0;
+  CH.forEach(c=>{ const tmp=document.createElement('div'); tmp.innerHTML=c.html; words += (tmp.textContent||'').trim().split(/\s+/).length; });
+  const pages=Math.round(words/350);
+  document.getElementById('pagecount').textContent=`📖 ~${pages} pages · ${words.toLocaleString()} words · ${CH.filter(c=>!c.tool).length} chapters`;
+}
+
+/* ---- interactive wiring ---- */
+function wireInteractive(id){
+  document.querySelectorAll('#ch-'+id+' .quiz').forEach(qz=>{
+    const ans=parseInt(qz.dataset.a);
+    qz.querySelectorAll('.opt').forEach((b,i)=>{
+      b.onclick=()=>{
+        if(qz.dataset.done) return; qz.dataset.done=1;
+        qz.querySelectorAll('.opt').forEach((x,j)=>{x.disabled=true; if(j===ans)x.classList.add('correct'); if(j===i&&i!==ans)x.classList.add('wrong');});
+        const e=qz.querySelector('.exp'); if(e)e.classList.add('show');
+      };
+    });
+  });
+  document.querySelectorAll('#ch-'+id+' .flash').forEach(f=>f.onclick=()=>f.classList.toggle('flip'));
+}
+
+/* ---- tool logic ---- */
+function num(id){ const v=parseFloat(String(document.getElementById(id).value).replace(/[$,%\s]/g,'')); return isNaN(v)?0:v; }
+function fmt$(x){ return (x<0?'-$':'$')+Math.abs(x).toLocaleString(undefined,{maximumFractionDigits:2}); }
+function fmtM(x){ return x>=1000 ? '$'+(x/1000).toLocaleString(undefined,{maximumFractionDigits:2})+'B' : '$'+x.toLocaleString(undefined,{maximumFractionDigits:1})+'M'; }
+
+function runUnitEcon(){
+  const aov=num('ueAov'), take=num('ueTake')/100, cm=num('ueCm')/100, freq=num('ueFreq');
+  const ret=Math.min(0.999,Math.max(0,num('ueRet')/100)), cac=num('ueCac'), disc=num('ueDisc')/100;
+  const revPerOrder=aov*take, contribPerOrder=revPerOrder*cm, monthly=contribPerOrder*freq;
+  const md=Math.pow(1+disc,1/12)-1;
+  const lifeMonths = 1/(1-ret);
+  const ltvSimple = monthly*lifeMonths;
+  const ltvDisc = monthly*(1+md)/(1+md-ret);   /* sum m*(ret/(1+md))^k, k=0.. */
+  const ratio = cac>0 ? ltvDisc/cac : Infinity;
+  const simplePayback = monthly>0 ? cac/monthly : Infinity;
+  let cum=0, n=0, alive=1; while(cum<cac && n<240){ cum+=monthly*alive; alive*=ret; n++; }
+  const cohortPayback = cum>=cac ? n : null;
+  let verdict = ratio>=3 ? '✅ Healthy (LTV/CAC ≥ 3). You can likely spend more on growth.' : ratio>=1 ? '⚠️ Marginal (1 to 3). Improve retention or margin before scaling spend.' : '❌ Value-destroying (LTV < CAC). Every new customer loses money.';
+  if(cohortPayback===null) verdict += '\nCohort never pays back CAC within 20 years at this retention.';
+  document.getElementById('ueOut').textContent =
+`Net revenue per order:        ${fmt$(revPerOrder)}  (AOV x take rate)
+Contribution per order:       ${fmt$(contribPerOrder)}
+Contribution per customer/mo: ${fmt$(monthly)}
+Expected lifetime:            ${lifeMonths.toFixed(1)} months  (1 / monthly churn of ${((1-ret)*100).toFixed(1)}%)
+LTV (undiscounted):           ${fmt$(ltvSimple)}
+LTV (discounted):             ${fmt$(ltvDisc)}
+LTV / CAC:                    ${isFinite(ratio)?ratio.toFixed(2)+'x':'n/a (CAC = 0)'}
+Simple payback (no churn):    ${isFinite(simplePayback)?simplePayback.toFixed(1)+' months':'never'}
+Cohort payback (with churn):  ${cohortPayback?cohortPayback+' months':'never'}
+${verdict}`;
+}
+
+function runMarketSizing(){
+  const tot=num('msTot'), samP=num('msSamPct')/100, somP=num('msSomPct')/100;
+  const n=num('msN'), spend=num('msSpend'), reach=num('msReach')/100, win=num('msWin')/100;
+  const tdTam=tot, tdSam=tot*samP, tdSom=tdSam*somP;
+  const buTam=n*spend/1e6, buSam=buTam*reach, buSom=buSam*win;
+  const gap = Math.max(buTam,tdTam)/Math.max(1e-9,Math.min(buTam,tdTam));
+  document.getElementById('msOut').textContent =
+`               TOP-DOWN        BOTTOM-UP
+TAM            ${fmtM(tdTam).padEnd(16)}${fmtM(buTam)}
+SAM            ${fmtM(tdSam).padEnd(16)}${fmtM(buSam)}
+SOM            ${fmtM(tdSom).padEnd(16)}${fmtM(buSom)}
+
+TAM gap between methods: ${gap.toFixed(2)}x  ${gap<=2?'✅ methods roughly agree':'⚠️ reconcile: check buyer count, spend per buyer, or category definition'}
+Bottom-up TAM = buyers x annual spend = ${n.toLocaleString()} x ${fmt$(spend)}
+Tip: state the 2 assumptions that move SOM most, and give a range (low / base / high).`;
+}
+
+let ctTimer=null, ctLeft=1500, ctIdx=0;
+function ctTick(){
+  const m=Math.floor(ctLeft/60), s=ctLeft%60;
+  document.getElementById('ctClock').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  if(ctLeft<=0){ clearInterval(ctTimer); ctTimer=null; document.getElementById('ctClock').textContent='TIME'; ctReveal(); return; }
+  ctLeft--;
+}
+function ctStart(random){
+  const sel=document.getElementById('ctSel');
+  if(random){ sel.value=String(Math.floor(Math.random()*CASES.length)); }
+  ctIdx=parseInt(sel.value)||0;
+  const c=CASES[ctIdx];
+  document.getElementById('ctPrompt').textContent=c.co+': '+c.p+'\n\nSpend ~3 min on clarifying questions, ~5 min on structure, ~12 min on analysis and math, ~5 min on the recommendation.';
+  document.getElementById('ctOutline').style.display='none';
+  if(ctTimer) clearInterval(ctTimer);
+  ctLeft=1500; ctTick(); ctTimer=setInterval(ctTick,1000);
+}
+function ctReveal(){
+  const c=CASES[ctIdx]; const o=document.getElementById('ctOutline');
+  o.textContent='MODEL OUTLINE ('+c.co+')\n'+c.o; o.style.display='block';
+}
+function ctReset(){ if(ctTimer) clearInterval(ctTimer); ctTimer=null; ctLeft=1500; document.getElementById('ctClock').textContent='25:00'; document.getElementById('ctOutline').style.display='none'; document.getElementById('ctPrompt').textContent='Choose a prompt and press Start.'; }
+
+/* build the TOC listing (called at boot) */
+function buildTOC(){
+  const host=document.getElementById('tocFull'); if(!host) return;
+  let lastPart='', html='';
+  CH.filter(c=>c.id!=='intro').forEach(c=>{
+    if(c.part!==lastPart){ html+=`<div class="toc-part">${c.part}</div>`; lastPart=c.part; }
+    html+=`<div class="toc-item" onclick="show('${c.id}')"><span class="n">${c.num}</span><span>${c.title}</span></div>`;
+  });
+  host.innerHTML=html;
+  const p=document.getElementById('s-pages'), ch=document.getElementById('s-ch');
+  if(p){let words=0;CH.forEach(c=>{const t=document.createElement('div');t.innerHTML=c.html;words+=(t.textContent||'').trim().split(/\s+/).length;});p.textContent='~'+Math.round(words/350);}
+  if(ch)ch.textContent=CH.filter(c=>!c.tool).length;
+}
+</script>
+
+<!-- ================= CONTENT BLOCKS (chapters push into CH[]) ================= -->
+<script id="content-front">
+chapter({part:"Front matter", id:"intro", num:"00", title:"How to use this handbook + target roles", mins:12, tag:"Start here", tool:true, html:`
+<p>This is a training handbook for becoming a strong <b>Strategy &amp; Operations (S&amp;O)</b>, <b>BizOps</b>, or <b>Strategy &amp; Planning</b> operator. It is written for an engineer making the jump: someone who already knows how systems fail, how to read data, and how to ship, and now needs the business vocabulary, the frameworks, the company context, and lots of case reps. It grows daily toward <b>~300 pages</b>; the live counter in the sidebar shows its current length.</p>
+<div class="card">
+  <span class="stat"><b id="s-pages">…</b>pages (est.)</span>
+  <span class="stat"><b id="s-ch">…</b>chapters</span>
+  <span class="stat"><b>3</b>interactive tools</span>
+  <span class="stat"><b>5</b>target companies</span>
+</div>
+
+<h3>How to use it</h3>
+<ul>
+  <li><b>Foundations first.</b> Read Part I in order: the role, problem structuring, and unit economics are the base layer of every S&amp;O interview and every S&amp;O job.</li>
+  <li><b>Attempt before you peek.</b> Worked solutions in case chapters sit behind a <i>Show model answer</i> toggle. Write your own structure first, then compare. The habit of committing to an answer before seeing one is the habit interviews test.</li>
+  <li><b>Use the tools.</b> The <a onclick="show('unit-economics')">unit economics calculator</a>, the market sizing builder, and the 25-minute case timer are embedded where they matter. Change the inputs and watch which assumption moves the answer most; that sensitivity instinct is the real skill.</li>
+  <li><b>Quiz yourself.</b> Each chapter ends with a self-check. The glossary at the end is searchable.</li>
+  <li><b>Check the changelog.</b> Company numbers go stale fast. The <a onclick="show('changelog')">Updates &amp; Changelog</a> page records what changed each day, with sources.</li>
+</ul>
+
+<h3>What an S&amp;O operator does, in one paragraph</h3>
+<p>S&amp;O teams sit between the executive team and the operating teams. They take an ambiguous business question ("why did growth slow in this region?", "should we enter this market?", "how many people do we need next year?"), structure it, get the data, build the model, form a recommendation, and then help drive the decision into execution. They also run the <b>operating cadence</b>: annual planning, quarterly business reviews, weekly metric reviews, and OKRs. The job title varies (Strategy &amp; Operations, BizOps, Business Operations, Strategy &amp; Planning, Strategic Finance adjacent), but the work rhythm is the same: <i>structure, analyze, recommend, drive.</i></p>
+
+<h3>Your five target companies at a glance</h3>
+<p>Below is how S&amp;O-style work typically shows up at each target. These are general descriptions of the business and the kinds of problems such teams work on, not official org charts; team names and scopes change with reorgs, so confirm on current job postings.</p>
+<table>
+<tr><th>Company</th><th>Business model in one line</th><th>Typical S&amp;O / BizOps problems</th><th>Metrics you must speak</th></tr>
+<tr><td><b>Datadog</b></td><td>Usage-based SaaS observability and security platform; land with one product, expand to many.</td><td>Pricing and packaging, GTM capacity planning (quota-carrying reps, territories), multi-product attach, customer segmentation, forecasting usage-driven revenue.</td><td>ARR, NRR / GRR, customers above $100k ARR, products per customer, magic number, CAC payback, FCF margin.</td></tr>
+<tr><td><b>Spotify</b></td><td>Two-sided audio platform: freemium consumers (Premium subscription + ad-supported) and creators / rights holders.</td><td>Pricing and plan mix by market, subscriber funnel (Free to Premium), royalty and gross margin economics, audiobooks and podcast monetization, market launches.</td><td>MAU, Premium subscribers, ARPU, churn, gross margin by segment, ad revenue per MAU.</td></tr>
+<tr><td><b>Google</b></td><td>Multi-segment: Search and ads, YouTube, subscriptions and devices, Google Cloud, Other Bets; AI across all.</td><td>Cloud GTM (segments, partners, industry verticals), product BizOps (goal setting, resource allocation), market sizing for new products, capacity and compute planning.</td><td>Segment revenue and growth, Cloud operating margin and backlog, paid clicks / CPC, capex, OKRs.</td></tr>
+<tr><td><b>DoorDash</b></td><td>Three-sided local commerce marketplace: consumers, merchants, Dashers; plus DashPass membership, new verticals, international.</td><td>Market and city operations, supply-demand balance, new vertical launches (grocery, retail), unit economics per order, DashPass growth, Dasher pay and efficiency.</td><td>Total orders, Marketplace GOV, net revenue margin (take rate), contribution profit, adjusted EBITDA as % of GOV.</td></tr>
+<tr><td><b>Uber</b></td><td>Platform across Mobility, Delivery and Freight; Uber One membership ties them together; AV partnerships.</td><td>Marketplace efficiency (ETAs, surge, utilization), city launches and regulation, incentive spend efficiency, cross-sell, AV deployment planning.</td><td>Gross bookings, trips, MAPCs, take rate, adjusted EBITDA as % of GB, FCF.</td></tr>
+</table>
+
+<h3>Latest quarter snapshot (Q3 2026)</h3>
+<p>Headline numbers from each company's most recent earnings release. Use them to sound current in interviews, and practice explaining <i>why</i> each number moved.</p>
+<table>
+<tr><th>Company</th><th>Headline Q3 2026 numbers</th><th>Talking point</th></tr>
+<tr><td>Datadog</td><td>Revenue $1.20B, +35% Y/Y; about 4,860 customers with ARR of $100k+ (+20%); non-GAAP operating margin 28%; FCF $251M.</td><td>Revenue growth well above large-customer count growth means existing customers are spending more: expansion is the engine.</td></tr>
+<tr><td>Spotify</td><td>788M MAU (+11%); 306M Premium subscribers (+9%); revenue €4.97B (+16%); gross margin 33.0%; operating income €672M.</td><td>Premium ARPU up about 9% Y/Y: price increases and mix, not just subscriber growth, are driving revenue.</td></tr>
+<tr><td>Alphabet</td><td>Revenue $127.6B (+25%); Google Cloud $30.7B (reported +103%); YouTube ads $11.2B.</td><td>Cloud is now the growth story, driven by AI demand; ask how capacity (compute, capex) limits revenue.</td></tr>
+<tr><td>DoorDash</td><td>993M orders (+28%, 17% ex-Deliveroo); Marketplace GOV $33.9B (+36%); revenue $4.6B; adj. EBITDA $1.06B (3.1% of GOV); agreed to acquire Instacart (~$17B equity value).</td><td>Separate organic growth from acquired growth (Deliveroo) every time you quote a number.</td></tr>
+<tr><td>Uber</td><td>Gross bookings $59.8B (+20%); 4.1B trips (+16%); 215M MAPCs (+14%); adj. EBITDA $2.96B (5.0% of GB); FCF $2.5B.</td><td>Revenue grew slower than bookings (+10%) because of business model changes; always check which line is distorted.</td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Sources: <a href="https://www.sec.gov/Archives/edgar/data/0001561550/000162828026069792/ex-991x20260930x8k.htm" target="_blank">Datadog Q3 2026 release (SEC 8-K)</a> · <a href="https://www.sec.gov/Archives/edgar/data/0001639920/000114036126040435/ef20084028_ex99-1.htm" target="_blank">Spotify Q3 2026 release (SEC 6-K)</a> · <a href="https://9to5google.com/2026/10/28/alphabet-q3-2" target="_blank">9to5Google on Alphabet Q3 2026</a> · <a href="https://aiweekly.co/alerts/alphabet-posts-1276b-q3-with-google-cloud-up-103-to-307b-as-2027-capex-set-to" target="_blank">AI Weekly on Alphabet Q3</a> · <a href="https://www.sec.gov/Archives/edgar/data/0001792789/000179278926000062/proddashex991-pressrelease.htm" target="_blank">DoorDash Q3 2026 release (SEC 8-K)</a> · <a href="https://finviz.com/news/415280/uber-announces-results-for-third-quarter-2026" target="_blank">Uber Q3 2026 release</a>.</p>
+
+<h3>Why your background is an asset</h3>
+<div class="callout tip"><span class="lbl">Career bridge preview</span>Systems engineering is root-cause analysis on complex, interacting subsystems under constraints; that is exactly what diagnosing a marketplace metric drop feels like. Three years on a data intelligence team means you can pull and sanity-check your own data, which many S&amp;O candidates cannot. The gap to close is business vocabulary, financial intuition, and executive communication. This handbook is organized to close it.</div>
+
+<h3>Full table of contents</h3>
+<div id="tocFull"></div>
+`});
+
+chapter({part:"Front matter", id:"changelog", num:"00b", title:"Updates & Changelog", mins:3, tag:"Auto-maintained", tool:true, html:`
+<p>This handbook is maintained by a daily agent that researches news at Datadog, Spotify, Google, DoorDash and Uber, adds chapters, and freshens numbers. Newest entries first. Each entry lists sources.</p>
+
+<div class="callout hy"><span class="lbl">2026-11-21 · run 7 · SaaS metrics framework</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('saas-metrics')">09 SaaS Metrics for Operators: ARR, NRR, GRR, Magic Number, Rule of 40, CAC Payback</a> (Part V · SaaS), with a six-metric scorecard table, an ARR bridge waterfall diagram, a seat vs usage-based comparison, a Datadog Q3 2026 scorecard, a Rule of 40 worked example on real numbers, a magic number and CAC payback worked example, a hidden-answer GRR vs NRR drill, and two quizzes.</li>
+  <li><b>Glossary:</b> added 9 terms (magic number, Rule of 40, CAC payback, net new ARR, burn multiple, logo retention, cRPO, stock-based compensation, ARR bridge).</li>
+  <li><b>News: Datadog Q3 2026 detail.</b> Revenue $1.197B (+35% Y/Y); non-GAAP operating margin 28%, GAAP 6%; free cash flow $251M (about 21% margin); $5.2B cash and securities; FY2026 guide raised to $4.515B to $4.525B revenue and $1.095B to $1.105B non-GAAP operating income.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Source: <a href="https://finviz.com/news/415232/datadog-announces-third-quarter-2026-financial-results" target="_blank">Datadog Q3 2026 press release (via Finviz)</a></div></li>
+  <li><b>News: DoorDash and the FTC pricing inquiry.</b> The FTC opened a personalized-pricing inquiry in October into nine companies including DoorDash, Instacart, Uber and Lyft. This week DoorDash said it does not use consumer data to raise prices, separating that from loyalty pricing such as offers to new or lapsed users. DASH fell 5.8% on Nov 19 amid a broader AI-stock selloff. Relevant to pricing-strategy cases: personalization is now a regulatory risk, not only an optimization lever.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://finance.yahoo.com/economy/policy/articles/doordash-pushes-back-ftc-pricing-173052936.html" target="_blank">Yahoo Finance / Nation&#39;s Restaurant News</a> · <a href="https://www.trefis.com/stock/dash/articles/627324/what-sent-doordash-stock-lower/2026-11-20" target="_blank">Trefis</a></div></li>
+</ul></div>
+
+<div class="callout hy"><span class="lbl">2026-11-19 · run 6 · Uber driver supply case</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('case-uber-driver-supply')">08 Case: Uber Driver Supply Shortage at Peak</a> (Part VII · Case Practice), with a Q3 2026 Uber metrics table, a marketplace balance tree, a demand vs capacity diagram, a reconciled supply-hours split, a cost-per-incremental-hour worked example across four levers, hidden model answers, a fulfillment SQL query, a common-mistakes table, the case timer, and two quizzes.</li>
+  <li><b>Glossary:</b> added 11 terms (marketplace balance, supply hours, utilization, surge pricing, inframarginal spend, cost per incremental hour, driver reactivation, dead miles, unfulfilled request, earners, holdout group).</li>
+  <li><b>News: Uber driver supply.</b> Uber said Q3 2026 Mobility growth came in 1 to 2 points below its expectations because driver supply lagged demand in several international markets (Brazil and India undersupplied, Canada "meaningfully undersupplied"), citing fuel prices, tighter immigration policy and competition for couriers. It is shifting incentive dollars from rider discounts toward driver pay and saw improvement in October. Q3 metrics: 215M MAPCs (+14%), 10.8M earners, about 55M Uber One members, Mobility segment margin a record 8.0% of gross bookings; Q4 guide GB $63.25B to $65.25B.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://s23.q4cdn.com/407969754/files/doc_earnings/2026/q3/transcript/Uber-Q3-26-Prepared-Remarks.pdf" target="_blank">Uber Q3 2026 prepared remarks</a> · <a href="https://www.pymnts.com/earnings/2026/uber-battles-driver-shortage-as-gross-bookings-jump-20percent/" target="_blank">PYMNTS</a> · <a href="https://investingnews.com/uber-announces-results-for-third-quarter-2026/" target="_blank">Uber Q3 2026 release</a></div></li>
+  <li><b>News: Uber AV leadership change.</b> Sarfraz Maredia, global head of autonomous mobility and delivery, left Uber on Nov 16 after more than 12 years (announced Oct 13), the latest in a string of exits from that division this year.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Source: <a href="https://news.bgov.com/esg/uber-executive-overseeing-robotaxi-expansion-to-depart-1" target="_blank">Bloomberg Government</a></div></li>
+  <li><b>News: Datadog</b> was named a Leader in The Forrester Wave: AIOps Platforms, Q4 2026 (Oct 29), with its Bits AI agentic operations cited. Useful context for the observability-plus-AI cross-sell story in the Datadog case.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Source: <a href="https://www.datadoghq.com/about/latest-news/press-releases/datadog-named-a-leader-in-the-forrester-wave-aiops-platforms-q4-2026/" target="_blank">Datadog press release</a></div></li>
+</ul></div>
+
+<div class="callout hy"><span class="lbl">2026-11-18 · run 5 · Spotify deep-dive</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('spotify-deep-dive')">07 Spotify Deep-Dive: Freemium Audio, Pricing Power and Royalty Math</a> (Part VI · Company Deep-Dives), with a two-sided model diagram, full Q3 2026 metrics table and Q4 guide, a P&amp;L lever table, a subscriber vs free-user value worked example, strategic bets table, a hidden-answer price-increase case with breakeven churn math, and two quizzes.</li>
+  <li><b>Glossary:</b> added 10 terms (freemium, ad-supported MAU, price elasticity, plan mix, market mix, breakeven churn, royalty pass-through, social charges, grandfathering, operating leverage).</li>
+  <li><b>News: Spotify Q3 2026 detail.</b> Premium ARPU EUR 4.95 (+9.3%, +7.5% constant currency); Premium gross margin 34.5%, ad-supported 18.7%; ad revenue +10% with softer pricing; Q4 guide of 316M subs, EUR 5.2B revenue and EUR 820M operating income. Audiobooks expanding to 180+ markets by year end. US prices rose to $12.99 Individual in January 2026.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://www.sec.gov/Archives/edgar/data/0001639920/000114036126040435/ef20084028_ex99-1.htm" target="_blank">Spotify Q3 2026 6-K</a> · <a href="https://musicbusinessworldwide.com/spotify-is-on-course-for-a-3-3b-annual-operating-profit-in-2026-after-adding-6m-subscribers-in-q3" target="_blank">Music Business Worldwide</a> · <a href="https://www.macrumors.com/2026/01/15/spotify-increasing-subscription-prices/" target="_blank">MacRumors (US prices)</a></div></li>
+  <li><b>News: DoorDash Dot robots expand.</b> DoorDash autonomous delivery robot Dot began serving customers in Fremont, CA on Nov 16, its second Bay Area city after Sunnyvale. Another data point for the autonomy lever in delivery cost per order.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Source: <a href="https://yahoo.com/news/articles/doordash-robo-deliveries-launch-second-204107049.html" target="_blank">Yahoo News</a> · Related: <a href="https://digitalmusicnews.com/2026/11/17/spotify-allows-artists-to-block-new-releases" target="_blank">Digital Music News on Spotify Artist Profile Protection</a></div></li>
+</ul></div>
+
+<div class="callout hy"><span class="lbl">2026-11-17 · run 4 · driver trees + AV news</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('driver-trees-north-star')">06 Driver Trees, KPI Trees and North Star Metrics</a> (Part II · Analytics &amp; Metrics), with a ride-hailing bookings tree diagram, input vs output metric table for all five target companies, North Star test table, a fully reconciled volume / mix / rate worked example with SQL, a hidden-answer Spotify Premium revenue tree practice, and two quizzes.</li>
+  <li><b>Glossary:</b> added 11 terms (input, output and guardrail metric, KPI tree, volume, mix and rate effect, Goodhart&#39;s law, Simpson&#39;s paradox, fulfillment rate, constant currency).</li>
+  <li><b>News: Uber AV reshuffle.</b> On its Q3 2026 call (gross bookings $59.8B, +20%; revenue $14.75B, +10%) Uber said AV fleets get about 30% more trips per vehicle per day on its network and it plans about 2,000 robotaxis in 2027 with a larger ramp from 2028. Waymo said it will end its exclusive Austin and Atlanta arrangement with Uber (reported to end January 2028). Amazon&#39;s Zoox went live on the Uber app in Las Vegas on Nov 16, with Los Angeles planned for 2027.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://www.theregister.com/personal-tech/2026/11/05/uber-says-it-alone-can-make-robotaxis-pay-hours-after-waymo-quit-its-app/5307718" target="_blank">The Register</a> · <a href="https://techcrunch.com/2026/11/16/zoox-robotaxis-are-now-on-the-uber-app-in-las-vegas/" target="_blank">TechCrunch (Zoox)</a> · <a href="https://www.axios.com/2026/11/16/uber-vegas-robotaxi-crapshoot" target="_blank">Axios</a></div></li>
+  <li><b>News: Google Cloud vertical push.</b> On Nov 10 Google Cloud launched Gemini for healthcare (preview) for providers and payers, sold per seat or pay-as-you-go to Gemini Enterprise customers, with launch customers including HCA Healthcare, Northwell Health, Optum and Highmark Health. A useful example for a "size Google Cloud in a new vertical" case.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Source: <a href="https://www.googlecloudpresscorner.com/2026-11-10-Google-Cloud-Launches-Gemini-for-Healthcare" target="_blank">Google Cloud press corner</a></div></li>
+  <li><b>News: Spotify Artist Profile Protection</b> rolled out to all artists on Nov 17: alerts on new releases under an artist name and the option to approve each release, aimed at AI deepfakes and misattribution. A supply-side trust investment in the two-sided marketplace.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://techcrunch.com/2026/11/17/spotifys-new-tool-aims-to-stop-deepfakes-from-being-attributed-to-real-artists/" target="_blank">TechCrunch</a> · <a href="https://www.musicbusinessworldwide.com/spotify-expands-access-to-artist-profile-protection-letting-all-artists-remove-their-name-from-ai-fakes-and-other-misattributed-releases/" target="_blank">Music Business Worldwide</a></div></li>
+</ul></div>
+
+<div class="callout hy"><span class="lbl">2026-11-15 · run 3 · first practice case + news</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('case-datadog-nrr')">05 Case: Datadog NRR Dipped Two Points</a> (Part VII · Case Practice), with a Q3 2026 Datadog metrics table, an NRR bridge waterfall diagram, concentration-risk worked example, hidden model answers, a common-mistakes table, and two quizzes.</li>
+  <li><b>Glossary:</b> added 10 terms (expansion revenue, contraction, NRR bridge, revenue concentration, RPO, minimum commitment, on-demand usage, TTM, usage optimization, Uber Direct).</li>
+  <li><b>News: Datadog Q3 2026 detail.</b> Trailing-12-month NRR in the "low 120%s", GRR mid to high 90s, about 4,860 customers at $100K+ ARR (about 91% of ARR), RPO $3.85B (+38%). Largest customer (AI-native cohort) cut usage in Q3 but stayed above its minimum and renewed at a higher commitment; Q4 guide of $1.19B to $1.20B assumes that customer at its minimum.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://www.sec.gov/Archives/edgar/data/0001561550/000162828026069792/ex-991x20260930x8k.htm" target="_blank">Datadog Q3 2026 8-K</a> · <a href="https://www.sec.gov/Archives/edgar/data/0001561550/000162828026054458/ddog-20260630.htm" target="_blank">Datadog Q2 2026 10-Q</a> · <a href="https://sec-api.io/insights/datadog-ddog-q3-2026-earnings-largest-customer-cuts-usage-as-rpo-reaches-3-85bn-sec-filing-analysis" target="_blank">sec-api.io analysis</a></div></li>
+  <li><b>News: Uber gains ground on DoorDash in delivery partnerships.</b> Amazon now gives Prime members free Uber Eats restaurant delivery on orders over $25 in nearly 10,000 U.S. cities and towns (replacing its earlier Grubhub tie-up), and DoorDash shares sold off. Separately, McDonald&#39;s named Uber its preferred delivery partner for McDonald&#39;s app orders (via Uber Direct) and its exclusive delivery and rideshare rewards partner across 14 markets in a multi-year expansion; McDonald&#39;s still lists on both Uber Eats and DoorDash. Context: DoorDash held about 59% of U.S. delivery-app spend vs 18% for Uber Eats in Q3 per Consumer Edge card data. S&amp;O angle: these are demand-side distribution deals, a test of how much membership and loyalty bundles move share.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://www.pymnts.com/news/delivery/2026/amazon-uber-eats-deal-leaves-doordash-investors-queasy/" target="_blank">PYMNTS</a> · <a href="https://www.tikr.com/blog/uber-becomes-mcdonalds-preferred-delivery-partner-in-14-markets-as-its-doordash-fight-widens" target="_blank">TIKR</a> · <a href="https://www.morningstar.com/news/dow-jones/202611096496/mcdonalds-uber-expand-delivery-partnership" target="_blank">Dow Jones via Morningstar</a></div></li>
+</ul></div>
+
+<div class="callout hy"><span class="lbl">2026-11-13 · run 2 · DoorDash deep-dive</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('doordash-deep-dive')">04 DoorDash Deep-Dive: Three-Sided Marketplace Economics</a>, with a marketplace diagram, Q3 2026 metrics table, per-order economics worked example, strategic bets table, a hidden-answer practice case (flat grocery orders), and two quizzes.</li>
+  <li><b>Glossary:</b> added 10 terms (three-sided marketplace, flywheel, DashPass, Drive, DashMart, organic and inorganic growth, net synergies, HSR review, substitution rate).</li>
+  <li><b>News: DoorDash to acquire Instacart</b> at $65 per share (~$17B equity value), at least 75% cash, with close expected late 2027 or 1H 2028 pending HSR and other approvals; targets $500M+ annual net synergies. Instacart brand stays; members may pay one combined fee. DoorDash will stop reporting ex-Deliveroo figures from Q4 2026; Q4 guide is GOV $35.4B to $36.4B and adj. EBITDA $900M to $1.1B.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://www.sec.gov/Archives/edgar/data/0001792789/000179278926000062/proddashex991-pressrelease.htm" target="_blank">DoorDash Q3 2026 release</a> · <a href="https://www.sec.gov/Archives/edgar/data/0001792789/000179278926000070/dash-20260930.htm" target="_blank">DoorDash 10-Q</a> · <a href="https://www.fox5ny.com/news/doordash-buying-instacart-17b-what-means-customers" target="_blank">FOX 5</a></div></li>
+</ul></div>
+
+<div class="callout hy"><span class="lbl">2026-11-12 · run 1 · handbook created</span>
+<ul>
+  <li><b>Launched</b> the handbook: front matter with target-company overview, three foundation chapters (<a onclick="show('so-role')">01 The S&amp;O operator role</a>, <a onclick="show('problem-structuring')">02 Problem structuring</a>, <a onclick="show('unit-economics')">03 Unit economics fundamentals</a>), three interactive tools, and a searchable glossary.</li>
+  <li><b>News: Q3 2026 earnings snapshot</b> added to the front matter. Highlights: Datadog revenue +35% to $1.20B; Spotify reached 788M MAU and 306M subscribers; Alphabet revenue $127.6B with Google Cloud at $30.7B; DoorDash GOV +36% to $33.9B and an agreement to acquire Instacart for about $17B; Uber gross bookings +20% to $59.8B with about 700 driverless vehicles expected on platform by year end.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://www.sec.gov/Archives/edgar/data/0001561550/000162828026069792/ex-991x20260930x8k.htm" target="_blank">Datadog 8-K</a> · <a href="https://www.sec.gov/Archives/edgar/data/0001639920/000114036126040435/ef20084028_ex99-1.htm" target="_blank">Spotify 6-K</a> · <a href="https://9to5google.com/2026/10/28/alphabet-q3-2" target="_blank">9to5Google</a> · <a href="https://www.sec.gov/Archives/edgar/data/0001792789/000179278926000062/proddashex991-pressrelease.htm" target="_blank">DoorDash 8-K</a> · <a href="https://finviz.com/news/415280/uber-announces-results-for-third-quarter-2026" target="_blank">Uber release</a></div></li>
+</ul></div>
+<p style="font-size:12.5px;color:var(--muted)">Note: company figures are as reported in the cited releases. Verify against the latest investor relations materials before quoting in an interview.</p>
+`});
+</script>
+
+<script id="part1">
+chapter({part:"Part I · Foundations", id:"so-role", num:"01", title:"The S&O Operator Role and Core Skills", mins:14, tag:"Foundations", html:`
+<p>Strategy &amp; Operations is the internal consulting and execution function of a tech company. If finance answers "what happened and what will it cost?" and product answers "what should we build?", S&amp;O answers "<b>what should the business do next, and how do we make it happen?</b>" This chapter defines the role, the core skills, and how S&amp;O work is judged, so every later chapter has a place to land.</p>
+
+<h3>Where S&amp;O sits</h3>
+<p>Most tech companies have some mix of three S&amp;O shapes. Knowing which one a role is tells you what the interview will emphasize.</p>
+<table>
+<tr><th>Shape</th><th>Reports into</th><th>Typical work</th><th>Interview emphasis</th></tr>
+<tr><td><b>Central strategy / BizOps</b></td><td>CEO, COO, or Chief Strategy Officer</td><td>Company-level questions: new markets, M&amp;A screening, annual planning, board materials, cross-team priorities.</td><td>Case interviews, market sizing, structured communication.</td></tr>
+<tr><td><b>Embedded S&amp;O</b></td><td>A business unit or product GM (e.g. a Cloud segment, a delivery vertical)</td><td>Run the unit's planning and reviews, diagnose metric moves, build business cases for the GM, own special projects.</td><td>Metric diagnosis, SQL / Excel, stakeholder stories.</td></tr>
+<tr><td><b>Operations-heavy S&amp;O</b></td><td>Regional or city GM, GTM leadership</td><td>Launch markets, balance supply and demand, tune incentives, capacity plans for sales or support teams.</td><td>Operational cases, unit economics, prioritization under constraints.</td></tr>
+</table>
+
+<h3>The S&amp;O work loop</h3>
+<p>Almost every S&amp;O project runs the same loop. Senior operators run it faster and with less data; junior operators skip steps (usually step 1 or step 5).</p>
+<div class="diagwrap">
+<svg viewBox="0 0 760 170" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="13">
+  <defs><marker id="arr1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#93a1b3"/></marker></defs>
+  <g fill="#1b232e" stroke="#f5a524" stroke-width="1.5">
+    <rect x="10" y="40" width="130" height="60" rx="10"/><rect x="160" y="40" width="130" height="60" rx="10"/>
+    <rect x="310" y="40" width="130" height="60" rx="10"/><rect x="460" y="40" width="130" height="60" rx="10"/>
+    <rect x="610" y="40" width="140" height="60" rx="10"/>
+  </g>
+  <g fill="#e8eef5" text-anchor="middle">
+    <text x="75" y="66">1 Frame</text><text x="75" y="84" font-size="11" fill="#93a1b3">the real question</text>
+    <text x="225" y="66">2 Structure</text><text x="225" y="84" font-size="11" fill="#93a1b3">issue tree, hypotheses</text>
+    <text x="375" y="66">3 Analyze</text><text x="375" y="84" font-size="11" fill="#93a1b3">data, model, sizing</text>
+    <text x="525" y="66">4 Recommend</text><text x="525" y="84" font-size="11" fill="#93a1b3">so-what, trade-offs</text>
+    <text x="680" y="66">5 Drive</text><text x="680" y="84" font-size="11" fill="#93a1b3">owners, metrics, cadence</text>
+  </g>
+  <g stroke="#93a1b3" stroke-width="1.5" marker-end="url(#arr1)">
+    <line x1="140" y1="70" x2="158" y2="70"/><line x1="290" y1="70" x2="308" y2="70"/>
+    <line x1="440" y1="70" x2="458" y2="70"/><line x1="590" y1="70" x2="608" y2="70"/>
+  </g>
+  <path d="M680,100 C680,150 75,150 75,102" fill="none" stroke="#93a1b3" stroke-dasharray="4 4" marker-end="url(#arr1)"/>
+  <text x="378" y="160" fill="#93a1b3" font-size="11" text-anchor="middle">results feed the next question</text>
+</svg>
+<div class="diagcap">The S&amp;O loop: frame, structure, analyze, recommend, drive.</div>
+</div>
+<ol>
+  <li><b>Frame.</b> Restate the question as a decision with an owner and a deadline. "Look into grocery" becomes "Should we fund a second grocery dark-store pilot in Q2, yes or no, decided by the GM on March 1?"</li>
+  <li><b>Structure.</b> Break the question into mutually exclusive, collectively exhaustive pieces and write down a <i>hypothesis</i> for each (Chapter 02).</li>
+  <li><b>Analyze.</b> Pull only the data that can confirm or kill a hypothesis. Build the simplest model that answers the question.</li>
+  <li><b>Recommend.</b> Lead with the answer. State the trade-off you are accepting and the risk you are watching.</li>
+  <li><b>Drive.</b> Assign owners, define the success metric and its threshold, and put it on a review cadence. Strategy that never reaches an owner is a slide, not a strategy.</li>
+</ol>
+
+<h3>Core skills and how to show each one</h3>
+<table>
+<tr><th>Skill</th><th>What "good" looks like</th><th>How you prove it in an interview</th></tr>
+<tr><td>Structured thinking</td><td>MECE breakdowns, clear hypotheses, no wandering.</td><td>Draw your structure before you ask for data; signpost ("three buckets: demand, supply, conversion").</td></tr>
+<tr><td>Quantitative fluency</td><td>Fast, correct back-of-envelope math; sanity checks; knows which assumption matters.</td><td>Round numbers aggressively, say units out loud, check results against something you know.</td></tr>
+<tr><td>Business judgment</td><td>Knows how the company makes money and what would change it.</td><td>Tie every finding to revenue, cost, or risk; name second-order effects (cannibalization, supply response).</td></tr>
+<tr><td>Data skills</td><td>Can write SQL, build a model, and spot bad data.</td><td>Live SQL or Excel exercise; say how you would validate the data before trusting it.</td></tr>
+<tr><td>Communication</td><td>Answer first, then support (pyramid principle); short memos; crisp slides.</td><td>Summarize the case in 30 seconds at the end; recommendation, three reasons, next steps.</td></tr>
+<tr><td>Influence without authority</td><td>Gets teams that do not report to you to change their plans.</td><td>Behavioral story where you aligned engineers, sales, or ops with data plus a shared goal.</td></tr>
+<tr><td>Bias to execution</td><td>Ships pilots, sets owners, follows up.</td><td>Stories end with a measured result, not with "and then we presented."</td></tr>
+</table>
+
+<h3>A week in the life (embedded S&amp;O, marketplace company)</h3>
+<table>
+<tr><th>Day</th><th>Activity</th><th>Output</th></tr>
+<tr><td>Mon</td><td>Weekly business review (WBR) prep: refresh dashboard, write 5-bullet commentary on what moved and why.</td><td>WBR doc for the GM.</td></tr>
+<tr><td>Tue</td><td>Deep dive: why did order frequency in one region fall 3%? SQL pulls, cohort cut.</td><td>One-page finding with root cause hypothesis.</td></tr>
+<tr><td>Wed</td><td>Business case for a new incentive program with marketing and finance.</td><td>Model with base / bull / bear cases.</td></tr>
+<tr><td>Thu</td><td>Planning: draft headcount and budget asks for next half with team leads.</td><td>Planning template filled, trade-offs flagged.</td></tr>
+<tr><td>Fri</td><td>Exec readout of the deep dive; agree on a test; assign owners.</td><td>Decision log entry, test plan, success metric.</td></tr>
+</table>
+
+<div class="callout example"><span class="lbl">Worked example · framing a vague ask</span>
+<p><b>Ask from a VP:</b> "Ad-supported users in Brazil feel low. Take a look."</p>
+<p><b>Weak response:</b> spend two weeks building a 40-tab dashboard of every Brazil metric.</p>
+<p><b>Strong response, day one:</b></p>
+<ul>
+  <li><b>Clarify the decision:</b> "Is the decision whether to increase Brazil marketing budget next quarter, or whether to change the Free tier there?" The VP says: marketing budget, decision in three weeks.</li>
+  <li><b>Clarify "low":</b> low versus what? Plan, last year, or peer markets (Mexico, Argentina)? Answer: versus plan, 4% behind.</li>
+  <li><b>First structure:</b> ad-supported MAU = new users + resurrected users - churned users. Which term explains the 4% gap?</li>
+  <li><b>Hypotheses:</b> (a) paid acquisition was cut mid-quarter, (b) a competitor launched a free offer, (c) churn rose after an app change.</li>
+  <li><b>Plan:</b> pull the MAU bridge by month (one SQL query), check marketing spend vs plan, check churn by app version. Readout in one week with a recommendation.</li>
+</ul>
+<p>Illustrative outcome: the bridge shows new users on plan, churn up 1.5 points after an onboarding change. Recommendation: do <i>not</i> add marketing budget yet (it would fill a leaky bucket); roll back the onboarding change first and re-read in four weeks. Notice the answer reframed the VP's original question; that is normal and valuable.</p>
+</div>
+
+<h3>How S&amp;O work is judged</h3>
+<ul>
+  <li><b>Decisions changed.</b> Did leadership do something different because of your work?</li>
+  <li><b>Speed to a good-enough answer.</b> An 80% answer in one week usually beats a 95% answer in six.</li>
+  <li><b>Trust.</b> Your numbers tie out, you flag uncertainty honestly, and you never surprise an executive in a meeting.</li>
+  <li><b>Follow-through.</b> The metric you said would move, moved (or you explained why not and what you learned).</li>
+</ul>
+
+<div class="callout warn"><span class="lbl">Common failure modes</span>Boiling the ocean (too much analysis, no answer); presenting data without a "so what"; skipping stakeholders until the readout; recommending something nobody owns; using jargon instead of numbers.</div>
+
+<h3>Mapping your engineering habits to S&amp;O</h3>
+<table>
+<tr><th>Engineering habit</th><th>S&amp;O equivalent</th></tr>
+<tr><td>Root-cause analysis on a fault (fault tree, 5 whys)</td><td>Metric diagnosis with a driver tree</td></tr>
+<tr><td>Requirements and acceptance criteria</td><td>Framing the decision and defining success metrics</td></tr>
+<tr><td>Design reviews with cross-functional teams</td><td>Stakeholder alignment before an exec readout</td></tr>
+<tr><td>Test plans, validation, regression checks</td><td>Experiments, holdouts, and post-launch metric reviews</td></tr>
+<tr><td>Data pipelines and dashboards (data intelligence team)</td><td>WBR / QBR metric infrastructure and self-serve SQL</td></tr>
+</table>
+
+<div class="quiz" data-a="2">
+  <div class="q">Self-check: A GM asks you to "look into churn." What is the best first step?</div>
+  <button class="opt">Pull every churn metric available and build a dashboard</button>
+  <button class="opt">Benchmark churn against three competitors</button>
+  <button class="opt">Clarify the decision the GM needs to make and the deadline, then form hypotheses</button>
+  <button class="opt">Start an A/B test on a retention offer</button>
+  <div class="exp">Framing comes first. Knowing the decision (e.g. whether to fund a retention team) tells you which analysis matters and how precise it needs to be. Dashboards and tests come later, if at all.</div>
+</div>
+
+<div class="quiz" data-a="1">
+  <div class="q">Self-check: Which output best shows the "Drive" step of the S&amp;O loop?</div>
+  <button class="opt">A polished 30-slide deck</button>
+  <button class="opt">A decision log entry with an owner, a success metric with a threshold, and a review date</button>
+  <button class="opt">A larger dataset for the next analysis</button>
+  <button class="opt">A list of ten more questions to investigate</button>
+  <div class="exp">Drive means the decision becomes someone's job with a measurable target and a check-in. That is what turns analysis into impact.</div>
+</div>
+`});
+</script>
+
+<script id="part1b">
+chapter({part:"Part I · Foundations", id:"problem-structuring", num:"02", title:"Problem Structuring: MECE, Issue Trees, Hypothesis-Driven Work", mins:18, tag:"Foundations · core", html:`
+<p>Structuring is the single most tested S&amp;O skill. Interviewers watch the first five minutes of a case more closely than the math, because a good structure makes the rest easy and a bad one makes it impossible. This chapter covers three tools that work together: <b>MECE</b> (the rule), <b>issue trees</b> (the picture), and <b>hypothesis-driven work</b> (the speed).</p>
+
+<h3>MECE: mutually exclusive, collectively exhaustive</h3>
+<p>A breakdown is <b>mutually exclusive</b> when no item overlaps another (nothing counted twice) and <b>collectively exhaustive</b> when together the items cover everything (nothing missed). It is the same discipline as partitioning a fault space in engineering: every failure must land in exactly one branch.</p>
+<table>
+<tr><th>Breakdown of "revenue"</th><th>ME?</th><th>CE?</th><th>Verdict</th></tr>
+<tr><td>Customers x revenue per customer</td><td>Yes</td><td>Yes</td><td>✅ Clean, mathematical.</td></tr>
+<tr><td>Mobile revenue, iOS revenue, web revenue</td><td>No (iOS is inside mobile)</td><td>Maybe</td><td>❌ Overlap double-counts iOS.</td></tr>
+<tr><td>US revenue, Europe revenue</td><td>Yes</td><td>No (rest of world missing)</td><td>❌ Add "Rest of world".</td></tr>
+<tr><td>New, expansion, and retained revenue</td><td>Yes</td><td>Yes (if churn shown as negative)</td><td>✅ Good for SaaS.</td></tr>
+</table>
+
+<h4>Four reliable ways to split anything MECE</h4>
+<ul>
+  <li><b>Math (formula) splits:</b> profit = revenue - cost; revenue = volume x price; orders = users x frequency. Always MECE; best for metric diagnosis.</li>
+  <li><b>Process / funnel splits:</b> awareness, consideration, sign-up, activation, retention. MECE if the stages are sequential.</li>
+  <li><b>Stakeholder splits:</b> consumers, merchants, couriers, platform. Natural for marketplaces.</li>
+  <li><b>Segment splits:</b> by geography, customer size, product, cohort, channel. Include an "other" bucket to stay exhaustive.</li>
+</ul>
+<div class="callout tip"><span class="lbl">Rule of thumb</span>Use a <b>math split at the top</b> of a tree whenever the question is about a metric. It guarantees MECE and points directly at data. Use framework or stakeholder splits lower down, where judgment matters.</div>
+
+<h3>Issue trees</h3>
+<p>An issue tree breaks one key question into sub-questions until each leaf is answerable with a specific analysis. There are two kinds:</p>
+<table>
+<tr><th>Type</th><th>Each node is</th><th>Use when</th><th>Example root</th></tr>
+<tr><td><b>Diagnostic (why) tree</b></td><td>A possible cause</td><td>Something changed and you need to know why</td><td>"Why did DoorDash orders in Region X fall 5%?"</td></tr>
+<tr><td><b>Solution (how) tree</b></td><td>A possible lever or option</td><td>You need to choose actions</td><td>"How could Uber increase Friday-night driver hours by 10%?"</td></tr>
+</table>
+
+<div class="diagwrap">
+<svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12">
+  <g fill="#1b232e" stroke="#f5a524" stroke-width="1.4">
+    <rect x="10" y="125" width="150" height="50" rx="8"/>
+    <rect x="215" y="55" width="160" height="44" rx="8"/><rect x="215" y="200" width="160" height="44" rx="8"/>
+    <rect x="430" y="10" width="320" height="34" rx="7"/><rect x="430" y="56" width="320" height="34" rx="7"/><rect x="430" y="102" width="320" height="34" rx="7"/>
+    <rect x="430" y="164" width="320" height="34" rx="7"/><rect x="430" y="210" width="320" height="34" rx="7"/><rect x="430" y="256" width="320" height="34" rx="7"/>
+  </g>
+  <g fill="#e8eef5">
+    <text x="85" y="147" text-anchor="middle">Orders fell 5%</text><text x="85" y="164" text-anchor="middle" fill="#93a1b3" font-size="11">(region X, 4 weeks)</text>
+    <text x="295" y="74" text-anchor="middle">Fewer active users?</text><text x="295" y="90" text-anchor="middle" fill="#93a1b3" font-size="11">users = new + retained</text>
+    <text x="295" y="219" text-anchor="middle">Lower frequency?</text><text x="295" y="235" text-anchor="middle" fill="#93a1b3" font-size="11">orders per active user</text>
+    <text x="442" y="32">New user acquisition down (marketing, referrals)</text>
+    <text x="442" y="78">Retention down (bad experience, competitor promo)</text>
+    <text x="442" y="124">Measurement change (tracking, definitions)</text>
+    <text x="442" y="186">Selection worse (merchants churned, closures)</text>
+    <text x="442" y="232">Price / fees up (delivery fee, menu prices)</text>
+    <text x="442" y="278">Reliability worse (ETAs, cancellations, supply)</text>
+  </g>
+  <g stroke="#93a1b3" stroke-width="1.3" fill="none">
+    <path d="M160,150 L190,150 L190,77 L215,77"/><path d="M190,150 L190,222 L215,222"/>
+    <path d="M375,77 L400,77 L400,27 L430,27"/><path d="M400,77 L430,73"/><path d="M400,77 L400,119 L430,119"/>
+    <path d="M375,222 L400,222 L400,181 L430,181"/><path d="M400,222 L430,227"/><path d="M400,222 L400,273 L430,273"/>
+  </g>
+</svg>
+<div class="diagcap">A diagnostic issue tree: math split at the top (users x frequency), judgment-based causes below.</div>
+</div>
+
+<h4>Rules for a good tree</h4>
+<ol>
+  <li><b>One clear root question</b>, specific in metric, place, and time.</li>
+  <li><b>MECE at every level.</b> Check each set of siblings separately.</li>
+  <li><b>Three to five branches per node.</b> Two is often too coarse; seven is a list, not a structure.</li>
+  <li><b>Leaves map to an analysis.</b> If you cannot name the data that answers a leaf, split it further.</li>
+  <li><b>Always include a data-quality branch</b> for diagnostic trees. A surprising share of "metric drops" are tracking changes.</li>
+</ol>
+
+<h3>Hypothesis-driven work</h3>
+<p>Exhaustive trees are correct but slow. Hypothesis-driven work adds speed: state your best guess of the answer up front, then design the minimum analysis that would prove it <i>wrong</i>. If it survives, you are done early. If it dies, the tree tells you where to look next.</p>
+<table>
+<tr><th>Step</th><th>What you do</th><th>Example (orders fell 5%)</th></tr>
+<tr><td>1. State the hypothesis</td><td>One sentence, falsifiable.</td><td>"The drop is a frequency drop among existing users caused by the delivery-fee increase on Feb 1."</td></tr>
+<tr><td>2. Define the kill test</td><td>What data would disprove it?</td><td>If active users fell and frequency is flat, or if the drop began before Feb 1, the hypothesis is dead.</td></tr>
+<tr><td>3. Run the cheapest test first</td><td>One query, one chart.</td><td>Weekly orders split into users x frequency, with Feb 1 marked.</td></tr>
+<tr><td>4. Update</td><td>Confirm, refine, or switch branches.</td><td>Frequency fell from Feb 1, concentrated in non-members: confirmed and refined.</td></tr>
+</table>
+<div class="callout warn"><span class="lbl">Watch out</span>Hypothesis-driven does not mean "decide the answer and find supporting data." Confirmation bias is the failure mode. Always say what would change your mind, and look for that first.</div>
+
+<h3>The pyramid principle (preview)</h3>
+<p>When you present, flip the tree: lead with the answer (the top), then the three supporting arguments (the branches), then the evidence (the leaves). Executives read top-down and stop when they are convinced. Chapter coverage of executive communication comes later in Part VIII.</p>
+
+<div class="callout example"><span class="lbl">Practice case · Datadog</span>
+<p><b>Prompt:</b> "Datadog's new-logo bookings in the mid-market segment were 15% below plan last quarter, while enterprise was on plan. Structure the problem." Spend 5 minutes building a tree before opening the answer.</p>
+<details><summary>Show model answer</summary>
+<p><b>Clarify first:</b> bookings measured as first-year ARR from new customers? Plan built bottom-up from rep capacity? Any change in segment definitions (employee-count thresholds) this year?</p>
+<p><b>Top-level math split:</b> new-logo bookings = number of deals closed x average first-year deal size. Deals closed = pipeline created x win rate (for deals due this quarter).</p>
+<ul>
+  <li><b>Pipeline volume:</b> marketing-sourced leads, self-serve trials converting to sales, rep prospecting, partner-sourced.</li>
+  <li><b>Win rate:</b> competition (open-source tooling, other observability vendors), pricing objections, product gaps, sales cycle length (deals slipping to next quarter count as misses).</li>
+  <li><b>Deal size:</b> fewer products in the initial land, smaller initial commits, more customers starting on-demand.</li>
+  <li><b>Capacity:</b> ramped reps vs plan (hiring delays, attrition), territory changes.</li>
+  <li><b>Measurement:</b> segment re-mapping moved accounts from mid-market to enterprise.</li>
+</ul>
+<p><b>Lead hypothesis (illustrative):</b> the miss is mostly deal <i>slippage</i>: win rates are flat but cycle length grew because mid-market buyers face tighter budget approvals. <b>Kill test:</b> if the count of open, late-stage mid-market deals did not grow, slippage is not the cause.</p>
+<p><b>Why this is strong:</b> a math split at the top, a capacity branch (often forgotten), a measurement branch, and a falsifiable lead hypothesis with a specific test.</p>
+</details>
+</div>
+
+<div class="callout example"><span class="lbl">Practice case · Uber (solution tree)</span>
+<p><b>Prompt:</b> "Build a solution tree for increasing Uber Eats orders per active customer in a mature city."</p>
+<details><summary>Show model answer</summary>
+<ul>
+  <li><b>More occasions per customer:</b> new meal occasions (breakfast, late night), new categories (grocery, convenience, alcohol where legal), scheduled orders.</li>
+  <li><b>Higher conversion per session:</b> better ranking and recommendations, faster checkout, accurate ETAs, fewer out-of-stock items.</li>
+  <li><b>Lower friction cost:</b> membership (Uber One) to remove delivery fees, targeted promotions, lower basket minimums.</li>
+  <li><b>Cross-platform triggers:</b> offers after a Rides trip, shared membership benefits.</li>
+  <li><b>Fewer bad experiences:</b> reduce late and missing orders that suppress the next order.</li>
+</ul>
+<p>Then prioritize branches by (impact x confidence) / effort and test the top two.</p>
+</details>
+</div>
+
+<h3>Structuring a sizing question</h3>
+<p>Market sizing is structuring with numbers. The same math-split rule applies: write the formula first (buyers x spend per buyer x reachable share x win share), then argue each input. Build it two ways, top-down from a category total and bottom-up from units, and reconcile. A full market sizing chapter comes later; use the builder below to practice the Google Cloud case from the timer prompts.</p>
+<table>
+<tr><th>Layer</th><th>Question it answers</th><th>Typical narrowing</th></tr>
+<tr><td>TAM</td><td>How big is the whole category?</td><td>All spend on the problem, any vendor, any geography</td></tr>
+<tr><td>SAM</td><td>How much can we actually serve?</td><td>Our product scope, our geographies, our channels</td></tr>
+<tr><td>SOM</td><td>How much can we win in 3-5 years?</td><td>Realistic share given competitors and sales capacity</td></tr>
+</table>
+${TOOLS.marketSizing()}
+
+<h3>Time yourself</h3>
+<p>Use the timer below. For structuring practice alone, stop after 8 minutes and compare your tree to the outline.</p>
+${TOOLS.caseTimer()}
+
+<div class="quiz" data-a="3">
+  <div class="q">Self-check: Which breakdown of a marketplace's gross order value is MECE?</div>
+  <button class="opt">Restaurant orders, pizza orders, grocery orders</button>
+  <button class="opt">Orders from the US and orders from Canada (company operates in 30 countries)</button>
+  <button class="opt">New-user orders, mobile orders, desktop orders</button>
+  <button class="opt">Number of orders x average order value</button>
+  <div class="exp">The formula split cannot overlap or miss anything. Pizza is inside restaurants (overlap), two countries miss 28 others (not exhaustive), and new-user orders overlap with device splits.</div>
+</div>
+
+<div class="quiz" data-a="0">
+  <div class="q">Self-check: What makes a hypothesis useful in hypothesis-driven work?</div>
+  <button class="opt">It is specific enough that a single analysis could prove it wrong</button>
+  <button class="opt">It is broad enough to always be partly true</button>
+  <button class="opt">It comes from the most senior stakeholder</button>
+  <button class="opt">It avoids naming a cause so you stay objective</button>
+  <div class="exp">A falsifiable hypothesis tells you exactly which data to pull first and when to stop. A vague one cannot be tested, so it saves no time.</div>
+</div>
+`});
+</script>
+
+<script id="part1c">
+chapter({part:"Part I · Foundations", id:"unit-economics", num:"03", title:"Unit Economics Fundamentals", mins:18, tag:"Foundations · math", html:`
+<p>Unit economics asks one question: <b>does the business make money on each unit it sells, after the costs that unit causes?</b> The "unit" might be an order (DoorDash, Uber Eats), a trip (Uber Mobility), a subscriber-month (Spotify), or a customer account (Datadog). If the unit loses money, growth makes things worse. If it earns money, the strategic question becomes how fast to buy more units.</p>
+
+<h3>The building blocks</h3>
+<table>
+<tr><th>Term</th><th>Definition</th><th>Marketplace example</th><th>Subscription / SaaS example</th></tr>
+<tr><td><b>AOV / price</b></td><td>Gross value per transaction</td><td>Basket value of a food order</td><td>Monthly plan price</td></tr>
+<tr><td><b>Take rate</b></td><td>Share of gross value the company keeps as revenue</td><td>Revenue / GOV (commissions + fees)</td><td>Usually 100% (company keeps the price); the "cost" side carries royalties or cloud costs</td></tr>
+<tr><td><b>Variable costs</b></td><td>Costs that scale with each unit</td><td>Courier pay beyond fees, payment processing, refunds, support</td><td>Royalties (audio), hosting and compute (SaaS), payment fees</td></tr>
+<tr><td><b>Contribution margin</b></td><td>(Revenue - variable costs) / revenue</td><td>Contribution profit per order / revenue per order</td><td>Gross margin is the usual proxy</td></tr>
+<tr><td><b>CAC</b></td><td>Fully loaded cost to acquire one new customer</td><td>Paid marketing + referral credits + first-order promos, divided by new customers</td><td>Sales and marketing spend / new customers (or new ARR)</td></tr>
+<tr><td><b>Retention</b></td><td>Share of customers still active next period</td><td>Monthly ordering retention</td><td>Logo retention; for SaaS also revenue retention (NRR)</td></tr>
+<tr><td><b>LTV</b></td><td>Lifetime contribution from one customer</td><td>Monthly contribution x expected lifetime</td><td>Monthly gross profit x expected lifetime</td></tr>
+<tr><td><b>Payback</b></td><td>Months of contribution needed to recover CAC</td><td>CAC / monthly contribution</td><td>CAC payback (S&amp;M / new gross profit)</td></tr>
+</table>
+
+<h3>The core formulas</h3>
+<pre><code>Revenue per order        = AOV x take rate
+Contribution per order   = Revenue per order - variable cost per order
+Monthly contribution     = Contribution per order x orders per month
+Expected lifetime (mo)   = 1 / monthly churn          (churn = 1 - retention)
+LTV (simple)             = Monthly contribution x lifetime
+LTV (discounted)         = m x (1 + d) / (1 + d - r)   (m = monthly contribution,
+                                                          r = monthly retention,
+                                                          d = monthly discount rate)
+LTV / CAC                = LTV / CAC                  (rule of thumb: >= 3x is healthy)
+Simple payback (months)  = CAC / monthly contribution
+</code></pre>
+<div class="callout tip"><span class="lbl">Why 1 / churn?</span>If 8% of customers leave each month and the rate is constant, survival follows a geometric series: 1 + 0.92 + 0.92² + … = 1 / 0.08 = 12.5 months. Small retention changes matter a lot at the top end: 95% retention gives 20 months, 97% gives 33.</div>
+
+<div class="callout example"><span class="lbl">Worked example 1 · food delivery order (illustrative numbers)</span>
+<p>A delivery marketplace sees an average basket of <b>$35</b>. Commission plus consumer fees give a <b>13%</b> take rate. Variable costs (courier pay above fees, payments, refunds, support) consume 60% of revenue, so contribution margin is <b>40%</b> of revenue.</p>
+<table>
+<tr><th>Line</th><th>Math</th><th>Value</th></tr>
+<tr><td>Revenue per order</td><td>$35 x 13%</td><td>$4.55</td></tr>
+<tr><td>Contribution per order</td><td>$4.55 x 40%</td><td>$1.82</td></tr>
+<tr><td>Orders per customer per month</td><td>given</td><td>3</td></tr>
+<tr><td>Monthly contribution</td><td>$1.82 x 3</td><td>$5.46</td></tr>
+<tr><td>Monthly retention</td><td>given</td><td>92% (lifetime 12.5 months)</td></tr>
+<tr><td>LTV (simple)</td><td>$5.46 x 12.5</td><td>$68.25</td></tr>
+<tr><td>CAC</td><td>given</td><td>$45</td></tr>
+<tr><td>LTV / CAC</td><td>$68.25 / $45</td><td>1.5x</td></tr>
+<tr><td>Simple payback</td><td>$45 / $5.46</td><td>8.2 months</td></tr>
+</table>
+<p><b>So what:</b> 1.5x is marginal (about 1.4x once you discount future months at 10% a year, as the calculator does). Which lever helps most? Try them in the calculator below: raising retention from 92% to 95% raises lifetime from 12.5 to 20 months (LTV about $109, 2.4x). Raising take rate by one point (13% to 14%) raises LTV only about 8%. Retention is the bigger lever here, which is why delivery companies invest in memberships like DashPass and Uber One.</p>
+</div>
+
+${TOOLS.unitEconomics()}
+
+<div class="callout example"><span class="lbl">Worked example 2 · consumer subscription (illustrative)</span>
+<p>An audio subscription costs <b>$11.99</b> per month. Royalties and other cost of revenue take about two thirds, leaving a gross margin of roughly <b>33%</b> (the same neighborhood as Spotify's reported Q3 2026 gross margin of 33.0%). Monthly churn is <b>3%</b>; blended CAC is <b>$30</b>.</p>
+<ul>
+  <li>Monthly gross profit = $11.99 x 33% ≈ $3.96</li>
+  <li>Lifetime = 1 / 0.03 ≈ 33 months → LTV ≈ $132</li>
+  <li>LTV / CAC ≈ 4.4x; payback ≈ 7.6 months</li>
+</ul>
+<p><b>So what:</b> at a 33% margin, a price increase raises gross profit per subscriber by roughly a third of the increase (royalties tend to scale with revenue). It is still worth it if churn does not rise by much. Break-even question: how much extra churn can a $1 increase absorb? (Answer: compute LTV at the new price and solve for the churn that gives the same LTV. Here, about 3.25% monthly churn, so roughly a quarter-point of additional churn.)</p>
+</div>
+
+<h3>Contribution margin: what goes above and below the line</h3>
+<table>
+<tr><th>Usually variable (inside contribution)</th><th>Usually fixed (below contribution)</th></tr>
+<tr><td>Courier / driver pay not covered by fees</td><td>Engineering and product teams</td></tr>
+<tr><td>Payment processing</td><td>Corporate G&amp;A (finance, legal, HR)</td></tr>
+<tr><td>Refunds, credits, and fraud losses</td><td>Brand marketing</td></tr>
+<tr><td>Customer support per contact</td><td>Office and facilities</td></tr>
+<tr><td>Cloud / hosting for usage-based products</td><td>Platform R&amp;D, data centers not tied to usage</td></tr>
+<tr><td>Royalties per stream (audio)</td><td>Studio and content teams (unless per-unit)</td></tr>
+</table>
+<div class="callout warn"><span class="lbl">Classic mistake</span>Counting marketing promos inside CAC <i>and</i> as a discount in contribution. Pick one home for each cost and say it out loud. Interviewers test whether you know the difference between "contribution positive" and "profitable".</div>
+
+<h3>Cohort view: payback with churn</h3>
+<p>Simple payback assumes no one leaves. A cohort view does not. Start with 1,000 customers acquired at $45 each ($45,000 total). Each month the surviving customers contribute $5.46 each, and 8% leave.</p>
+<table>
+<tr><th>Month</th><th>Customers alive</th><th>Contribution that month</th><th>Cumulative</th></tr>
+<tr><td>1</td><td>1,000</td><td>$5,460</td><td>$5,460</td></tr>
+<tr><td>3</td><td>846</td><td>$4,621</td><td>$15,105</td></tr>
+<tr><td>6</td><td>659</td><td>$3,599</td><td>$26,866</td></tr>
+<tr><td>12</td><td>400</td><td>$2,182</td><td>$43,157</td></tr>
+<tr><td>13</td><td>368</td><td>$2,007</td><td>$45,164</td></tr>
+</table>
+<p>The cohort pays back in <b>month 13</b>, not month 8.2. The calculator shows both numbers. In an interview, quoting cohort payback signals that you understand churn.</p>
+
+<h3>Unit economics across your five targets</h3>
+<table>
+<tr><th>Company</th><th>Natural unit</th><th>Key levers</th><th>What to ask in a case</th></tr>
+<tr><td>DoorDash</td><td>Order</td><td>AOV, take rate, Dasher cost per order (batching, distance), refunds, DashPass frequency lift</td><td>What is contribution per order by vertical (restaurant vs grocery)?</td></tr>
+<tr><td>Uber</td><td>Trip / order</td><td>Take rate, incentives, utilization (paid minutes / online minutes), insurance cost</td><td>How much of incentive spend is incremental?</td></tr>
+<tr><td>Spotify</td><td>Subscriber-month</td><td>ARPU, royalty rate, churn, plan mix (Family, Duo, Student)</td><td>How does a price change flow through royalties to gross profit?</td></tr>
+<tr><td>Datadog</td><td>Customer account</td><td>Land size, expansion rate (NRR), gross margin, S&amp;M efficiency</td><td>What does CAC payback look like when expansion is included?</td></tr>
+<tr><td>Google Cloud</td><td>Customer / workload</td><td>Committed spend, compute cost, partner margins, discounting</td><td>What capacity (compute) must exist for each dollar of new revenue?</td></tr>
+</table>
+
+<div class="quiz" data-a="1">
+  <div class="q">Self-check: Monthly retention rises from 90% to 95%. What happens to expected customer lifetime (simple model)?</div>
+  <button class="opt">It rises about 5%</button>
+  <button class="opt">It doubles, from 10 to 20 months</button>
+  <button class="opt">It rises from 10 to 15 months</button>
+  <button class="opt">It is unchanged; retention does not affect lifetime</button>
+  <div class="exp">Lifetime = 1 / churn. Churn goes from 10% to 5%, so lifetime goes from 10 to 20 months. This non-linearity is why retention is often the most powerful LTV lever.</div>
+</div>
+
+<div class="quiz" data-a="2">
+  <div class="q">Self-check: A marketplace has $40 AOV, 12% take rate, and $3.10 of variable cost per order. What is contribution per order?</div>
+  <button class="opt">$4.80</button>
+  <button class="opt">$36.90</button>
+  <button class="opt">$1.70</button>
+  <button class="opt">-$1.70</button>
+  <div class="exp">Revenue per order = $40 x 12% = $4.80. Subtract $3.10 variable cost: $1.70. Never subtract costs from GOV; the company only keeps the take-rate share.</div>
+</div>
+`});
+</script>
+
+<script id="glossary-script">
+var GLOSS = [
+["Freemium","Model where a free tier (often ad-supported) acquires users who are later converted to a paid tier; Spotify runs this."],
+["Ad-supported MAU","Monthly active users on a free, ad-funded tier; Spotify reports these separately from Premium subscribers."],
+["Price elasticity","Percent change in quantity demanded (or subscribers retained) per percent change in price."],
+["Plan mix","Share of subscribers on each plan (Individual, Duo, Family, Student); shifts in it move ARPU without any price change."],
+["Market mix","Share of users or subscribers by country; growth in lower-priced markets lowers blended ARPU."],
+["Breakeven churn","Maximum share of customers you can lose after a price increase before total gross profit falls."],
+["Royalty pass-through","Portion of each revenue dollar paid to rights holders; when royalties scale with revenue, only the margin share of a price increase becomes profit."],
+["Social charges","Swedish payroll taxes on employee equity awards that Spotify books in opex; they move with the share price."],
+["Grandfathering","Keeping existing customers on an old price for a period after a price increase, to reduce churn."],
+["Operating leverage","Profit growing faster than revenue because a large share of costs is fixed."],
+["Input metric","A metric a team can directly move with its own levers and read weekly, chosen because it predicts an output metric."],
+["Output metric","A result metric such as revenue, gross bookings, or NRR that reflects many inputs and is reported to leadership."],
+["Guardrail metric","A counter-metric that must not get worse while a team pushes its target metric, used to prevent gaming."],
+["KPI tree","A driver tree in which each node has a named owner, a target, and a review cadence."],
+["Volume effect","Part of a change in revenue explained by more or fewer units (orders, trips) at the old average price."],
+["Mix effect","Part of a change in an average explained by a shift in the share of higher- or lower-priced segments, with segment prices held constant."],
+["Rate effect","Part of a change in revenue explained by price changes within each segment, with the new mix held constant."],
+["Goodhart&#39;s law","When a measure becomes a target it stops being a good measure, because people optimize the number instead of the outcome."],
+["Simpson&#39;s paradox","A trend that appears in every segment reverses or disappears in the total because the mix of segments changed."],
+["Fulfillment rate","Share of requests that become completed trips or orders; a key supply-health metric in marketplaces."],
+["Constant currency","Growth restated at prior-period exchange rates to remove the effect of FX moves."],
+["Expansion revenue","Added revenue from existing customers through more usage, more seats, more products, or price increases."],
+["Contraction","Revenue lost from customers who stay but spend less, for example by cutting usage or downgrading."],
+["NRR bridge","Waterfall that walks NRR from one period to the next through changes in expansion, contraction, and churn."],
+["Revenue concentration","Share of revenue from the largest customers; high concentration makes metrics swing on a few accounts."],
+["RPO","Remaining performance obligations: contracted revenue not yet recognized; a leading indicator of future revenue."],
+["Minimum commitment","Contractual floor a usage-based customer pays even if actual usage falls below it."],
+["On-demand usage","Consumption billed above or outside a committed contract, usually at a higher unit rate."],
+["TTM","Trailing twelve months: a rolling one-year window that smooths and delays the effect of changes."],
+["Usage optimization","Customer actions to cut consumption costs, such as sampling logs or shortening data retention."],
+["Uber Direct","Uber white-label delivery service that fulfills orders placed in a merchant own app or site."],
+["Three-sided marketplace","Platform serving three distinct customer groups at once, such as consumers, merchants, and couriers at DoorDash."],
+["Flywheel","Self-reinforcing loop where growth on one side of a marketplace improves value for the others, driving more growth."],
+["DashPass","DoorDash membership: monthly or annual fee for reduced delivery and service fees on eligible orders."],
+["DoorDash Drive","White-label delivery service where merchants use Dashers to fulfill orders placed on their own channels."],
+["DashMart","DoorDash-operated warehouses holding first-party inventory for fast grocery and convenience delivery."],
+["Organic growth","Growth from the existing business, excluding volume added by acquisitions."],
+["Inorganic growth","Growth contributed by acquired businesses, such as Deliveroo in DoorDash results."],
+["Net synergies","Annual cost savings and revenue gains from a merger after subtracting the investments needed to achieve them."],
+["HSR review","Hart-Scott-Rodino antitrust waiting period and review by U.S. regulators before a large merger can close."],
+["Substitution rate","Share of grocery items replaced with a different item because the ordered item was out of stock."],
+["S&O","Strategy and Operations: internal team that structures business problems, builds recommendations, and drives execution and planning."],
+["BizOps","Business Operations: a common name for S&O teams at tech companies, often embedded with a product or business unit."],
+["MECE","Mutually exclusive, collectively exhaustive: a breakdown where nothing overlaps and nothing is missing."],
+["Issue tree","A tree that breaks one key question into sub-questions until each leaf maps to a specific analysis."],
+["Diagnostic tree","An issue tree whose branches are possible causes; answers why something changed."],
+["Solution tree","An issue tree whose branches are possible levers or options; answers how to achieve a goal."],
+["Hypothesis-driven","Working approach that states a falsifiable best guess first and runs the cheapest test that could disprove it."],
+["Pyramid principle","Communication structure that leads with the answer, then supporting arguments, then evidence."],
+["80/20 rule","Pareto principle: a small share of causes usually drives most of the effect; focus analysis there."],
+["Driver tree","A math decomposition of a metric into its input drivers, such as orders = users x frequency."],
+["North Star metric","The single metric that best captures the value a product delivers to customers and predicts long-run success."],
+["OKR","Objectives and Key Results: goal-setting system pairing a qualitative objective with measurable key results."],
+["WBR","Weekly Business Review: recurring meeting reviewing core metrics, what moved, and why."],
+["QBR","Quarterly Business Review: deeper quarterly review of performance against plan and priorities for next quarter."],
+["Unit economics","Revenue and costs attributable to one unit (order, trip, subscriber, account) to test whether each unit makes money."],
+["AOV","Average order value: average gross value per transaction."],
+["GOV","Gross order value: total value of orders on a marketplace, including food, fees, and tips depending on definition."],
+["Gross bookings","Uber term for total dollar value of trips and orders before the platform pays drivers, couriers, and merchants."],
+["Take rate","Share of gross value a marketplace keeps as revenue (revenue / GOV or revenue / gross bookings)."],
+["Net revenue margin","DoorDash term for revenue as a percentage of Marketplace GOV; effectively the take rate."],
+["Contribution margin","Revenue minus variable costs, as a percentage of revenue; profit each unit contributes to fixed costs."],
+["Contribution profit","Dollar value of revenue minus variable costs for a unit, segment, or period."],
+["Variable cost","A cost that rises with each additional unit sold, such as payment processing or courier pay."],
+["CAC","Customer acquisition cost: fully loaded sales and marketing spend to acquire one new customer."],
+["LTV","Lifetime value: total contribution expected from a customer over their lifetime, often discounted."],
+["LTV/CAC","Ratio of lifetime value to acquisition cost; about 3x or more is a common health benchmark."],
+["Payback period","Months of contribution needed to recover the acquisition cost of a customer."],
+["Cohort payback","Payback computed on a cohort that accounts for churn, so it is longer than simple payback."],
+["Churn","Share of customers (or revenue) lost in a period; equals 1 minus retention."],
+["Retention","Share of customers (or revenue) still active after a period."],
+["Cohort analysis","Tracking groups of customers who started in the same period to compare retention and value over time."],
+["ARPU","Average revenue per user over a period; Spotify reports Premium ARPU per month."],
+["MAU","Monthly active users."],
+["MAPCs","Monthly active platform consumers: Uber metric for unique users who completed a Mobility or Delivery trip in a month."],
+["ARR","Annual recurring revenue: annualized value of recurring contracts or run-rate usage."],
+["NRR","Net revenue retention: revenue this period from a starting cohort divided by its starting revenue, including expansion, contraction, and churn."],
+["GRR","Gross revenue retention: like NRR but excludes expansion; capped at 100%."],
+["Land and expand","GTM motion that starts with a small initial deal and grows revenue within the account over time."],
+["Usage-based pricing","Pricing that charges by consumption (hosts, GB ingested, API calls) rather than a fixed seat or plan fee."],
+["TAM","Total addressable market: total annual spend in a category if you had 100% share."],
+["SAM","Serviceable addressable market: the part of TAM your product, channels, and geographies can actually serve."],
+["SOM","Serviceable obtainable market: the share of SAM you can realistically win in a set period."],
+["Top-down sizing","Market sizing that starts from a total category figure and narrows with percentages."],
+["Bottom-up sizing","Market sizing that multiplies number of buyers by spend per buyer, built from unit-level assumptions."],
+["Falsifiable","A hypothesis specific enough that a defined piece of evidence could prove it wrong."],
+["Decision log","Record of decisions, owners, rationale, and success metrics, used to drive follow-through."],
+["Adjusted EBITDA","Earnings before interest, taxes, depreciation, and amortization, adjusted for items like stock-based compensation; common profitability metric for marketplaces."],
+["FCF","Free cash flow: operating cash flow minus capital expenditures."],
+["Marketplace balance","State where supply (driver or courier hours) and demand (requests) are matched so fulfillment, wait times and prices stay within target ranges."],
+["Supply hours","Total hours drivers or couriers are online and available in a window; drivers online times online hours per driver."],
+["Utilization (ride-hailing)","Share of online time a driver spends en route to or on a trip; often tracked as trips per supply hour."],
+["Surge pricing","Dynamic price multiplier applied when requests exceed available supply; rations demand and pulls in extra drivers."],
+["Inframarginal spend","Incentive dollars paid for behavior that would have happened anyway, such as a bonus paid to drivers already online."],
+["Cost per incremental hour","Incentive spend divided by the extra supply hours it truly causes; the core yardstick for comparing supply levers."],
+["Driver reactivation","Campaigns that bring lapsed drivers back onto the platform, usually the cheapest source of new supply hours."],
+["Dead miles","Distance driven without a passenger or order, such as repositioning or driving to a pickup; lowers trips per hour."],
+["Unfulfilled request","A ride or order request that is not completed because no driver accepted or the rider cancelled after a long wait."],
+["Earners","Uber term for drivers and couriers combined; about 10.8 million in Q3 2026."],
+["Holdout group","Randomly chosen eligible users who do not receive a treatment, used to measure its true incremental effect."],
+["Magic number","Sales efficiency ratio: quarter-over-quarter revenue increase times four, divided by prior-quarter sales and marketing spend."],
+["Rule of 40","Heuristic that revenue growth percent plus profit margin percent (usually FCF margin) should be at least 40 for a healthy SaaS company."],
+["CAC payback","Months of gross-margin-adjusted new ARR needed to recover sales and marketing spend; under 18 to 24 months is typical for healthy SaaS."],
+["Net new ARR","Ending ARR minus starting ARR in a period: new logos plus expansion minus contraction and churn."],
+["Burn multiple","Net cash burn divided by net new ARR; how many dollars a company burns to add one dollar of ARR (lower is better)."],
+["Logo retention","Share of customers (counted, not weighted by dollars) still active at the end of a period."],
+["cRPO","Current remaining performance obligations: contracted revenue expected to be recognized in the next 12 months."],
+["Stock-based compensation","Non-cash expense for equity paid to employees; the main gap between GAAP and non-GAAP margins at software companies."],
+["ARR bridge","Waterfall from starting to ending ARR showing new logos, expansion, contraction and churn."],
+];
+var glossHTML = '<input id="hbGloss" placeholder="🔍 Filter glossary… (try NRR, take rate, MECE)" oninput="filterHbGloss(this.value)" style="width:100%;padding:11px 14px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;color:var(--txt);font-size:14px;margin:8px 0 16px"><div id="hbGlossList">'
+ + GLOSS.slice().sort(function(a,b){return a[0].localeCompare(b[0]);}).map(function(g){return '<div class="gterm" data-t="'+(g[0]+' '+g[1]).toLowerCase().replace(/"/g,'')+'"><b>'+g[0]+'</b> — '+g[1]+'</div>';}).join('') + '</div>';
+function filterHbGloss(v){ v=(v||'').toLowerCase(); document.querySelectorAll('#hbGlossList .gterm').forEach(function(el){el.style.display=el.dataset.t.indexOf(v)>=0?'':'none';}); }
+
+chapter({part:"Reference", id:"glossary", num:"GL", title:"Master Glossary", mins:8, tag:"Reference", tool:true, html:
+ '<p>Every term in this handbook, searchable. '+GLOSS.length+' terms across frameworks, metrics, marketplaces, SaaS, and company-specific vocabulary. Type to filter.</p>'
+ + glossHTML
+ + '<div class="callout hy"><span class="lbl">Reminder</span>Companies define metrics differently (for example, what counts in GOV or gross bookings). In an interview, state the definition you are using before you calculate.</div>'
+});
+</script>
+
+<!-- Chapter content scripts are appended below this line (insert new chapter scripts immediately before boot-script) -->
+<script id="ch04-doordash">
+chapter({part:"Part VI · Company Deep-Dives", id:"doordash-deep-dive", num:"04", title:"DoorDash Deep-Dive: Three-Sided Marketplace Economics", mins:20, tag:"Company · DoorDash", html:`
+<p>DoorDash is the cleanest case study in this handbook for <b>marketplace unit economics</b>. Every order touches three customers (a consumer, a merchant, and a Dasher), and the company only keeps a thin slice of the money that flows through. An S&amp;O operator at DoorDash spends most of the day on one question: <i>how do we grow orders while keeping each order profitable and each side of the market happy?</i> This chapter covers the business model, how to read the latest numbers, the strategic bets (including the pending Instacart deal), and what S&amp;O interviews there tend to probe.</p>
+
+<h3>The business model in one picture</h3>
+<div class="diagwrap">
+<svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="13">
+  <defs><marker id="dd4" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#93a1b3"/></marker></defs>
+  <g fill="#1b232e" stroke="#f5a524" stroke-width="1.5">
+    <rect x="300" y="100" width="160" height="60" rx="10"/>
+    <rect x="20" y="20" width="180" height="60" rx="10"/>
+    <rect x="560" y="20" width="180" height="60" rx="10"/>
+    <rect x="290" y="195" width="180" height="55" rx="10"/>
+  </g>
+  <g fill="#e8eef5" text-anchor="middle">
+    <text x="380" y="126">DoorDash platform</text><text x="380" y="144" font-size="11" fill="#93a1b3">keeps ~13.6% of GOV</text>
+    <text x="110" y="46">Consumers</text><text x="110" y="64" font-size="11" fill="#93a1b3">pay basket + fees (+ DashPass)</text>
+    <text x="650" y="46">Merchants</text><text x="650" y="64" font-size="11" fill="#93a1b3">pay commission, ads</text>
+    <text x="380" y="218">Dashers</text><text x="380" y="236" font-size="11" fill="#93a1b3">earn pay per delivery + tips</text>
+  </g>
+  <g stroke="#93a1b3" stroke-width="1.3" fill="none" marker-end="url(#dd4)">
+    <path d="M200,60 L300,115"/><path d="M560,60 L460,115"/><path d="M380,160 L380,195"/>
+  </g>
+  <g fill="#93a1b3" font-size="11">
+    <text x="215" y="80">$ order</text><text x="490" y="80">selection</text><text x="390" y="183">delivery pay</text>
+  </g>
+</svg>
+</div>
+<p>The flywheel: more consumers bring more orders, which attract more merchants (selection) and give Dashers more earning opportunity, which cuts delivery times, which brings more consumers. S&amp;O work usually targets a <b>weak link</b> in that loop in a specific market.</p>
+
+<h3>The metrics DoorDash reports, and how to read them</h3>
+<table>
+<tr><th>Metric</th><th>Definition</th><th>Why an operator cares</th></tr>
+<tr><td><b>Total Orders</b></td><td>Orders completed through Marketplace and Drive (white-label delivery)</td><td>Top-line volume; split into active consumers x frequency</td></tr>
+<tr><td><b>Marketplace GOV</b></td><td>Total dollar value of Marketplace orders, including taxes, tips, and consumer fees</td><td>Captures both volume and basket size; grocery raises AOV</td></tr>
+<tr><td><b>Net revenue margin</b></td><td>Revenue / Marketplace GOV</td><td>DoorDash's take rate; rises with ads, falls with consumer affordability investment</td></tr>
+<tr><td><b>Contribution profit</b></td><td>Revenue minus variable costs such as Dasher pay beyond fees, payments, support, refunds</td><td>The truest per-order profit signal</td></tr>
+<tr><td><b>Adjusted EBITDA as % of GOV</b></td><td>Adj. EBITDA / Marketplace GOV</td><td>The profitability ratio management guides on; a few basis points matter</td></tr>
+</table>
+
+<h3>Q3 2026 by the numbers</h3>
+<table>
+<tr><th>Metric (Q3 2026)</th><th>Reported</th><th>Growth Y/Y</th></tr>
+<tr><td>Total Orders</td><td>993M</td><td>+28% (+17% ex-Deliveroo)</td></tr>
+<tr><td>Marketplace GOV</td><td>$33.9B</td><td>+36% (+23% ex-Deliveroo)</td></tr>
+<tr><td>Revenue</td><td>$4.62B (Deliveroo contributed $365M)</td><td>+34% (+23% ex-Deliveroo)</td></tr>
+<tr><td>Net revenue margin</td><td>13.6%</td><td>n/a</td></tr>
+<tr><td>Contribution profit</td><td>$1.78B (38.6% of revenue; 5.2% of GOV)</td><td>n/a</td></tr>
+<tr><td>Adjusted EBITDA</td><td>$1.06B (3.1% of GOV)</td><td>+41%</td></tr>
+<tr><td>GAAP net income</td><td>$466M</td><td>+91%</td></tr>
+<tr><td>Free cash flow</td><td>$787M</td><td>+9%</td></tr>
+<tr><td>Q4 2026 outlook</td><td>GOV $35.4B to $36.4B; adj. EBITDA $900M to $1.1B</td><td></td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Source: <a href="https://www.sec.gov/Archives/edgar/data/0001792789/000179278926000062/proddashex991-pressrelease.htm" target="_blank">DoorDash Q3 2026 earnings release (SEC 8-K exhibit 99.1)</a>. Deliveroo was acquired in 2025, so headline growth includes acquired volume; DoorDash said it will stop disclosing ex-Deliveroo figures starting Q4 2026.</p>
+
+<div class="callout example"><span class="lbl">Worked example · per-order economics from the Q3 2026 release</span>
+<p>Divide each reported line by 993M orders. (Order count includes Drive orders that carry no Marketplace GOV, so these are blended approximations, but the shape is right.)</p>
+<table>
+<tr><th>Line</th><th>Math</th><th>Per order</th></tr>
+<tr><td>GOV per order</td><td>$33,941M / 993M</td><td>~$34.18</td></tr>
+<tr><td>Revenue per order</td><td>$4,616M / 993M</td><td>~$4.65</td></tr>
+<tr><td>Contribution profit per order</td><td>$1,780M / 993M</td><td>~$1.79</td></tr>
+<tr><td>Adj. EBITDA per order</td><td>$1,060M / 993M</td><td>~$1.07</td></tr>
+</table>
+<p><b>So what:</b> on a roughly $34 order, DoorDash keeps about $4.65, and about $1.07 becomes adjusted EBITDA. A <b>10-cent</b> change in per-order cost (one extra minute of Dasher wait time, one more refund in 50) is roughly a 9% swing in per-order EBITDA. That is why DoorDash S&amp;O obsesses over operational efficiency in cents, not dollars.</p>
+<p><b>Organic vs acquired:</b> prior-year orders were about 993 / 1.28 = 776M. Ex-Deliveroo growth of 17% implies about 776 x 1.17 = 908M organic orders, so Deliveroo added roughly <b>85M orders</b> in the quarter (derived estimate, not a reported figure). Always split the two before you praise or worry about growth.</p>
+</div>
+
+<h3>Strategic bets an S&amp;O operator would work on</h3>
+<table>
+<tr><th>Bet</th><th>What is happening</th><th>Typical S&amp;O questions</th></tr>
+<tr><td><b>Grocery and retail</b></td><td>U.S. grocery and retail GOV grew more than twice as fast as restaurants in Q3; DoorDash now runs inventory in its own warehouses (DashMart) with 99%+ accuracy and faster deliveries.</td><td>Where to open the next warehouse? Is first-party inventory margin-accretive after shrink and labor? How to price bigger baskets?</td></tr>
+<tr><td><b>Instacart acquisition</b></td><td>Agreed Oct 2026 at $65 per share (~$17B equity value), at least 75% cash, close expected late 2027 or 1H 2028 pending HSR and other approvals. Targets $500M+ annual net synergies over several years; year one reinvests more than 100% of synergies. Instacart brand and app to remain; one combined membership fee is an option.</td><td>Synergy model (shared Dasher/shopper supply, ads, merchant tech); overlap analysis by metro; antitrust narrative; membership bundling economics.</td></tr>
+<tr><td><b>DashPass and affordability</b></td><td>Strong U.S. DashPass growth in Q3; DashPass helped lower U.S. restaurant transaction fees per order by 9% over two years.</td><td>Member vs non-member frequency and retention; fee-reduction payback; partner bundles.</td></tr>
+<tr><td><b>International (incl. Deliveroo)</b></td><td>Order growth accelerated at every international brand; profit contribution beat internal expectations.</td><td>Market prioritization, integration roadmap, which country reaches contribution breakeven next.</td></tr>
+<tr><td><b>New surfaces and AI</b></td><td>Restaurant reservations grew over 340% Q/Q; launched Ask DoorDash, Text DoorDash, and an MCP interface for external AI agents. Autonomy and warehousing named as areas of substantial capital investment.</td><td>Sizing reservations as a merchant product; agentic-ordering channel economics; capex business cases.</td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Sources: <a href="https://www.sec.gov/Archives/edgar/data/0001792789/000179278926000062/proddashex991-pressrelease.htm" target="_blank">DoorDash Q3 2026 release</a> · <a href="https://www.fox5ny.com/news/doordash-buying-instacart-17b-what-means-customers" target="_blank">FOX 5 on what the Instacart deal means for customers</a> · <a href="https://www.sec.gov/Archives/edgar/data/0001792789/000179278926000070/dash-20260930.htm" target="_blank">DoorDash Q3 2026 10-Q</a>.</p>
+
+<h3>What S&amp;O teams at DoorDash typically do</h3>
+<ul>
+  <li><b>Local / market operations strategy:</b> own a region's P&amp;L drivers: selection gaps, Dasher supply in peak hours, delivery quality (lateness, missing items), and promo efficiency.</li>
+  <li><b>New verticals strategy:</b> launch plans, merchant acquisition targets, and unit economics for grocery, convenience, retail, and alcohol.</li>
+  <li><b>Business planning:</b> annual and quarterly targets per market, translating company GOV and EBITDA goals into per-region driver trees.</li>
+  <li><b>Pricing and fees:</b> consumer fees, DashPass pricing, merchant commission tiers, and the trade-off between affordability and take rate.</li>
+</ul>
+
+<h3>What interviews tend to emphasize</h3>
+<div class="callout tip"><span class="lbl">Interview pattern</span>Expect a metric-diagnosis case ("orders flat in a market"), a launch or prioritization case ("which vertical next?"), and heavy probing on <b>SQL / spreadsheet fluency</b> and <b>bias to action</b>. DoorDash culture prizes operators who go to the ground truth (do a dash, call merchants) and who quantify trade-offs across all three sides. Always say which side of the marketplace a lever helps and which it hurts.</div>
+
+<h3>Practice: diagnose flat grocery orders</h3>
+<p><b>Prompt (illustrative):</b> In one mid-size U.S. metro, DoorDash grocery orders have been flat for six weeks while restaurant orders grew 15% Y/Y. Structure your diagnosis, then open the model answer.</p>
+<details><summary>Show model answer</summary>
+<p><b>Clarify:</b> flat in absolute orders or flat vs a growing plan? Any merchant changes (a big grocer leaving or adding a competitor exclusive)? Any measurement change?</p>
+<p><b>Structure</b> (orders = active grocery consumers x frequency), by side of the marketplace:</p>
+<ul>
+  <li><b>Demand:</b> new grocery trial down (fewer cross-sell prompts to restaurant users?), repeat rate down (bad first experience), DashPass grocery benefits changed.</li>
+  <li><b>Merchant / selection:</b> store coverage, in-stock rates, item substitution quality, price markups versus in-store.</li>
+  <li><b>Supply / fulfillment:</b> shopper availability for longer grocery jobs, delivery windows, missing or wrong items driving refunds and churn.</li>
+  <li><b>Competition:</b> a rival promo or a grocer pushing its own delivery.</li>
+</ul>
+<p><b>Data to ask for:</b> cohort retention of first-time grocery buyers, item-level substitution and refund rates by store, share of restaurant users who tried grocery, delivery-time distribution for grocery vs restaurant.</p>
+<p><b>Plausible answer:</b> trial is steady but 30-day repeat fell from 40% to 30% after a large grocer had in-stock problems; fix with inventory data integration and substitution defaults, then re-target lapsed first-time buyers.</p>
+</details>
+
+<div class="quiz" data-a="1">
+  <div class="q">Self-check: In Q3 2026 DoorDash reported revenue of $4.62B on Marketplace GOV of $33.9B. Which ratio does this give you?</div>
+  <button class="opt">Contribution margin of 13.6%</button>
+  <button class="opt">Net revenue margin (take rate) of about 13.6%</button>
+  <button class="opt">Adjusted EBITDA margin of 13.6%</button>
+  <button class="opt">Organic growth rate of 13.6%</button>
+  <div class="exp">Revenue / GOV is DoorDash's net revenue margin, effectively its take rate. Contribution margin is contribution profit / revenue (38.6%), and adjusted EBITDA was 3.1% of GOV.</div>
+</div>
+
+<div class="quiz" data-a="2">
+  <div class="q">Self-check: Total orders grew 28% but only 17% ex-Deliveroo. What is the best first statement in an interview?</div>
+  <button class="opt">DoorDash grew 28%, an acceleration</button>
+  <button class="opt">Growth slowed because Deliveroo is shrinking</button>
+  <button class="opt">Organic order growth was 17%; the other 11 points came from acquired Deliveroo volume</button>
+  <button class="opt">The numbers cannot be compared</button>
+  <div class="exp">Separate organic from inorganic growth before judging momentum. Deliveroo was not owned in the prior-year quarter, so its volume inflates reported growth.</div>
+</div>
+`});
+</script>
+
+<script id="ch05-case-datadog-nrr">
+chapter({part:"Part VII · Case Practice", id:"case-datadog-nrr", num:"05", title:"Case: Datadog NRR Dipped Two Points. Why, and What Now?", mins:22, tag:"Case · Datadog · SaaS", html:`
+<p>This is the first full practice case in the handbook. It is a classic <b>metric-diagnosis</b> prompt for a usage-based SaaS company, and it is close to a real situation: in 2026 Datadog disclosed that its largest customer, part of its AI-native cohort, reduced usage starting in Q3. Work it the way you would in a 30 to 45 minute interview: clarify, structure, ask for data, do the math, recommend. Attempt each step before opening the model answer.</p>
+
+<div class="callout"><span class="lbl">The prompt (illustrative)</span>"You are on the Datadog Strategy &amp; Operations team. Trailing-12-month net revenue retention (NRR) for the quarter just closed came in about two points lower than last quarter. The CFO wants to know why, whether it will keep falling, and what we should do. You have 30 minutes."</div>
+
+<h3>Step 0 · What the real company looks like</h3>
+<p>Ground yourself in the actual business before you structure. Figures below are as reported for Q3 2026 (quarter ended Sept 30, 2026); retention figures are given by Datadog as bands, not exact numbers.</p>
+<table>
+<tr><th>Metric (Q3 2026)</th><th>Reported value</th><th>What it tells you</th></tr>
+<tr><td>Revenue</td><td>$1.197B, up about 35% Y/Y</td><td>Growth is strong overall, so an NRR dip is about mix and concentration, not collapse</td></tr>
+<tr><td>Trailing-12-month NRR</td><td>"low 120%s" (about 120% through 2025)</td><td>Existing customers spend roughly a fifth more each year</td></tr>
+<tr><td>Gross revenue retention</td><td>"mid to high 90s%"</td><td>Very little revenue is lost to logo churn; contraction matters more than churn</td></tr>
+<tr><td>Customers / $100K+ ARR customers</td><td>about 33,500 / about 4,860 (up 20%)</td><td>$100K+ customers drive about 91% of ARR: revenue is concentrated</td></tr>
+<tr><td>Remaining performance obligations</td><td>$3.85B, up 38%</td><td>Committed future revenue still growing: a leading indicator against panic</td></tr>
+<tr><td>Q4 2026 revenue guide</td><td>$1.19B to $1.20B (25% to 26% Y/Y)</td><td>Guide assumes the largest customer spends only its contractual minimum</td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Sources: Datadog Q3 2026 8-K (Ex. 99.1) and Q2/Q3 2026 10-Q filings; call commentary as summarized by sec-api.io. Links in the Changelog entry for 2026-11-15.</p>
+
+<h3>Step 1 · Clarify before you structure</h3>
+<p>Spend the first two minutes on questions that could change the whole answer. Strong candidates ask:</p>
+<ul>
+  <li><b>Definition:</b> Is NRR computed on ARR or recognized revenue? Datadog defines it as trailing-12-month revenue from a cohort of customers versus the same cohort a year earlier, so it is a <i>lagging, smoothed</i> number.</li>
+  <li><b>Scale of the move:</b> Two points on a base near 120%, in one quarter. Is this outside normal quarter-to-quarter noise?</li>
+  <li><b>Breadth:</b> Is it broad-based or concentrated in a few accounts, a segment, a region, or a product?</li>
+  <li><b>Known events:</b> Any pricing change, packaging change, big renewal, or customer migration this quarter?</li>
+  <li><b>Measurement:</b> Did the cohort definition, FX treatment, or customer roll-ups (parent and subsidiary accounts) change?</li>
+</ul>
+
+<h3>Step 2 · Structure: the NRR bridge</h3>
+<p>NRR is an identity, so start with a math split (MECE by construction), then go qualitative inside each branch.</p>
+<pre><code>NRR = (Starting cohort revenue + Expansion - Contraction - Churn) / Starting cohort revenue
+
+Change in NRR = change in expansion rate - change in contraction rate - change in churn rate</code></pre>
+<table>
+<tr><th>Branch</th><th>What drives it at a usage-based company</th><th>Data to request</th></tr>
+<tr><td><b>Expansion</b></td><td>More hosts, logs, traces and spans ingested; cross-sell of new products (security, LLM observability, cloud cost); price changes</td><td>Expansion $ by product and by segment; products per customer; new product attach rates</td></tr>
+<tr><td><b>Contraction</b></td><td>Customers optimizing usage (sampling logs, cutting retention periods, dropping hosts), renegotiated rates, workload migration</td><td>Contraction $ by customer, top-20 movers, committed vs on-demand spend</td></tr>
+<tr><td><b>Churn</b></td><td>Full loss of logos: tool consolidation, switch to open-source or a cloud-native tool, business failure</td><td>Logo and $ churn by segment, churn reasons from account teams</td></tr>
+<tr><td><b>Measurement</b></td><td>Cohort or account-hierarchy changes, FX, one-time credits</td><td>Methodology changes this quarter vs last</td></tr>
+</table>
+
+<h3>Step 3 · The data comes back (illustrative)</h3>
+<p>The interviewer hands you this table for the trailing-12-month cohort, indexed so that starting revenue is $1,000M. Before reading on, compute which branch explains the drop.</p>
+<table>
+<tr><th>Component ($M, trailing 12 months)</th><th>Last quarter</th><th>This quarter</th><th>Change (points of NRR)</th></tr>
+<tr><td>Starting cohort revenue</td><td>1,000</td><td>1,000</td><td></td></tr>
+<tr><td>+ Expansion</td><td>+290</td><td>+302</td><td>+1.2</td></tr>
+<tr><td>- Contraction</td><td>-40</td><td>-70</td><td>-3.0</td></tr>
+<tr><td>- Churn</td><td>-20</td><td>-22</td><td>-0.2</td></tr>
+<tr><td><b>NRR</b></td><td><b>123.0%</b></td><td><b>121.0%</b></td><td><b>-2.0</b></td></tr>
+</table>
+
+<div class="diagwrap">
+<svg viewBox="0 0 680 250" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12">
+  <line x1="20" y1="210" x2="660" y2="210" stroke="#93a1b3" stroke-width="1"/>
+  <rect x="40" y="74" width="80" height="136" fill="#1b232e" stroke="#f5a524" stroke-width="1.5"/>
+  <rect x="170" y="74" width="80" height="7" fill="#f05252"/>
+  <rect x="300" y="81" width="80" height="102" fill="#f05252"/>
+  <rect x="430" y="142" width="80" height="41" fill="#3ecf8e"/>
+  <rect x="560" y="142" width="80" height="68" fill="#1b232e" stroke="#f5a524" stroke-width="1.5"/>
+  <g stroke="#93a1b3" stroke-dasharray="3,3"><line x1="120" y1="74" x2="170" y2="74"/><line x1="250" y1="81" x2="300" y2="81"/><line x1="380" y1="183" x2="430" y2="183"/><line x1="510" y1="142" x2="560" y2="142"/></g>
+  <g fill="#e8eef5" text-anchor="middle">
+    <text x="80" y="66">123.0%</text><text x="210" y="66">-0.2</text><text x="340" y="198">-3.0</text><text x="470" y="134">+1.2</text><text x="600" y="134">121.0%</text>
+  </g>
+  <g fill="#93a1b3" text-anchor="middle" font-size="11">
+    <text x="80" y="230">Last quarter</text><text x="210" y="230">Churn</text><text x="340" y="230">Contraction</text><text x="470" y="230">Expansion</text><text x="600" y="230">This quarter</text>
+  </g>
+  <text x="660" y="245" fill="#93a1b3" font-size="10" text-anchor="end">Axis starts at 119% (illustrative)</text>
+</svg>
+</div>
+
+<details><summary>Show model reading of the bridge</summary>
+<p><b>Contraction explains more than the whole drop:</b> it took away 3.0 points; expansion actually improved by 1.2 points; churn was flat. So this is not a broad health problem (churn and expansion are fine), it is a <b>contraction</b> problem.</p>
+<p><b>Next question:</b> is contraction broad or concentrated? Ask for the top contraction accounts. Suppose one AI-native customer accounts for $25M of the $30M increase in contraction. That single account is worth <b>2.5 points</b> of NRR. Excluding it, NRR would be about 123.5%, roughly flat to slightly up.</p>
+<p><b>Why it may keep falling:</b> NRR is trailing 12 months, so a usage cut that started in Q3 rolls through the metric for four quarters. Even with no further cuts, the reported number can drift lower for the next few prints, then recover once the lower base is in the starting cohort.</p>
+</details>
+
+<h3>Step 4 · Size the risk and the upside</h3>
+<div class="callout example"><span class="lbl">Worked example · concentration math</span>
+<p>Illustrative: the customer was spending at a $100M annual run-rate and is moving to a $60M contractual minimum.</p>
+<ul>
+  <li><b>Revenue impact:</b> $40M annualized, about $10M per quarter. On a company doing about $1.2B per quarter, that is under 1% of quarterly revenue, and about 1 point of Y/Y growth (on a prior-year quarter near $0.9B) until the cut laps, because the comparison base still includes the higher spend.</li>
+  <li><b>NRR impact:</b> $40M of contraction on a cohort base that, for illustration, is $4,000M of trailing revenue = <b>1.0 point</b> once fully rolled in. Different base sizes give different answers, so always state the base you used. (The Step 3 bridge was indexed to $1,000M for easy math; at real scale the base is several billion dollars, so the same dollars move NRR less.)</li>
+  <li><b>Upside:</b> the customer renewed with a <i>higher</i> commitment. Commitment above current usage is future expansion that has been pre-sold. That is why the real company could report growing RPO (+38%) in the same quarter as a usage cut.</li>
+</ul>
+</div>
+
+<h3>Step 5 · Recommendation</h3>
+<details><summary>Show model recommendation</summary>
+<p><b>Answer first (pyramid style):</b> "The two-point dip is almost entirely one large AI-native customer optimizing usage. Ex-that customer, retention is stable and expansion is improving. Expect the reported number to stay soft for about three more quarters as the cut laps through the trailing window. We should not change company strategy; we should change how we manage concentration risk."</p>
+<ol>
+  <li><b>Report it cleanly:</b> show NRR with and without the top account, and add a contraction bridge to the WBR so leaders see drivers, not just the headline.</li>
+  <li><b>Guide conservatively:</b> plan large-customer revenue at contractual minimums, which is what the real Q4 2026 guide did.</li>
+  <li><b>Reduce optimization risk:</b> proactive cost-optimization reviews for top accounts (help them sample logs smartly before they decide to cut a product), and multi-year commits with ramped minimums.</li>
+  <li><b>Diversify expansion:</b> push attach of newer products across the broad $100K+ base so growth depends less on a handful of hyperscale AI customers.</li>
+  <li><b>Monitor leading indicators:</b> weekly usage by top-50 account, committed vs on-demand mix, and RPO growth.</li>
+</ol>
+</details>
+
+<h3>Common mistakes</h3>
+<table>
+<tr><th>Mistake</th><th>Better move</th></tr>
+<tr><td>Jumping to "competition is stealing customers"</td><td>Run the bridge first; GRR in the mid to high 90s already argues against a churn story</td></tr>
+<tr><td>Treating NRR as a point-in-time metric</td><td>Explain the trailing-12-month lag and when the dip will lap</td></tr>
+<tr><td>Ignoring concentration</td><td>Always ask for top movers; one account can be worth several points</td></tr>
+<tr><td>Recommending price cuts to win back usage</td><td>Usage cuts are about the customer's cost, not your list price; help them optimize and lock in commits</td></tr>
+<tr><td>No numbers in the answer</td><td>Quantify the impact in points of NRR and dollars of revenue, with the base you used</td></tr>
+</table>
+
+<div class="callout tip"><span class="lbl">Interview pattern</span>Datadog interviews for strategy and finance-adjacent roles lean on SaaS metric fluency: NRR vs GRR, usage vs subscription revenue, commitments vs on-demand, and land-and-expand. Practice saying the NRR formula out loud and building the bridge in under two minutes.</div>
+
+<div class="quiz" data-a="2">
+  <div class="q">Self-check: Logo churn is flat, GRR fell about three points, and expansion dollars rose. Where should you dig first?</div>
+  <button class="opt">Competitive losses of whole customers</button>
+  <button class="opt">A list-price cut across all products</button>
+  <button class="opt">Contraction among retained customers, starting with the largest movers</button>
+  <button class="opt">New-logo bookings</button>
+  <div class="exp">GRR counts churn and contraction but excludes expansion. With churn flat, a GRR drop points to retained customers spending less. New logos are not in the NRR cohort at all. Pull the top contraction accounts next.</div>
+</div>
+
+<div class="quiz" data-a="1">
+  <div class="q">Self-check: A customer cut usage at the start of Q3. NRR is measured on a trailing-12-month basis. When does the impact stop pulling the reported number lower?</div>
+  <button class="opt">Immediately in Q3</button>
+  <button class="opt">After about four quarters, once the lower spend fully replaces the higher spend in both the cohort base and the trailing window</button>
+  <button class="opt">Never; NRR permanently drops</button>
+  <button class="opt">Only when the customer churns</button>
+  <div class="exp">A trailing metric phases in a change gradually and laps it after roughly a year. That is why operators explain "the dip will persist for a few quarters, then lap."</div>
+</div>
+`});
+</script>
+
+<script id="ch06-driver-trees">
+chapter({part:"Part II · Analytics & Metrics", id:"driver-trees-north-star", num:"06", title:"Driver Trees, KPI Trees and North Star Metrics", mins:18, tag:"Framework", html:`
+<p>Every S&amp;O role eventually asks the same question in different words: "<b>the number moved. Why, and what do we do?</b>" Driver trees and KPI trees are how operators answer it fast and without hand-waving. A North Star metric is the top of that tree: the one number the whole business agrees to grow. This chapter shows how to build all three, how to decompose a metric move into volume, mix and rate, and how to avoid the classic traps (vanity metrics, Goodhart&#39;s law, double counting).</p>
+
+<h3>Three related tools</h3>
+<table>
+<tr><th>Tool</th><th>What it is</th><th>Built from</th><th>Used for</th></tr>
+<tr><td><b>Driver tree</b></td><td>A math decomposition of one output metric into the inputs that produce it</td><td>Identities: multiply (volume x price) or add (segment A + segment B)</td><td>Diagnosis ("why did bookings drop?"), forecasting, sensitivity analysis</td></tr>
+<tr><td><b>KPI tree</b></td><td>A driver tree where each node has an owner, a target and a review cadence</td><td>Driver tree + org chart + OKRs</td><td>Operating cadence (WBR / QBR), goal setting, accountability</td></tr>
+<tr><td><b>North Star metric</b></td><td>The single top-of-tree metric that best captures value delivered to customers and predicts long-run revenue</td><td>Strategy + customer value proposition</td><td>Alignment across teams, prioritization, trade-off decisions</td></tr>
+</table>
+
+<div class="callout tip"><span class="lbl">MENTAL MODEL</span>A driver tree is a <b>system block diagram for a business</b>. You already do this as a systems engineer: a vehicle-level requirement (range) decomposes into subsystem budgets (battery capacity, drag, auxiliary load). A revenue line decomposes the same way, and the leaves are the knobs teams can turn.</div>
+
+<h3>How to build a driver tree (five rules)</h3>
+<ol>
+  <li><b>Start from an identity, not a brainstorm.</b> Revenue = orders x AOV x take rate is always true. "Revenue is driven by marketing and product quality" is not a tree; it is a list of opinions.</li>
+  <li><b>Choose multiplicative or additive splits deliberately.</b> Multiply for rate x volume (users x frequency x basket). Add for segments (US + International, new + existing). Mixing them at the same level breaks MECE.</li>
+  <li><b>Go down until a leaf is controllable.</b> Stop when one team can move the node with one lever (e.g. "conversion from menu view to checkout"). If a leaf has no owner, it is not done.</li>
+  <li><b>Keep it MECE at every level.</b> Every child set must sum (or multiply) back exactly to its parent. Test it with real numbers: if the leaves do not reconcile to the top line within rounding, the tree is wrong.</li>
+  <li><b>Attach data sources.</b> Each node should map to a table and a query. A tree you cannot populate in SQL is a slide, not a tool.</li>
+</ol>
+
+<h3>Example: a ride-hailing gross bookings tree</h3>
+<div class="diagwrap">
+<svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12">
+  <g stroke="#93a1b3" stroke-width="1.2" fill="none">
+    <path d="M380,52 L190,92"/><path d="M380,52 L570,92"/>
+    <path d="M190,132 L90,172"/><path d="M190,132 L290,172"/>
+    <path d="M570,132 L470,172"/><path d="M570,132 L670,172"/>
+    <path d="M90,212 L45,248"/><path d="M90,212 L135,248"/>
+    <path d="M290,212 L245,248"/><path d="M290,212 L335,248"/>
+  </g>
+  <g fill="#1b232e" stroke="#f5a524" stroke-width="1.5">
+    <rect x="290" y="14" width="180" height="38" rx="8"/>
+  </g>
+  <g fill="#1b232e" stroke="#4aa3ff" stroke-width="1.3">
+    <rect x="110" y="92" width="160" height="40" rx="8"/><rect x="490" y="92" width="160" height="40" rx="8"/>
+    <rect x="20" y="172" width="140" height="40" rx="8"/><rect x="220" y="172" width="140" height="40" rx="8"/>
+    <rect x="400" y="172" width="140" height="40" rx="8"/><rect x="600" y="172" width="140" height="40" rx="8"/>
+  </g>
+  <g fill="#1b232e" stroke="#3ecf8e" stroke-width="1.2">
+    <rect x="5" y="248" width="80" height="40" rx="7"/><rect x="95" y="248" width="80" height="40" rx="7"/>
+    <rect x="205" y="248" width="80" height="40" rx="7"/><rect x="295" y="248" width="80" height="40" rx="7"/>
+  </g>
+  <g fill="#e8eef5" text-anchor="middle">
+    <text x="380" y="38" font-weight="bold">Gross bookings</text>
+    <text x="190" y="110">Trips</text><text x="190" y="125" font-size="10" fill="#93a1b3">(x)</text>
+    <text x="570" y="110">Avg fare per trip</text><text x="570" y="125" font-size="10" fill="#93a1b3">(x)</text>
+    <text x="90" y="190">Monthly active riders</text><text x="90" y="204" font-size="10" fill="#93a1b3">(x)</text>
+    <text x="290" y="190">Trips per rider</text><text x="290" y="204" font-size="10" fill="#93a1b3">frequency</text>
+    <text x="470" y="190">Product mix</text><text x="470" y="204" font-size="10" fill="#93a1b3">X / Comfort / Premium</text>
+    <text x="670" y="190">Fare per product</text><text x="670" y="204" font-size="10" fill="#93a1b3">distance, time, surge</text>
+    <text x="45" y="266" font-size="11">New riders</text><text x="45" y="280" font-size="10" fill="#93a1b3">(+)</text>
+    <text x="135" y="266" font-size="11">Retained</text><text x="135" y="280" font-size="10" fill="#93a1b3">(+)</text>
+    <text x="245" y="266" font-size="11">Requests</text><text x="245" y="280" font-size="10" fill="#93a1b3">(x)</text>
+    <text x="335" y="266" font-size="11">Fulfillment %</text><text x="335" y="280" font-size="10" fill="#93a1b3">supply-driven</text>
+  </g>
+</svg>
+</div>
+<p>Notice where <b>supply</b> shows up: in fulfillment rate (share of requests that become completed trips) and in surge pricing (fare per product). A driver shortage can show up as lower trips <i>and</i> higher average fare at the same time, which is why you decompose before you diagnose.</p>
+
+<h3>Input vs output metrics</h3>
+<p>Output metrics (revenue, gross bookings, NRR) are what the board sees. Input metrics are what teams can directly move this week. A good KPI tree gives every team an input metric that is <b>controllable, measurable weekly, and proven to move the output</b>.</p>
+<table>
+<tr><th>Company (target)</th><th>Output metric</th><th>Example input metrics a team might own</th><th>Guardrail metric</th></tr>
+<tr><td>Datadog</td><td>ARR, NRR</td><td>Customers adopting a 2nd / 4th / 8th product; trial-to-paid conversion; time to first dashboard</td><td>Gross retention; customer bill-shock tickets</td></tr>
+<tr><td>Spotify</td><td>Premium subscribers, ARPU, gross margin</td><td>Free-to-Premium trial starts; weekly listening days per user; plan mix (Family, Duo, Student)</td><td>Monthly churn; ad load complaints on Free tier</td></tr>
+<tr><td>Google Cloud</td><td>Cloud revenue, backlog</td><td>Qualified pipeline by vertical; proof-of-concept conversion; consumption ramp after signing</td><td>Cloud operating margin; deal discount depth</td></tr>
+<tr><td>DoorDash</td><td>GOV, contribution profit</td><td>Merchant selection in a zone; delivery time (ETA accuracy); DashPass trial conversion</td><td>Defect rate (missing items, late orders); Dasher pay per active hour</td></tr>
+<tr><td>Uber</td><td>Gross bookings, adj. EBITDA</td><td>Driver online hours at peak; ETA; Uber One cross-platform usage</td><td>Cancellation rate; safety incidents; take rate</td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">The input metrics above are illustrative examples of the kind of metric a team might own, not disclosed internal KPIs.</p>
+
+<div class="callout warn"><span class="lbl">TRAP · GOODHART&#39;S LAW</span>"When a measure becomes a target, it ceases to be a good measure." If a delivery team is targeted on ETA alone, it can hit the target by quietly shrinking the delivery radius, which cuts selection and orders. Every input metric needs a <b>guardrail</b> (a counter-metric that must not get worse) and a sanity check that the input still predicts the output.</div>
+
+<h3>Choosing a North Star metric</h3>
+<p>A North Star is not just "the biggest number." A strong one passes five tests:</p>
+<table>
+<tr><th>Test</th><th>Question to ask</th><th>Fails if...</th></tr>
+<tr><td>Customer value</td><td>Does it go up only when customers get more value?</td><td>It can be grown with dark patterns (e.g. raw app opens)</td></tr>
+<tr><td>Leads revenue</td><td>Does it predict revenue 1 to 4 quarters out?</td><td>It is revenue itself (lagging, no guidance for teams)</td></tr>
+<tr><td>Actionable</td><td>Can most teams name how their work moves it?</td><td>Only finance understands it</td></tr>
+<tr><td>Measurable fast</td><td>Can you read it weekly with low noise?</td><td>It needs a 12-month cohort to observe</td></tr>
+<tr><td>Hard to game</td><td>Does it come with natural guardrails?</td><td>One team can inflate it at the expense of others</td></tr>
+</table>
+<p>Candidate North Stars for the target companies (illustrative, for interview discussion; these are not official company metrics): <b>Spotify</b>, weekly engaged listeners or listening hours per user; <b>DoorDash</b>, weekly orders from retained consumers in a zone; <b>Uber</b>, monthly trips per active platform consumer across Mobility and Delivery; <b>Datadog</b>, number of customers using several products (a proxy for platform depth that drives NRR); <b>Google Cloud</b>, committed consumption under contract. In an interview, the point is not to guess the "right" one but to argue the trade-offs with the five tests.</p>
+
+<h3>Variance decomposition: volume, mix, rate</h3>
+<p>When a metric equal to <i>volume x average price</i> moves, split the change into three effects before you form hypotheses. This is the single most reusable analysis in metric-diagnosis interviews.</p>
+<pre><code>Change in revenue = Volume effect + Mix effect + Rate effect
+
+Volume effect = (Trips_2 - Trips_1) x AvgFare_1
+Mix effect    = Trips_2 x (AvgFare at period-1 prices but period-2 mix - AvgFare_1)
+Rate effect   = Trips_2 x (AvgFare_2 - AvgFare at period-1 prices but period-2 mix)</code></pre>
+
+<div class="callout example"><span class="lbl">WORKED EXAMPLE · ILLUSTRATIVE NUMBERS</span>
+<p>A city GM says: "Trips are up 4% week over week but gross bookings fell. Is pricing broken?" Data (illustrative):</p>
+<table>
+<tr><th>Product</th><th>Week 1 trips</th><th>Week 1 avg fare</th><th>Week 2 trips</th><th>Week 2 avg fare</th></tr>
+<tr><td>Economy (X)</td><td>9.0M</td><td>$17.00</td><td>9.6M</td><td>$17.00</td></tr>
+<tr><td>Premium</td><td>1.0M</td><td>$47.00</td><td>0.8M</td><td>$43.00</td></tr>
+<tr><td><b>Total</b></td><td><b>10.0M</b></td><td><b>$20.00</b></td><td><b>10.4M</b></td><td><b>$19.00</b></td></tr>
+</table>
+<p>Gross bookings: Week 1 = 10.0M x $20.00 = <b>$200.0M</b>. Week 2 = 10.4M x $19.00 = <b>$197.6M</b>. Change = <b>-$2.4M</b>.</p>
+<ul>
+  <li><b>Volume effect:</b> (10.4M - 10.0M) x $20.00 = <b>+$8.0M</b></li>
+  <li><b>Mix effect:</b> Week 2 mix at Week 1 prices = (9.6 x 17 + 0.8 x 47) / 10.4 = 200.8 / 10.4 = $19.31. (19.31 - 20.00) x 10.4M = <b>-$7.2M</b></li>
+  <li><b>Rate effect:</b> (19.00 - 19.31) x 10.4M = <b>-$3.2M</b> (all from Premium: -$4 x 0.8M)</li>
+  <li><b>Check:</b> +8.0 - 7.2 - 3.2 = -2.4. Reconciles.</li>
+</ul>
+<p><b>So what:</b> pricing on Economy is fine. The loss is a <b>Premium problem</b>: Premium trips fell 20% and Premium fares fell about 9%. Next hypotheses: a Premium driver-supply drop (fewer premium vehicles online, so fewer matches), a competitor promotion targeted at high-value riders, or a Premium fare test. Pull Premium request volume vs fulfillment rate first: if requests held but fulfillment fell, it is supply; if requests fell, it is demand.</p>
+</div>
+
+<h4>SQL pattern for the decomposition</h4>
+<pre><code>WITH wk AS (
+  SELECT product,
+         SUM(CASE WHEN week = 1 THEN trips END) AS t1,
+         SUM(CASE WHEN week = 2 THEN trips END) AS t2,
+         SUM(CASE WHEN week = 1 THEN bookings END) / NULLIF(SUM(CASE WHEN week = 1 THEN trips END), 0) AS p1,
+         SUM(CASE WHEN week = 2 THEN bookings END) / NULLIF(SUM(CASE WHEN week = 2 THEN trips END), 0) AS p2
+  FROM city_trips_weekly
+  WHERE city = 'X' AND week IN (1, 2)
+  GROUP BY product
+), tot AS (
+  SELECT SUM(t1) AS T1, SUM(t2) AS T2,
+         SUM(t1 * p1) / SUM(t1) AS P1,
+         SUM(t2 * p1) / SUM(t2) AS P_mix,
+         SUM(t2 * p2) / SUM(t2) AS P2
+  FROM wk
+)
+SELECT (T2 - T1) * P1     AS volume_effect,
+       T2 * (P_mix - P1)  AS mix_effect,
+       T2 * (P2 - P_mix)  AS rate_effect
+FROM tot;</code></pre>
+
+<h3>From driver tree to KPI tree: attach owners and cadence</h3>
+<table>
+<tr><th>Node</th><th>Owner</th><th>Target type</th><th>Reviewed in</th></tr>
+<tr><td>Gross bookings (city)</td><td>City GM</td><td>Quarterly plan</td><td>QBR, monthly business review</td></tr>
+<tr><td>Active riders, new</td><td>Growth marketing</td><td>Weekly budget vs CAC cap</td><td>WBR</td></tr>
+<tr><td>Fulfillment rate at peak</td><td>Supply / driver ops</td><td>Floor (e.g. not below a set level at Friday peak)</td><td>WBR, daily during events</td></tr>
+<tr><td>Premium product mix</td><td>Product marketing</td><td>Directional</td><td>Monthly</td></tr>
+</table>
+<p>S&amp;O usually <b>owns the tree itself</b>: keeping definitions consistent, making sure the leaves still reconcile to the top line, and running the review where owners explain their variance. That is a real lever: whoever controls the metric definitions controls the conversation.</p>
+
+<div class="callout"><span class="lbl">NEWS TIE-IN · NOV 2026</span>Uber now argues that robotaxi fleets earn more on its network because of about 30% higher trips per vehicle per day than on AV operators&#39; own apps, even after Uber&#39;s marketplace fee (Q3 2026 call, as reported by The Register). In driver-tree terms that is a claim about the <b>utilization</b> node: fleet profit = vehicles x trips per vehicle per day x contribution per trip minus fixed vehicle cost. Waymo said the same week it will end its exclusive Austin and Atlanta arrangement with Uber, and Amazon&#39;s Zoox went live on the Uber app in Las Vegas on Nov 16, 2026. When you read a partnership headline, ask which node of whose driver tree it moves.</div>
+
+<h3>Practice: build Spotify&#39;s Premium revenue tree</h3>
+<p>Prompt: "You join Spotify S&amp;O. Premium revenue growth slowed by 3 points in one region. Build the driver tree you would use to diagnose it, and say which three nodes you would check first." Try it for 10 minutes before opening the answer.</p>
+<details><summary>Show model answer</summary>
+<pre><code>Premium revenue (region)
+= Average Premium subscribers  x  ARPU per month  x  months
+
+Average subscribers
+= Opening subs + Gross adds - Churned subs   (averaged over period)
+  Gross adds = Free MAU x trial/offer uptake x trial-to-paid conversion
+             + direct paid sign-ups + partner bundles (telco, etc.)
+  Churn      = Opening subs x monthly churn rate
+               (split: voluntary vs involuntary / payment failure)
+
+ARPU
+= sum over plans of (plan share x list price) x (1 - promo discount share)
+  x FX translation to reporting currency
+  Plans: Individual, Duo, Family, Student, (Basic / Audiobooks add-ons)</code></pre>
+<p><b>Check first:</b> (1) <b>FX</b> - if revenue is reported in euros and the local currency weakened, growth slows with no operational problem; compare constant-currency growth. (2) <b>Plan mix</b> - a shift toward Family or Student lowers ARPU per account even as subscribers grow (a mix effect, not a rate effect). (3) <b>Churn split</b> - a recent price increase usually shows up as a short churn spike, while a rise in involuntary churn points to payment issues. Only after those three would you look at gross adds and the free-to-paid funnel.</p>
+<p><b>Common mistakes:</b> jumping to "competitors" before ruling out FX and mix; treating subscriber count and ARPU as independent (a price rise moves both); forgetting partner-bundle subscribers, which can carry a different ARPU.</p>
+</details>
+
+<h3>Common mistakes</h3>
+<table>
+<tr><th>Mistake</th><th>Why it hurts</th><th>Fix</th></tr>
+<tr><td>Tree built from opinions, not identities</td><td>Leaves do not reconcile; arguments go in circles</td><td>Start with a formula that is always true, then split</td></tr>
+<tr><td>Ratios at the top of the tree</td><td>Averages hide mix shifts (Simpson&#39;s paradox)</td><td>Keep totals at the top; push ratios down to leaves, decompose mix explicitly</td></tr>
+<tr><td>No guardrails</td><td>Teams hit input targets while hurting the output</td><td>Pair every input metric with a counter-metric</td></tr>
+<tr><td>Too many North Stars</td><td>"Three North Stars" means no North Star</td><td>One North Star plus a few input metrics per team</td></tr>
+<tr><td>Diagnosing before decomposing</td><td>You chase the wrong cause (pricing instead of mix)</td><td>Run volume / mix / rate first, then hypothesize</td></tr>
+</table>
+
+<div class="quiz" data-a="1">
+  <div class="q">Self-check: Average order value fell 5% but no menu prices changed. What is the most likely first explanation to test?</div>
+  <button class="opt">Merchants secretly cut prices</button>
+  <button class="opt">A mix shift toward smaller or cheaper order types (e.g. more single-person or convenience orders)</button>
+  <button class="opt">Take rate decreased</button>
+  <button class="opt">Data pipeline error, so stop the analysis</button>
+  <div class="exp">With unchanged prices, a drop in an average is most often a mix effect. Decompose by order type or category first. Take rate affects revenue, not AOV. Data checks are worth a quick look, but you do not stop there.</div>
+</div>
+
+<div class="quiz" data-a="3">
+  <div class="q">Self-check: Which is the best input metric to assign a supply operations team in a ride-hailing city?</div>
+  <button class="opt">Gross bookings</button>
+  <button class="opt">Net promoter score of riders</button>
+  <button class="opt">Total registered drivers</button>
+  <button class="opt">Fulfillment rate during peak hours, with driver earnings per hour as a guardrail</button>
+  <div class="exp">Fulfillment at peak is controllable by supply levers (incentives, scheduling), readable weekly, and drives trips. Registered drivers is a vanity count; gross bookings is an output the team only partly controls; the guardrail stops the team from buying fulfillment with unsustainable incentives that crush earnings or margin.</div>
+</div>
+`});
+</script>
+
+<script id="ch07-spotify-deep-dive">
+chapter({part:"Part VI · Company Deep-Dives", id:"spotify-deep-dive", num:"07", title:"Spotify Deep-Dive: Freemium Audio, Pricing Power and Royalty Math", mins:20, tag:"Company · Spotify", html:`
+<p>Spotify is the best case in this handbook for <b>subscription pricing and gross margin structure</b>. It runs a freemium funnel (a free, ad-supported tier that feeds a paid Premium tier) on top of a two-sided platform: listeners on one side, and rights holders and creators (labels, publishers, podcasters, authors) on the other. Most of every Premium euro flows back to rights holders, so the operator question at Spotify is: <i>how do we grow subscribers and ARPU while widening a thin gross margin, without breaking the deal with creators?</i></p>
+
+<h3>The business model in one picture</h3>
+<div class="diagwrap">
+<svg viewBox="0 0 760 270" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="13">
+  <defs><marker id="sp7" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#93a1b3"/></marker></defs>
+  <g fill="#1b232e" stroke="#f5a524" stroke-width="1.5">
+    <rect x="300" y="105" width="160" height="60" rx="10"/>
+    <rect x="20" y="20" width="200" height="60" rx="10"/>
+    <rect x="20" y="190" width="200" height="60" rx="10"/>
+    <rect x="540" y="20" width="200" height="60" rx="10"/>
+    <rect x="540" y="190" width="200" height="60" rx="10"/>
+  </g>
+  <g fill="#e8eef5" text-anchor="middle">
+    <text x="380" y="131">Spotify platform</text><text x="380" y="149" font-size="11" fill="#93a1b3">gross margin ~33%</text>
+    <text x="120" y="46">Free listeners</text><text x="120" y="64" font-size="11" fill="#93a1b3">499M ad-supported MAU</text>
+    <text x="120" y="216">Premium subscribers</text><text x="120" y="234" font-size="11" fill="#93a1b3">306M, ARPU about 4.95 EUR/mo</text>
+    <text x="640" y="46">Advertisers</text><text x="640" y="64" font-size="11" fill="#93a1b3">audio, video, podcast ads</text>
+    <text x="640" y="216">Rights holders and creators</text><text x="640" y="234" font-size="11" fill="#93a1b3">labels, publishers, podcasters, authors</text>
+  </g>
+  <g stroke="#93a1b3" stroke-width="1.3" fill="none" marker-end="url(#sp7)">
+    <path d="M120,80 L120,190"/><path d="M220,220 L300,150"/><path d="M540,50 L460,120"/><path d="M460,150 L540,215"/><path d="M220,50 L300,120"/>
+  </g>
+  <g fill="#93a1b3" font-size="11">
+    <text x="128" y="140">upgrade funnel</text><text x="225" y="200">subscription $</text><text x="470" y="95">ad $</text><text x="480" y="200">royalties</text><text x="235" y="75">attention</text>
+  </g>
+</svg>
+</div>
+<p>The free tier is both a revenue line and the main acquisition channel for Premium. Rights holders are a cost line and the supply side: the catalog is largely the same as Apple Music, YouTube Music and Amazon Music, so Spotify competes on product (personalization, discovery, podcasts, audiobooks) and price, not exclusive music.</p>
+
+<h3>Q3 2026 by the numbers</h3>
+<table>
+<tr><th>Metric (Q3 2026)</th><th>Reported</th><th>Growth Y/Y</th></tr>
+<tr><td>Total MAU</td><td>788M</td><td>+11%</td></tr>
+<tr><td>Ad-supported MAU</td><td>499M</td><td>+12%</td></tr>
+<tr><td>Premium subscribers</td><td>306M (+6M net adds, 1M above guidance)</td><td>+9%</td></tr>
+<tr><td>Total revenue</td><td>EUR 4.97B</td><td>+16% (+14% constant currency)</td></tr>
+<tr><td>Premium revenue</td><td>EUR 4.49B</td><td>+17% (+15% cc)</td></tr>
+<tr><td>Ad-supported revenue</td><td>EUR 482M</td><td>+10% (+9% cc); impressions up, pricing softer</td></tr>
+<tr><td>Premium ARPU</td><td>EUR 4.95 per month</td><td>+9.3% (+7.5% cc), from price increases partly offset by mix</td></tr>
+<tr><td>Gross margin</td><td>33.0% total; 34.5% Premium; 18.7% ad-supported</td><td>+136 bps total</td></tr>
+<tr><td>Operating income</td><td>EUR 672M (13.5% margin)</td><td>+15%</td></tr>
+<tr><td>Free cash flow</td><td>EUR 735M (TTM EUR 3.2B)</td><td>-9%</td></tr>
+<tr><td>Q4 2026 guide</td><td>818M MAU; 316M subs; revenue EUR 5.2B; gross margin 33.8%; operating income EUR 820M</td><td></td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Sources: <a href="https://www.sec.gov/Archives/edgar/data/0001639920/000114036126040435/ef20084028_ex99-1.htm" target="_blank">Spotify Q3 2026 shareholder update (SEC 6-K exhibit 99.1)</a> · <a href="https://musicbusinessworldwide.com/spotify-is-on-course-for-a-3-3b-annual-operating-profit-in-2026-after-adding-6m-subscribers-in-q3" target="_blank">Music Business Worldwide</a>. Social charges (Swedish payroll taxes on equity awards) move with the share price and can swing operating income by tens of millions of euros versus guidance.</p>
+
+<h3>How to read the Spotify P&amp;L</h3>
+<table>
+<tr><th>Lever</th><th>What moves it</th><th>Operator question</th></tr>
+<tr><td><b>Subscriber growth</b></td><td>Free-to-Premium conversion, promo intake (trial offers), emerging-market growth, churn</td><td>Are net adds coming from high-ARPU or low-ARPU markets?</td></tr>
+<tr><td><b>ARPU</b></td><td>Price increases, plan mix (Individual vs Duo, Family, Student), market mix, FX</td><td>How much of ARPU growth is price vs mix vs currency?</td></tr>
+<tr><td><b>Premium gross margin</b></td><td>Royalty terms with labels and publishers, audiobook and podcast content costs, bundling rules</td><td>Does a new product (audiobooks, video) dilute or expand margin?</td></tr>
+<tr><td><b>Ad-supported revenue</b></td><td>MAU, ad load, fill rate, CPMs, podcast sponsorship</td><td>Is growth from more impressions or better pricing?</td></tr>
+<tr><td><b>Operating expenses</b></td><td>Headcount (about 7,300 FTEs), marketing, R&amp;D</td><td>How much operating leverage is left as revenue outgrows opex?</td></tr>
+</table>
+
+<div class="callout example"><span class="lbl">Worked example · what a subscriber is worth vs a free user (Q3 2026)</span>
+<table>
+<tr><th>Line</th><th>Math</th><th>Per month</th></tr>
+<tr><td>Premium revenue per sub</td><td>reported ARPU</td><td>~EUR 4.95</td></tr>
+<tr><td>Premium gross profit per sub</td><td>4.95 x 34.5%</td><td>~EUR 1.71</td></tr>
+<tr><td>Ad revenue per free MAU</td><td>EUR 482M / 499M / 3 months</td><td>~EUR 0.32</td></tr>
+<tr><td>Ad gross profit per free MAU</td><td>0.32 x 18.7%</td><td>~EUR 0.06</td></tr>
+</table>
+<p><b>So what:</b> a Premium subscriber is worth roughly <b>15x</b> a free user in revenue and close to <b>28x</b> in gross profit (derived estimates from reported totals, ignoring that some ad revenue comes from podcasts heard by Premium users). That is why the free tier is managed mainly as a conversion funnel, and why a one-point lift in Free-to-Premium conversion beats almost any ad-pricing win.</p>
+</div>
+
+<h3>Strategic bets an S&amp;O operator would work on</h3>
+<table>
+<tr><th>Bet</th><th>What happened</th><th>S&amp;O angle</th></tr>
+<tr><td><b>Pricing power</b></td><td>US Premium went to $12.99 Individual, $18.99 Duo, $21.99 Family and $6.99 Student from January 2026, following increases in many other markets</td><td>Elasticity by market, churn after increase, timing and grandfathering, plan mix shifts</td></tr>
+<tr><td><b>Audiobooks</b></td><td>Expanding from 22 markets to 180+ by year end 2026, 350,000+ titles in 120+ languages</td><td>Margin impact of included listening hours, publisher payouts, upsell to add-on hours</td></tr>
+<tr><td><b>Creator economy</b></td><td>Creator Memberships live in 34 markets; Spotify Partner Program in 35+ new markets</td><td>Payout design, creator retention, video podcast cost vs engagement</td></tr>
+<tr><td><b>Trust and supply quality</b></td><td>Artist Profile Protection opened to all artists on Nov 17, 2026, letting artists review releases attributed to them</td><td>Ops cost of review queues vs creator trust, AI-generated content policy</td></tr>
+<tr><td><b>Personalization and AI</b></td><td>Taste Profile launched for US Premium; leadership argues entertainment survives the agentic era because people want to experience it themselves</td><td>Engagement metrics as leading indicators of retention</td></tr>
+</table>
+<p>Leadership context: Spotify is now run by co-CEOs Alex Norström and Gustav Söderström, with CFO Christian Luiga; founder Daniel Ek moved to executive chairman. Expect interviewers to talk about disciplined investment and margin expansion, the themes management stressed all year.</p>
+
+<h3>What S&amp;O and BizOps work looks like at Spotify</h3>
+<ul>
+<li><b>Pricing and packaging:</b> market-by-market price tests, new tiers and add-ons, bundle economics.</li>
+<li><b>Subscriber analytics:</b> funnel from Free to trial to paid, churn cohorts after a price change, promo payback.</li>
+<li><b>Content economics:</b> modeling royalty and content cost per stream or per hour across music, podcasts and audiobooks.</li>
+<li><b>Planning:</b> MAU, subscriber and margin targets by region, and the weekly business review that tracks them.</li>
+</ul>
+<div class="callout tip"><span class="lbl">Interview focus</span> Expect a pricing case, a metric-drop diagnosis (subs, ARPU or margin), and questions on marketplace balance between listeners and creators. Always split ARPU change into price, plan mix, market mix and FX before you explain it.</div>
+
+<h3>Practice: should Spotify raise prices in a market?</h3>
+<p>Prompt: "A mid-size market has 5M Premium subscribers on an Individual price of 10.99. Leadership proposes 11.99. Royalties and other cost of revenue run about 65.5% of Premium revenue. Should we do it?" All numbers are <b>illustrative</b>. Try for 15 minutes before opening.</p>
+<details>
+<summary>Show model answer</summary>
+<div class="callout example"><span class="lbl">Model answer</span>
+<p><b>Structure:</b> (1) gross profit math and breakeven churn, (2) evidence on elasticity, (3) second-order effects, (4) recommendation and test design.</p>
+<table>
+<tr><th>Step</th><th>Math</th><th>Result</th></tr>
+<tr><td>Gross profit per sub today</td><td>10.99 x 34.5%</td><td>3.79</td></tr>
+<tr><td>Gross profit per sub after</td><td>11.99 x 34.5%</td><td>4.14</td></tr>
+<tr><td>Breakeven retained share</td><td>3.79 / 4.14</td><td>91.7%</td></tr>
+<tr><td>Subs you can lose and still break even</td><td>5M x 8.3%</td><td>~415K</td></tr>
+</table>
+<p>Because royalties scale with revenue, the gross profit gain per sub is only about 0.35 per month, not the full 1.00. The increase pays off if incremental churn stays under about 8%. Past increases across the industry have typically produced low single-digit extra churn, so the case looks favorable, but check local data.</p>
+<p><b>Ask for:</b> churn after previous increases in similar markets, share of subs on Family or Duo (they may downgrade or consolidate), competitor prices, local purchasing power and payment method mix, and whether free-tier conversion will slow.</p>
+<p><b>Recommend:</b> raise to 11.99, communicate added value (audiobook hours, features), give existing subs one billing cycle of notice, and watch 60-day churn and plan downgrades against the 8% breakeven line, with a pre-agreed rollback trigger.</p>
+</div>
+</details>
+
+<table>
+<tr><th>Common mistake</th><th>Better approach</th></tr>
+<tr><td>Treating the full price increase as profit</td><td>Apply the royalty share; only the margin portion drops to gross profit</td></tr>
+<tr><td>Quoting headline revenue growth</td><td>Split constant-currency growth from FX, and price from mix</td></tr>
+<tr><td>Ignoring the free tier</td><td>Price moves change upgrade rates; model the funnel, not just the base</td></tr>
+</table>
+
+<div class="quiz" data-a="1">
+  <div class="q">Self-check: Spotify Premium ARPU grew 9.3% reported but 7.5% in constant currency. What explains the 1.8-point gap?</div>
+  <button class="opt">Plan mix shifting toward Family</button>
+  <button class="opt">Favorable foreign exchange movements</button>
+  <button class="opt">More subscribers in emerging markets</button>
+  <button class="opt">Higher ad CPMs</button>
+  <div class="exp">Constant currency strips out FX. The gap between reported and constant-currency growth is the currency effect; mix and price are both inside the 7.5%.</div>
+</div>
+
+<div class="quiz" data-a="3">
+  <div class="q">Self-check: With Premium gross margin around 34.5%, a 1.00 price increase adds roughly how much gross profit per subscriber per month (if no one churns)?</div>
+  <button class="opt">1.00</button>
+  <button class="opt">0.66</button>
+  <button class="opt">0.10</button>
+  <button class="opt">About 0.35</button>
+  <div class="exp">Royalties and other cost of revenue scale with revenue, so only the gross margin share of the increase (about 34.5%) becomes gross profit.</div>
+</div>
+`});
+</script>
+
+<script>
+chapter({part:"Part VII · Case Practice", id:"case-uber-driver-supply", num:"08", title:"Case: Uber Driver Supply Shortage at Peak", mins:24, tag:"Case · Uber · Marketplace", html:`
+<p>The second full practice case, and the first on a <b>two-sided marketplace</b>. It is close to a live situation: on its Q3 2026 call Uber said Mobility growth came in below its own expectations because driver supply did not keep pace with demand in several international markets, and it began shifting incentive dollars from rider discounts toward driver pay. Work it as a 30 to 45 minute interview: clarify, structure, ask for data, do the math, recommend. Attempt each step before opening the model answer. Pair it with <a onclick="show('driver-trees-north-star')">06 Driver Trees</a>, which builds the bookings tree this case leans on.</p>
+
+<div class="callout"><span class="lbl">The prompt (illustrative)</span>"You are on the Uber Mobility Strategy &amp; Operations team for a mid-size city we will call Metro X. Over the last four weeks, Friday and Saturday evening peaks have gotten worse: pickup ETAs went from about 5 to about 9 minutes, more riders see no cars available, and surge is on for most of the window. The regional GM wants a diagnosis and a plan to restore reliability this quarter without wrecking the Mobility margin."</div>
+
+<h3>Step 0 · What the real company looks like</h3>
+<p>Figures below are as reported for Q3 2026 (quarter ended Sept 30, 2026). Uber does not disclose city-level supply data, so everything about Metro X later in the chapter is illustrative.</p>
+<table>
+<tr><th>Metric (Q3 2026)</th><th>Reported value</th><th>Why it matters for this case</th></tr>
+<tr><td>Gross bookings</td><td>$59.8B, up 20% Y/Y</td><td>Demand is strong; the constraint is the supply side</td></tr>
+<tr><td>Trips / MAPCs</td><td>Trips up 16%; 215M monthly active platform consumers, up 14%</td><td>Each rider is also taking more trips (about 6.3 per MAPC per month)</td></tr>
+<tr><td>Drivers and couriers</td><td>10.8M earners, paid well over $25B in the quarter</td><td>The supply base is huge, so small engagement shifts move many hours</td></tr>
+<tr><td>Mobility</td><td>Gross bookings up 17%; record 8.0% segment margin (of GB)</td><td>The GM constraint is real: margin is a headline number</td></tr>
+<tr><td>Supply commentary</td><td>Tighter driver availability and fuel prices cut Mobility growth 1 to 2 points; Brazil and India undersupplied, Canada "meaningfully undersupplied"</td><td>Causes cited: fuel costs, tighter immigration policy, competition for couriers, seasonality</td></tr>
+<tr><td>Q4 2026 guide</td><td>GB $63.25B to $65.25B (18% to 22% constant currency)</td><td>Management expects improving balance after targeted driver investment</td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Sources: Uber Q3 2026 prepared remarks and earnings release; PYMNTS call coverage. Links in the Changelog entry for 2026-11-19.</p>
+
+<h3>Step 1 · Clarify before you structure</h3>
+<ul>
+  <li><b>Scope:</b> Only Friday and Saturday 5 pm to 9 pm, or all peaks? Only UberX, or all products? (Answer: peaks only, mostly UberX.)</li>
+  <li><b>Demand or supply?</b> Worse ETAs can come from more requests, fewer driver hours, or less efficient dispatch. Never assume "shortage" means "too few drivers".</li>
+  <li><b>Timing:</b> Did anything change four weeks ago: an event calendar, a fuel price spike, a competitor bonus, a regulation, a pricing or dispatch change?</li>
+  <li><b>Goal and guardrails:</b> What reliability target (e.g. 90% of requests fulfilled), by when, and with what spend or margin limit?</li>
+</ul>
+
+<h3>Step 2 · Structure: the marketplace balance tree</h3>
+<p>Fulfillment is an identity, so split it mathematically first, then go qualitative inside each branch.</p>
+<pre><code>Completed trips  = Supply hours x Trips per supply hour
+Supply hours     = Drivers online x Online hours per driver
+Fulfillment rate = Completed trips / Requests
+
+Trips per supply hour falls when dead miles, pickup times or trip lengths rise.
+It rises (up to a cap) when the market is busy, because idle time shrinks.</code></pre>
+<table>
+<tr><th>Branch</th><th>Hypotheses</th><th>Data to request</th></tr>
+<tr><td><b>Demand</b></td><td>Organic growth, events, a rider promo, a competitor exit</td><td>Requests by hour and zone, promo redemptions, event calendar</td></tr>
+<tr><td><b>Driver count</b></td><td>Churn up, fewer new drivers activating, drivers shifting to delivery or a rival app</td><td>Active drivers at peak, new activations, 30/60/90-day lapsed counts, multi-apping survey data</td></tr>
+<tr><td><b>Hours per driver</b></td><td>Fuel cost squeezing per-hour earnings, drivers logging off earlier</td><td>Online hours distribution, earnings per online hour net of fuel, log-off times</td></tr>
+<tr><td><b>Efficiency</b></td><td>Longer pickups, poor repositioning, airport queues pulling drivers away</td><td>Utilization, dead miles per trip, trip length, airport queue size at peak</td></tr>
+</table>
+
+<div class="diagwrap">
+<svg viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12">
+  <line x1="50" y1="210" x2="660" y2="210" stroke="#93a1b3"/>
+  <line x1="50" y1="30" x2="50" y2="210" stroke="#93a1b3"/>
+  <rect x="460" y="30" width="140" height="180" fill="#f05252" opacity="0.10"/>
+  <polyline fill="none" stroke="#f5a524" stroke-width="2.5" points="70,190 130,170 190,140 250,150 310,145 370,130 430,110 470,60 520,45 570,55 610,95 650,150"/>
+  <polyline fill="none" stroke="#3ecf8e" stroke-width="2.5" points="70,185 130,160 190,130 250,135 310,135 370,120 430,105 470,90 520,95 570,105 610,120 650,150"/>
+  <g fill="#93a1b3" font-size="11" text-anchor="middle">
+    <text x="70" y="226">6a</text><text x="190" y="226">10a</text><text x="310" y="226">2p</text><text x="430" y="226">4p</text><text x="530" y="226">5p to 9p</text><text x="650" y="226">11p</text>
+  </g>
+  <text x="530" y="24" fill="#f05252" text-anchor="middle" font-size="11">Gap = unfulfilled requests, long ETAs, surge</text>
+  <rect x="70" y="36" width="12" height="4" fill="#f5a524"/><text x="88" y="41" fill="#e8eef5" font-size="11">Requests (demand)</text>
+  <rect x="70" y="52" width="12" height="4" fill="#3ecf8e"/><text x="88" y="57" fill="#e8eef5" font-size="11">Trip capacity (supply hours x trips per hour)</text>
+  <text x="660" y="250" fill="#93a1b3" font-size="10" text-anchor="end">Illustrative Friday in Metro X</text>
+</svg>
+</div>
+
+<h3>Step 3 · The data comes back (illustrative)</h3>
+<p>The interviewer gives you an average Friday or Saturday 5 pm to 9 pm window. Compute what drove the decline in fulfillment before reading on.</p>
+<table>
+<tr><th>Peak window metric</th><th>Four weeks ago</th><th>Now</th><th>Change</th></tr>
+<tr><td>Requests</td><td>12,000</td><td>13,200</td><td>+10%</td></tr>
+<tr><td>Drivers online</td><td>2,000</td><td>1,800</td><td>-10%</td></tr>
+<tr><td>Online hours per driver in window</td><td>3.0</td><td>2.8</td><td>-0.2</td></tr>
+<tr><td>Supply hours</td><td>6,000</td><td>5,040</td><td>-16%</td></tr>
+<tr><td>Trips per supply hour</td><td>1.8</td><td>2.0</td><td>busier, less idle time</td></tr>
+<tr><td>Completed trips</td><td>10,800</td><td>10,080</td><td>-7%</td></tr>
+<tr><td><b>Fulfillment rate</b></td><td><b>90.0%</b></td><td><b>76.4%</b></td><td><b>-13.6 pts</b></td></tr>
+</table>
+
+<details><summary>Show model reading of the data</summary>
+<p><b>Both sides moved, but supply is the bigger story.</b> Demand grew 10% while supply hours fell 16%. Utilization rising to 2.0 trips per hour partly cushioned the loss, which is why completed trips fell only 7%.</p>
+<p><b>Split the 960 lost supply hours</b> (driver count first, then hours at the new count, so the pieces reconcile exactly):</p>
+<pre><code>Driver count effect  = (1,800 - 2,000) x 3.0 = -600 hours  (63%)
+Hours per driver     = 1,800 x (2.8 - 3.0)   = -360 hours  (37%)
+Total                = 5,040 - 6,000         = -960 hours</code></pre>
+<p><b>So:</b> fewer drivers is about two thirds of the problem and shorter sessions about one third. Next ask: are the 200 missing drivers churned, lapsed, or online at other times? Suppose the data says about 400 drivers lapsed in the last 90 days, and about 600 active drivers now drive weekday daytime but skip the evening peak. Fuel prices rose in the same month, which fits the shorter sessions.</p>
+<p><b>Cost of doing nothing:</b> at the old 90% fulfillment Metro X would complete 11,880 trips per window, so 1,800 trips are lost. At an illustrative $22 average fare that is about $39,600 of gross bookings per window, about $79,000 per weekend, before counting riders who stop opening the app after seeing no cars.</p>
+</details>
+
+<h3>Step 4 · Price the levers</h3>
+<p>The key S&amp;O idea is <b>cost per incremental supply hour</b>. A broad bonus pays every driver already online (inframarginal spend), so it buys hours expensively. Targeted offers buy only the hours you would not have gotten.</p>
+<div class="callout example"><span class="lbl">Worked example · cost per incremental hour (illustrative)</span>
+<table>
+<tr><th>Lever</th><th>Assumption</th><th>Extra supply hours per window</th><th>Cost per window</th><th>Cost per incremental hour</th></tr>
+<tr><td>A. Blanket peak boost</td><td>$8 extra per online hour for everyone; hours rise 15%</td><td>5,040 x 15% = 756</td><td>$8 x 5,796 = $46,368</td><td><b>about $61</b></td></tr>
+<tr><td>B. Reactivate lapsed drivers</td><td>400 reachable, 25% return for 2.5 hours; $150 bonus spread over 8 windows</td><td>100 x 2.5 = 250</td><td>$15,000 / 8 = $1,875</td><td><b>$7.50</b></td></tr>
+<tr><td>C. Targeted peak offer</td><td>$40 for 3 peak hours to 600 daytime-only drivers; 30% accept</td><td>180 x 3 = 540</td><td>180 x $40 = $7,200</td><td><b>about $13</b></td></tr>
+<tr><td>D. Dispatch efficiency</td><td>Fix airport queue rules and repositioning; trips per hour +5%</td><td>about 250 hour-equivalents</td><td>ops and product time</td><td>low cash, slower to ship</td></tr>
+</table>
+<p><b>Combine B + C + D.</b> Supply hours become 5,040 + 250 + 540 = 5,830. If utilization settles to 1.9 as ETAs shorten, then +5% efficiency gives 1.995 trips per hour, so completed trips = 5,830 x 1.995 = about 11,631. Fulfillment = 11,631 / 13,200 = <b>88.1%</b>, close to the 90% target.</p>
+<p><b>Payback check:</b> regained trips 11,631 - 10,080 = 1,551; at $22 that is about $34,100 of gross bookings. At an illustrative 25% take rate, revenue is about $8,530 vs incentive spend of $1,875 + $7,200 = $9,075 per window. That is roughly breakeven on the window alone. The case for spending rests on <b>rider retention</b> (riders who see no cars come back less) and on spend tapering as reactivated drivers stay. Lever A, by contrast, would cost about $46,000 for less than half the extra hours.</p>
+</div>
+
+<details><summary>Show model recommendation</summary>
+<ol>
+  <li><b>Recommendation:</b> Restore peak fulfillment to about 88% to 90% within six weeks using targeted supply levers, not a blanket bonus. Launch lapsed-driver reactivation (B) and a targeted peak offer for daytime-only drivers (C) this week; fix airport queue and repositioning rules (D) within the quarter. Cap incentive spend at about $9,000 per peak window, and taper it 25% every two weeks once fulfillment holds above 88%.</li>
+  <li><b>Pricing:</b> Let surge do its job at the margin (it rations demand and pulls supply), but avoid pushing prices up so far that riders churn. Keep rider promos off during the peak; that is the same reallocation Uber described on its Q3 call.</li>
+  <li><b>Measurement:</b> Run lever C as a randomized holdout (offer to a random 80% of eligible drivers) so you can measure true incremental hours and off-peak cannibalization.</li>
+  <li><b>Risks:</b> Drivers move hours from off-peak into the bonus window instead of adding hours; competitors match the offer; fuel prices keep rising. Watch earnings per online hour net of fuel as the leading indicator.</li>
+  <li><b>Next steps:</b> A weekly marketplace review (WBR) line for Metro X with fulfillment, ETA, supply hours, and cost per incremental hour, and a decision point at week 6 on whether the gap is structural (recruit more drivers) or seasonal (taper).</li>
+</ol>
+</details>
+
+<h3>Step 5 · A query you could be asked to write</h3>
+<pre><code>-- Fulfillment and supply hours by hour of week, last 8 weeks
+SELECT DATE_TRUNC('week', r.requested_at)              AS wk,
+       EXTRACT(DOW FROM r.requested_at)                AS dow,
+       EXTRACT(HOUR FROM r.requested_at)               AS hr,
+       COUNT(*)                                        AS requests,
+       SUM(CASE WHEN r.status = 'completed' THEN 1 ELSE 0 END) * 1.0
+         / COUNT(*)                                    AS fulfillment_rate,
+       MAX(s.supply_hours)                             AS supply_hours
+FROM ride_requests r
+LEFT JOIN hourly_supply s
+  ON s.city_id = r.city_id
+ AND s.hour_start = DATE_TRUNC('hour', r.requested_at)
+WHERE r.city_id = 'metro_x'
+  AND r.requested_at &gt;= CURRENT_DATE - INTERVAL '56 days'
+GROUP BY 1, 2, 3
+ORDER BY 1, 2, 3;</code></pre>
+
+<h3>Common mistakes</h3>
+<table>
+<tr><th>Mistake</th><th>Why it hurts</th><th>Do this instead</th></tr>
+<tr><td>Jumping to "pay drivers more"</td><td>Blanket bonuses buy hours at several times the cost of targeted ones</td><td>Compute cost per incremental hour by lever</td></tr>
+<tr><td>Ignoring demand growth</td><td>Here demand was a third of the gap; you would under-size the fix</td><td>Split the gap into demand vs supply first</td></tr>
+<tr><td>Treating utilization as fixed</td><td>Busy markets have higher trips per hour; the gap looks smaller than the hour loss</td><td>Model trips per hour as a variable that falls back as ETAs improve</td></tr>
+<tr><td>No guardrail on margin</td><td>The GM explicitly cares about Mobility margin</td><td>State a spend cap and a taper rule</td></tr>
+<tr><td>Forgetting cannibalization</td><td>Drivers may shift hours rather than add them</td><td>Measure with a holdout and track total weekly hours</td></tr>
+</table>
+
+<h3>Practice timer</h3>
+<p>Re-run this case cold in a week. Use the timer, and try to finish structure plus lever pricing within 25 minutes.</p>
+${TOOLS.caseTimer()}
+
+<div class="quiz" data-a="1">
+  <div class="q">Self-check: Supply hours fell from 6,000 to 5,040 while trips per supply hour rose from 1.8 to 2.0. Why did completed trips fall only 7% when hours fell 16%?</div>
+  <button class="opt">Demand grew 10%, which increases completed trips one for one</button>
+  <button class="opt">A busier market cuts idle time, so each online hour produces more trips</button>
+  <button class="opt">Surge pricing created new drivers instantly</button>
+  <button class="opt">The data must be wrong</button>
+  <div class="exp">Utilization rises when demand exceeds supply: drivers spend less time waiting between trips. That partly offsets lost hours, but only up to a physical cap, and it comes with longer pickup ETAs.</div>
+</div>
+
+<div class="quiz" data-a="2">
+  <div class="q">Self-check: A blanket $8 per hour peak boost adds 756 hours and costs $46,368. A targeted offer adds 540 hours for $7,200. What is the main reason the blanket boost is so much more expensive per incremental hour?</div>
+  <button class="opt">Drivers do not respond to hourly pay</button>
+  <button class="opt">The targeted offer is paid in a different currency</button>
+  <button class="opt">It pays every driver already online, so most of the spend is inframarginal</button>
+  <button class="opt">Blanket boosts always reduce fulfillment</button>
+  <div class="exp">About 5,040 of the 5,796 paid hours would have happened anyway. Paying for them is a transfer, not new supply, so cost per incremental hour balloons to about $61 vs about $13.</div>
+</div>
+`});
+</script>
+
+<script id="ch09-saas-metrics">
+chapter({part:"Part V · SaaS", id:"saas-metrics", num:"09", title:"SaaS Metrics for Operators: ARR, NRR, GRR, Magic Number, Rule of 40, CAC Payback", mins:20, tag:"Framework · SaaS", html:`
+<p>If you interview for S&amp;O at Datadog, or for Google Cloud BizOps, you will be expected to speak SaaS fluently. The metrics are not hard individually; the skill is knowing <b>which question each one answers</b>, how they connect, and where each one lies to you. This chapter builds the full scorecard, runs it on Datadog using real Q3 2026 numbers, and then gives you a hidden-answer diagnostic drill.</p>
+
+<h3>The SaaS scorecard: six questions, six metrics</h3>
+<table>
+<tr><th>Question the CFO asks</th><th>Metric</th><th>Formula</th><th>Rough "good" bar (public SaaS)</th></tr>
+<tr><td>How big is the recurring business?</td><td><b>ARR</b></td><td>Annualized value of recurring contracts (or run-rate of usage revenue)</td><td>Growth matters more than level</td></tr>
+<tr><td>Do existing customers grow?</td><td><b>NRR</b></td><td>(Start cohort ARR + expansion - contraction - churn) / start cohort ARR</td><td>110%+ is strong, 120%+ is elite</td></tr>
+<tr><td>Do existing customers stay?</td><td><b>GRR</b></td><td>(Start cohort ARR - contraction - churn) / start cohort ARR, capped at 100%</td><td>90%+ enterprise, 80%+ SMB</td></tr>
+<tr><td>Is sales spend efficient?</td><td><b>Magic number</b></td><td>(Revenue this Q - revenue last Q) x 4 / sales &amp; marketing spend last Q</td><td>Above 0.75 means invest more; below 0.5 means fix the motion</td></tr>
+<tr><td>How fast do we earn back CAC?</td><td><b>CAC payback</b></td><td>S&amp;M spend / (net new ARR x gross margin), in months x 12</td><td>Under 18 to 24 months</td></tr>
+<tr><td>Are we balancing growth and profit?</td><td><b>Rule of 40</b></td><td>Revenue growth % + FCF margin % (or operating margin)</td><td>40 or more</td></tr>
+</table>
+<div class="callout tip"><span class="lbl">MENTAL MODEL</span>Think of the scorecard as a <b>tank with a tap and a drain</b>. New-logo ARR and expansion are the taps, contraction and churn are the drain (NRR and GRR measure them), the magic number and CAC payback measure how much fuel you burn to open the taps, and Rule of 40 checks whether the whole system is running hot enough without overheating the P&amp;L.</div>
+
+<h3>How the metrics connect: the ARR bridge</h3>
+<pre><code>Ending ARR = Starting ARR + New-logo ARR + Expansion - Contraction - Churn
+Net new ARR = Ending ARR - Starting ARR
+
+NRR = (Starting ARR + Expansion - Contraction - Churn) / Starting ARR
+GRR = (Starting ARR - Contraction - Churn) / Starting ARR
+Growth from existing base = NRR - 1
+Growth from new logos     = New-logo ARR / Starting ARR</code></pre>
+<p>This is the single most useful identity in SaaS. It tells you that total ARR growth is <b>(NRR - 1) + new-logo contribution</b>. A company with 120% NRR grows 20% before it signs a single new customer. That is why land-and-expand businesses like Datadog obsess over NRR.</p>
+
+<div class="diagwrap">
+<svg viewBox="0 0 680 240" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12">
+  <line x1="20" y1="200" x2="660" y2="200" stroke="#93a1b3"/>
+  <rect x="30" y="100" width="80" height="100" fill="#1b232e" stroke="#f5a524" stroke-width="1.5"/>
+  <rect x="140" y="70" width="80" height="30" fill="#3ecf8e"/>
+  <rect x="250" y="40" width="80" height="30" fill="#3ecf8e"/>
+  <rect x="360" y="40" width="80" height="8" fill="#f05252"/>
+  <rect x="470" y="48" width="80" height="4" fill="#f05252"/>
+  <rect x="580" y="52" width="80" height="148" fill="#1b232e" stroke="#f5a524" stroke-width="1.5"/>
+  <g stroke="#93a1b3" stroke-dasharray="3,3"><line x1="110" y1="100" x2="140" y2="100"/><line x1="220" y1="70" x2="250" y2="70"/><line x1="330" y1="40" x2="360" y2="40"/><line x1="440" y1="48" x2="470" y2="48"/><line x1="550" y1="52" x2="580" y2="52"/></g>
+  <g fill="#e8eef5" text-anchor="middle"><text x="70" y="92">100</text><text x="180" y="62">+30</text><text x="290" y="32">+30</text><text x="400" y="32">-8</text><text x="510" y="40">-4</text><text x="620" y="44">148</text></g>
+  <g fill="#93a1b3" text-anchor="middle" font-size="11"><text x="70" y="218">Start ARR</text><text x="180" y="218">Expansion</text><text x="290" y="218">New logos</text><text x="400" y="218">Contraction</text><text x="510" y="218">Churn</text><text x="620" y="218">End ARR</text></g>
+  <text x="340" y="236" fill="#93a1b3" font-size="10" text-anchor="middle">Illustrative: NRR = (100+30-8-4)/100 = 118%; GRR = 88%; total growth 48%</text>
+</svg>
+</div>
+
+<h3>Usage-based caveats (why Datadog is different)</h3>
+<p>Datadog bills mostly on usage (hosts, ingested logs, spans, events) on top of annual commitments. That changes how you read every metric:</p>
+<table>
+<tr><th>Metric</th><th>Seat-based SaaS</th><th>Usage-based SaaS (Datadog)</th></tr>
+<tr><td>ARR</td><td>Contract value, known in advance</td><td>A run-rate estimate; can move monthly as customers ingest more or less</td></tr>
+<tr><td>NRR</td><td>Driven by seat adds and upsell at renewal</td><td>Driven by workload growth and product cross-sell; also by customer cost optimization, which shows up fast</td></tr>
+<tr><td>Leading indicator</td><td>Pipeline, renewals calendar</td><td>RPO and commitments vs on-demand usage, weekly usage trends by top account</td></tr>
+<tr><td>Main risk</td><td>Logo churn at renewal</td><td>Contraction from optimization, and concentration in a few very large customers</td></tr>
+</table>
+
+<h3>Run the scorecard on Datadog (real numbers)</h3>
+<table>
+<tr><th>Metric</th><th>Q3 2026 (reported)</th><th>Read</th></tr>
+<tr><td>Revenue</td><td>$1.197B, up 35% Y/Y (Q3 2025: $885.7M)</td><td>Acceleration from AI-native and broad enterprise demand</td></tr>
+<tr><td>Non-GAAP / GAAP operating margin</td><td>28% / 6%</td><td>The gap is mostly stock-based compensation; say which one you use</td></tr>
+<tr><td>Free cash flow</td><td>$251M, about 21% margin (Q3 2025: $214M, about 24%)</td><td>FCF grew in dollars but margin dipped as investment rose</td></tr>
+<tr><td>$100K+ ARR customers</td><td>About 4,860, up 20%</td><td>Large-customer base keeps compounding</td></tr>
+<tr><td>Trailing-12-month NRR / GRR</td><td>"Low 120%s" / "mid to high 90s%"</td><td>Elite expansion, very low churn</td></tr>
+<tr><td>Cash and securities</td><td>$5.2B</td><td>Ample room to invest</td></tr>
+<tr><td>FY2026 guide</td><td>Revenue $4.515B to $4.525B; non-GAAP operating income $1.095B to $1.105B</td><td>Q4 guide ($1.19B to $1.20B) assumes the largest customer at its minimum commit</td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Source: Datadog Q3 2026 results press release (Nov 4, 2026); retention bands from the Q3 2026 filings cited in chapter 05. Links in the Changelog entry for 2026-11-21.</p>
+
+<div class="callout example"><span class="lbl">Worked example · Datadog Rule of 40</span>
+<ul>
+  <li><b>FCF version:</b> 35% revenue growth + 21% FCF margin = <b>56</b>. Comfortably above 40.</li>
+  <li><b>GAAP operating margin version:</b> 35% + 6% = <b>41</b>. Still passes, but barely; this is the version a skeptic will use because it charges stock comp as a cost.</li>
+  <li><b>Forward look:</b> if growth slows to the Q4 guide of about 25% and FCF margin holds near 21%, the score falls to about 46. The lesson: Rule of 40 is dominated by growth at high-growth companies, so a growth deceleration is the main risk to the score, not margin.</li>
+  <li><b>Interview move:</b> always say which margin you used and why. "I use FCF margin because it is cash, but note GAAP margin would give 41."</li>
+</ul>
+</div>
+
+<h3>Magic number and CAC payback: worked example (illustrative)</h3>
+<div class="callout example"><span class="lbl">Worked example · sales efficiency</span>
+<p>An illustrative mid-size SaaS company: revenue grows from $200M in Q1 to $212M in Q2. Q1 sales &amp; marketing spend was $60M. Gross margin is 80%. Net new ARR in Q2 is $50M.</p>
+<pre><code>Magic number = (212 - 200) x 4 / 60 = 48 / 60 = 0.80
+CAC payback  = 60 / (50 x 0.80) = 60 / 40 = 1.5 years = 18 months</code></pre>
+<p><b>Read:</b> a 0.80 magic number says each dollar of S&amp;M buys 80 cents of new annualized revenue within a quarter, which is a green light to add sales capacity. The 18-month payback confirms it. If the magic number were 0.4, the operator answer is not "cut S&amp;M" but "diagnose the funnel": win rates, ramp time of new reps, deal size, and mix of new logo vs expansion.</p>
+</div>
+<div class="callout warn"><span class="lbl">Where these metrics lie</span><ul>
+<li><b>Magic number</b> ignores the lag between spend and revenue; in long enterprise cycles, use a two-quarter lag.</li>
+<li><b>CAC payback</b> without gross margin flatters low-margin businesses; always multiply by gross margin.</li>
+<li><b>NRR</b> is cohort-weighted by dollars, so one giant customer can move it by points (see chapter 05).</li>
+<li><b>Rule of 40</b> can be gamed by cutting S&amp;M to inflate margin while sacrificing future growth.</li></ul></div>
+
+<h3>Practice drill (try before opening)</h3>
+<div class="callout"><span class="lbl">Prompt (illustrative)</span>Google Cloud BizOps: a SaaS partner reports NRR flat at 115%, but GRR fell from 93% to 89% and the magic number rose from 0.6 to 0.9. Revenue growth is unchanged. What is going on, and what would you worry about?</div>
+<details><summary>Show model answer</summary>
+<p><b>Answer first:</b> retention quality got worse and expansion is masking it. GRR down four points means four more points of churn and contraction; NRR flat means expansion grew by about four points to offset it. Rising magic number with flat growth suggests S&amp;M was cut or shifted toward cheaper expansion deals, not that new-logo selling improved.</p>
+<ol><li><b>Split churn vs contraction</b> by segment: is SMB churning while enterprise expands?</li>
+<li><b>Check expansion concentration:</b> if a few accounts drive the expansion, the flat NRR is fragile.</li>
+<li><b>Check S&amp;M mix:</b> did new-logo spend fall? That boosts the magic number now and hurts growth in two to three quarters.</li>
+<li><b>Recommend:</b> a churn-reason deep dive, customer success coverage for at-risk segments, and tracking GRR as a guardrail metric next to NRR in the WBR.</li></ol>
+</details>
+
+<div class="quiz" data-a="2">
+  <div class="q">Self-check: A company has 112% NRR and new-logo ARR equal to 15% of starting ARR. Roughly what is total ARR growth?</div>
+  <button class="opt">12%</button>
+  <button class="opt">15%</button>
+  <button class="opt">27%</button>
+  <button class="opt">127%</button>
+  <div class="exp">Total growth = (NRR - 1) + new-logo contribution = 12% + 15% = 27%.</div>
+</div>
+
+<div class="quiz" data-a="1">
+  <div class="q">Self-check: Revenue grew $10M quarter over quarter, prior-quarter S&amp;M was $50M. What is the magic number?</div>
+  <button class="opt">0.2</button>
+  <button class="opt">0.8</button>
+  <button class="opt">5.0</button>
+  <button class="opt">1.25</button>
+  <div class="exp">($10M x 4) / $50M = 0.8. Annualize the revenue change, then divide by the prior-quarter spend.</div>
+</div>
+`});
+</script>
+
+<script id="boot-script">
+/* boot: order chapters by Part then num, build nav, measure, show */
+window.addEventListener('load',()=>{ sortChapters(); buildNav(); measurePages();
+  const h=location.hash.replace('#',''); if(h&&CH.find(c=>c.id===h)) show(h); else show('intro');
+});
+</script>
+</body>
+</html>
