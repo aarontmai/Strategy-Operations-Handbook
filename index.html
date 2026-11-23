@@ -481,6 +481,16 @@ chapter({part:"Front matter", id:"intro", num:"00", title:"How to use this handb
 chapter({part:"Front matter", id:"changelog", num:"00b", title:"Updates & Changelog", mins:3, tag:"Auto-maintained", tool:true, html:`
 <p>This handbook is maintained by a daily agent that researches news at Datadog, Spotify, Google, DoorDash and Uber, adds chapters, and freshens numbers. Newest entries first. Each entry lists sources.</p>
 
+<div class="callout hy"><span class="lbl">2026-11-22 · run 8 · Google deep-dive</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('google-deep-dive')">10 Google Deep-Dive: Search, Cloud, YouTube and the AI Capex Bet</a> (Part VI · Company Deep-Dives), with a portfolio diagram, a Q3 2026 segment table, a P&amp;L levers table, three worked examples on real numbers (Cloud incremental margin, backlog conversion, capex intensity and FCF), a strategic bets table, a table of S&amp;O team problems, interview emphasis, a hidden-answer AI Mode revenue-per-query drill, a common-mistakes table, and two quizzes.</li>
+  <li><b>Glossary:</b> added 9 terms (Cloud backlog, incremental margin, capex intensity, traffic acquisition costs, revenue per query, AI Mode, Google Services, Other Bets, TPU).</li>
+  <li><b>News: Alphabet Q3 2026 (Oct 28).</b> Revenue $127.6B (+25%); operating income $40.6B (31.8% margin). Google Cloud revenue $30.7B (+103%) with a 36.2% operating margin and a $561B backlog. Search and other $63.4B (+12%, slowing from +17% in Q2, with FX and lower AI Mode monetization cited). YouTube ads $11.2B (+9%). Capex $51.4B pushed free cash flow to negative $9.1B; the CFO said 2027 capex will "increase significantly."
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://9to5google.com/2026/10/28/alphabet-q3-2026-earnings/" target="_blank">9to5Google</a> · <a href="https://www.jamessharp.co.uk/market-news/alphabet-announces-third-quarter-2026-results/" target="_blank">Q3 results summary</a> · <a href="https://www.neoteo.com/en/alphabets-q3-2026-results-search-and-cloud-grow-free-cash-flow-is-negative" target="_blank">Neoteo</a> · <a href="https://marketbeat.com/instant-alerts/transcript-alphabet-q3-earnings-call-highlights-2026-10-29/" target="_blank">MarketBeat</a> · <a href="https://ny1.com/nyc/all-boroughs/ap-top-news/2026/10/28/google-misses-revenue-expectations-alphabet-stock-sinks-in-early-after-hours-trading" target="_blank">AP via NY1</a></div></li>
+  <li><b>News: Gemini agent in Workspace.</b> At the October Gemini at Work event Google Cloud introduced a single general-purpose Gemini agent built into Workspace, with persistent cloud execution and multi-agent orchestration.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Source: <a href="https://blog.google/intl/zh-tw/products/cloud/google-cloud-gemini/" target="_blank">Google Cloud blog (Oct 2026)</a></div></li>
+</ul></div>
+
 <div class="callout hy"><span class="lbl">2026-11-21 · run 7 · SaaS metrics framework</span>
 <ul>
   <li><b>New chapter:</b> <a onclick="show('saas-metrics')">09 SaaS Metrics for Operators: ARR, NRR, GRR, Magic Number, Rule of 40, CAC Payback</a> (Part V · SaaS), with a six-metric scorecard table, an ARR bridge waterfall diagram, a seat vs usage-based comparison, a Datadog Q3 2026 scorecard, a Rule of 40 worked example on real numbers, a magic number and CAC payback worked example, a hidden-answer GRR vs NRR drill, and two quizzes.</li>
@@ -1048,6 +1058,15 @@ var GLOSS = [
 ["cRPO","Current remaining performance obligations: contracted revenue expected to be recognized in the next 12 months."],
 ["Stock-based compensation","Non-cash expense for equity paid to employees; the main gap between GAAP and non-GAAP margins at software companies."],
 ["ARR bridge","Waterfall from starting to ending ARR showing new logos, expansion, contraction and churn."],
+["Cloud backlog","Contracted Google Cloud revenue not yet recognized; $561B at Q3 2026, with just over 55% expected to convert within 24 months."],
+["Incremental margin","Change in operating income divided by change in revenue; shows how much of each new revenue dollar reaches profit."],
+["Capex intensity","Capital expenditures as a percent of revenue; Alphabet was about 40% in Q3 2026 versus about 23% a year earlier."],
+["Traffic acquisition costs","TAC: payments Google makes to distribution partners (browsers, phone makers, network sites) for search and ad traffic."],
+["Revenue per query","Search revenue divided by query volume; product of ad coverage, ads per query, click-through rate and cost per click."],
+["AI Mode","Google Search surface that answers queries with Gemini-generated responses; monetized lower than classic Search in Q3 2026."],
+["Google Services","Alphabet segment holding Search, YouTube ads, Google Network, and subscriptions, platforms and devices."],
+["Other Bets","Alphabet segment for early-stage businesses such as Waymo and Verily."],
+["TPU","Tensor Processing Unit: Google custom AI chip used internally and rented to outside customers through Google Cloud."],
 ];
 var glossHTML = '<input id="hbGloss" placeholder="🔍 Filter glossary… (try NRR, take rate, MECE)" oninput="filterHbGloss(this.value)" style="width:100%;padding:11px 14px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;color:var(--txt);font-size:14px;margin:8px 0 16px"><div id="hbGlossList">'
  + GLOSS.slice().sort(function(a,b){return a[0].localeCompare(b[0]);}).map(function(g){return '<div class="gterm" data-t="'+(g[0]+' '+g[1]).toLowerCase().replace(/"/g,'')+'"><b>'+g[0]+'</b> — '+g[1]+'</div>';}).join('') + '</div>';
@@ -1925,6 +1944,156 @@ CAC payback  = 60 / (50 x 0.80) = 60 / 40 = 1.5 years = 18 months</code></pre>
   <button class="opt">5.0</button>
   <button class="opt">1.25</button>
   <div class="exp">($10M x 4) / $50M = 0.8. Annualize the revenue change, then divide by the prior-quarter spend.</div>
+</div>
+`});
+</script>
+
+<script>
+chapter({part:"Part VI · Company Deep-Dives", id:"google-deep-dive", num:"10", title:"Google Deep-Dive: Search, Cloud, YouTube and the AI Capex Bet", mins:22, tag:"Company · Google", html:`
+<p>Alphabet is the best case in this handbook for <b>portfolio strategy and capital allocation</b>. One enormously profitable business (Search ads) funds a fast-growing one (Google Cloud), a large media business (YouTube), a hardware and subscriptions line, and a set of long-dated bets. In 2026 the operator question at Google is: <i>how do we turn record AI capital spending into revenue fast enough, while AI changes how Search itself makes money?</i></p>
+
+<h3>The portfolio in one picture</h3>
+<div class="diagwrap">
+<svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="13">
+  <defs><marker id="gg10" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#93a1b3"/></marker></defs>
+  <g fill="#1b232e" stroke="#f5a524" stroke-width="1.5">
+    <rect x="280" y="15" width="200" height="56" rx="10"/>
+    <rect x="20" y="120" width="220" height="64" rx="10"/>
+    <rect x="270" y="120" width="220" height="64" rx="10"/>
+    <rect x="520" y="120" width="220" height="64" rx="10"/>
+    <rect x="270" y="220" width="220" height="50" rx="10"/>
+  </g>
+  <g fill="#e8eef5" text-anchor="middle">
+    <text x="380" y="39">Alphabet Q3 2026</text><text x="380" y="57" font-size="11" fill="#93a1b3">$127.6B revenue, 31.8% op margin</text>
+    <text x="130" y="145">Google Services</text><text x="130" y="163" font-size="11" fill="#93a1b3">$96.3B rev, $39.2B op income</text>
+    <text x="380" y="145">Google Cloud</text><text x="380" y="163" font-size="11" fill="#93a1b3">$30.7B rev, $11.1B op income</text>
+    <text x="630" y="145">Other Bets</text><text x="630" y="163" font-size="11" fill="#93a1b3">Waymo, Verily and others (small)</text>
+    <text x="380" y="243">AI infrastructure (TPUs, data centers)</text><text x="380" y="260" font-size="11" fill="#93a1b3">$51.4B capex in the quarter</text>
+  </g>
+  <g stroke="#93a1b3" stroke-width="1.3" fill="none" marker-end="url(#gg10)">
+    <path d="M330,71 L160,120"/><path d="M380,71 L380,120"/><path d="M430,71 L600,120"/>
+    <path d="M130,184 L270,240"/><path d="M380,220 L380,184"/>
+  </g>
+  <g fill="#93a1b3" font-size="11">
+    <text x="150" y="215">cash funds</text><text x="388" y="205">capacity</text>
+  </g>
+</svg>
+</div>
+<p>Google Services holds Search, YouTube ads, the Google Network (ads on partner sites and apps), and subscriptions, platforms and devices (YouTube Premium, Google One, Play, Pixel). Google Cloud holds Google Cloud Platform, Workspace and AI infrastructure sold to outside customers. The same TPU and data center fleet serves both segments, so capacity allocation between internal products (Gemini, AI Mode) and paying Cloud customers is itself a strategic decision.</p>
+
+<h3>Q3 2026 by the numbers</h3>
+<table>
+<tr><th>Metric (Q3 2026, reported Oct 28)</th><th>Reported</th><th>Change Y/Y</th></tr>
+<tr><td>Total revenue</td><td>$127.58B</td><td>+25%</td></tr>
+<tr><td>Operating income</td><td>$40.58B (31.8% margin)</td><td>+30%</td></tr>
+<tr><td>Google Services revenue</td><td>$96.30B; segment operating income $39.16B (about 41% margin)</td><td>+11%; op income from $33.53B</td></tr>
+<tr><td>Search and other</td><td>$63.35B</td><td>+12% (down from +17% in Q2); FX and lower AI Mode monetization cited</td></tr>
+<tr><td>YouTube ads</td><td>$11.2B</td><td>+9%; below consensus of about $11.4B</td></tr>
+<tr><td>Subscriptions, platforms and devices</td><td>$14.29B; over 150M YouTube Music and Premium subs (incl. trials)</td><td>+11% (from $12.87B)</td></tr>
+<tr><td>Google Network (derived)</td><td>about $7.5B (Services minus the three lines above)</td><td>not stated in sources used</td></tr>
+<tr><td>Google Cloud revenue</td><td>$30.71B</td><td>+103% (from $15.16B)</td></tr>
+<tr><td>Google Cloud operating income</td><td>$11.12B (36.2% margin)</td><td>from $3.59B (23.7% margin)</td></tr>
+<tr><td>Cloud backlog</td><td>$561B; just over 55% expected to convert to revenue within 24 months</td><td></td></tr>
+<tr><td>Capital expenditures</td><td>$51.36B</td><td>from $23.95B</td></tr>
+<tr><td>Free cash flow</td><td>negative $9.07B</td><td>from positive $24.55B</td></tr>
+<tr><td>Other income</td><td>loss of $8.22B, mostly an $8.66B loss on equity securities; EPS $2.12</td><td>from a $12.76B gain</td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Sources: <a href="https://www.jamessharp.co.uk/market-news/alphabet-announces-third-quarter-2026-results/" target="_blank">Alphabet Q3 2026 results summary</a> · <a href="https://9to5google.com/2026/10/28/alphabet-q3-2026-earnings/" target="_blank">9to5Google</a> · <a href="https://www.neoteo.com/en/alphabets-q3-2026-results-search-and-cloud-grow-free-cash-flow-is-negative" target="_blank">Neoteo</a> · <a href="https://marketbeat.com/instant-alerts/transcript-alphabet-q3-earnings-call-highlights-2026-10-29/" target="_blank">MarketBeat call highlights</a> · <a href="https://investinglive.com/stocks/alphabet-q3-google-cloud-revenue-jumps-103-but-search-and-ad-sales-miss-forecasts/" target="_blank">investingLive</a> · <a href="https://ny1.com/nyc/all-boroughs/ap-top-news/2026/10/28/google-misses-revenue-expectations-alphabet-stock-sinks-in-early-after-hours-trading" target="_blank">AP via NY1</a>. For primary filings use <a href="https://abc.xyz/investor/" target="_blank">abc.xyz/investor</a>. The CFO said capex will "increase significantly" in 2027, with detail promised on the Q4 call; reported figures above $300B for 2027 were not confirmed in a primary source.</p>
+
+<h3>How to read the Alphabet P&amp;L</h3>
+<table>
+<tr><th>Lever</th><th>What moves it</th><th>Operator question</th></tr>
+<tr><td><b>Search revenue</b></td><td>Query volume, share of queries with ads, ads per page, click-through rate, cost per click, traffic acquisition costs (TAC) paid to Apple, Samsung and browser partners</td><td>When a query moves from classic results to an AI answer, how much revenue per query survives?</td></tr>
+<tr><td><b>YouTube</b></td><td>Watch time (Shorts vs long-form vs connected TV), ad load, CPMs, subscription conversion</td><td>Is Shorts watch time monetizing near long-form yet, and is Premium cannibalizing ads?</td></tr>
+<tr><td><b>Cloud growth</b></td><td>New bookings, backlog conversion, available compute capacity, AI infrastructure deals, Gemini Enterprise seats</td><td>Is growth limited by demand or by how fast capacity comes online?</td></tr>
+<tr><td><b>Cloud margin</b></td><td>Scale, depreciation of new data centers, mix of high-margin software (Workspace, databases) vs raw compute</td><td>Will depreciation from record capex compress margins in 2027?</td></tr>
+<tr><td><b>Capex and FCF</b></td><td>TPU and GPU purchases, data center construction, power contracts</td><td>What return per dollar of capex, and over what payback period?</td></tr>
+</table>
+
+<div class="callout example"><span class="lbl">Worked example · Cloud incremental margin (real Q3 numbers)</span>
+<table>
+<tr><th>Line</th><th>Q3 2025</th><th>Q3 2026</th><th>Change</th></tr>
+<tr><td>Cloud revenue</td><td>$15.16B</td><td>$30.71B</td><td>+$15.55B</td></tr>
+<tr><td>Cloud operating income</td><td>$3.59B</td><td>$11.12B</td><td>+$7.53B</td></tr>
+<tr><td>Operating margin</td><td>23.7%</td><td>36.2%</td><td>+12.5 pts</td></tr>
+</table>
+<p><b>Incremental margin</b> = change in operating income / change in revenue = 7.53 / 15.55 = <b>48%</b>. Each new Cloud dollar dropped about 48 cents to operating income, double the margin of the base business a year earlier. That is operating leverage: sales, R&amp;D and overhead grew much slower than revenue. The operator follow-up: incremental margin is flattered when capacity is full (high utilization) and before depreciation on newly built data centers fully hits the P&amp;L. Ask what the margin looks like once 2026 capex is depreciating.</p>
+</div>
+
+<div class="callout example"><span class="lbl">Worked example · what the backlog implies (simplified)</span>
+<pre><code>Backlog                          = $561B
+Share converting within 24 months ~ 55%  ->  about $309B
+Average per quarter over 8 qtrs  = 309 / 8  ~ $38.6B
+Current quarterly Cloud revenue  = $30.7B</code></pre>
+<p>Even with zero new bookings, the existing backlog alone implies average quarterly recognition about 25% above today. Real recognition is not uniform (large AI infrastructure contracts ramp as capacity is delivered), but the math tells you the near-term constraint is <b>supply of compute, not demand</b>. That reframes the S&amp;O problem: capacity planning, sequencing of data center go-lives, and which customers get capacity first.</p>
+</div>
+
+<div class="callout example"><span class="lbl">Worked example · capex intensity and free cash flow</span>
+<p>Operating cash flow = FCF + capex = -9.07 + 51.36 = <b>about $42.3B</b>. Capex intensity = 51.36 / 127.58 = <b>40% of revenue</b>, up from about 23.95 / 102 = 23% a year ago (Q3 2025 revenue backed out from the 25% growth rate). The business still throws off more than $40B of operating cash per quarter; the negative FCF is a choice to reinvest all of it and more. In an interview, separate "the business is weaker" (it is not: operating income +30%) from "the company is spending ahead of revenue" (it is).</p>
+</div>
+
+<h3>Strategic bets to know</h3>
+<table>
+<tr><th>Bet</th><th>Why it matters</th><th>Risk an operator would track</th></tr>
+<tr><td><b>Gemini and AI Mode in Search</b></td><td>Defends query share against AI assistants; queries in AI Mode are longer and more complex</td><td>Revenue per query in AI Mode vs classic Search; management cited lower AI Mode monetization in Q3</td></tr>
+<tr><td><b>Gemini Enterprise and agents</b></td><td>Next '26 (April) launched the Gemini Enterprise Agent Platform; an October Gemini at Work event added a general-purpose Gemini agent inside Workspace</td><td>Seat adoption, usage per seat, attach to Workspace and GCP contracts</td></tr>
+<tr><td><b>TPUs (8th generation)</b></td><td>Custom silicon lowers cost per unit of compute and is sold to outside AI labs through Cloud</td><td>Delivery timing, power availability, utilization</td></tr>
+<tr><td><b>YouTube on TV and Shorts</b></td><td>Connected TV brings premium CPMs; Shorts competes for short-video time</td><td>Ad growth slowed to 9% in Q3; monetization gap between formats</td></tr>
+<tr><td><b>Waymo (Other Bets)</b></td><td>Robotaxi business; also partners with Uber in some cities</td><td>Cost per mile, city expansion pace, regulation</td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Sources: <a href="https://cloud.google.com/blog/topics/google-cloud-next/google-cloud-next-2026-wrap-up" target="_blank">Google Cloud Next 2026 recap</a> · <a href="https://blog.google/intl/zh-tw/products/cloud/google-cloud-gemini/" target="_blank">Google Cloud blog, Gemini at Work (Oct 2026)</a>.</p>
+
+<h3>What S&amp;O and BizOps teams at Google work on</h3>
+<p>Google has strategy and operations, business operations and "BizOps" roles across Cloud, Ads (Global Business Organization), YouTube, Platforms and Devices, and central finance and planning. Typical problems, grouped by where they sit:</p>
+<table>
+<tr><th>Team area</th><th>Typical problem</th><th>Skills it uses from this handbook</th></tr>
+<tr><td>Cloud GTM S&amp;O</td><td>Sales capacity and territory planning, segment and vertical prioritization, partner strategy, deal-desk pricing</td><td>Market sizing, SaaS metrics (<a onclick="show('saas-metrics')">ch. 09</a>), capacity planning</td></tr>
+<tr><td>Cloud infrastructure planning</td><td>Allocating scarce compute across customers and internal teams; forecasting demand against data center go-lives</td><td>Forecasting, scenario modeling, driver trees (<a onclick="show('driver-trees-north-star')">ch. 06</a>)</td></tr>
+<tr><td>Ads and Search BizOps</td><td>Diagnosing revenue per query changes, advertiser segment performance, new ad format launches in AI surfaces</td><td>Driver trees, experimentation, root-cause diagnosis</td></tr>
+<tr><td>YouTube BizOps</td><td>Creator economics, subscription bundles and pricing, Shorts monetization</td><td>Unit economics (<a onclick="show('unit-economics')">ch. 03</a>), pricing</td></tr>
+<tr><td>Devices and subscriptions</td><td>Pixel launch planning, Google One and AI plan tiering</td><td>Launch playbooks, cohort analysis</td></tr>
+</table>
+<div class="callout tip"><span class="lbl">Interview emphasis</span>
+<p>Google says publicly that it uses structured interviews with consistent questions and scoring rubrics, assessing general cognitive ability (how you structure an ambiguous problem), role-related knowledge, leadership, and "Googleyness" (comfort with ambiguity, collaboration, user focus). See <a href="https://www.google.com/about/careers/applications/how-we-hire/" target="_blank">Google: How we hire</a>. For S&amp;O loops expect a structured case (often sizing or diagnosis), a data or spreadsheet exercise, and behavioral questions. For Aaron: the Samsung data intelligence work maps directly to "role-related knowledge" for analytics-heavy BizOps roles, and Hyundai telematics work gives a credible story about hardware plus cloud systems for Cloud or Devices teams.</p>
+</div>
+
+<h3>Practice drill: AI Mode and Search growth</h3>
+<p><b>Prompt (numbers illustrative):</b> Last year 100 units of queries were all classic Search at revenue per query (RPQ) of 1.00, so revenue = 100. This year queries grow 8% to 108. Pricing (CPC and ad quality) lifts classic RPQ 4% to 1.04. But 15% of queries now go to AI Mode, which monetizes at 60% of classic RPQ. (1) What is Search revenue growth? (2) What growth would it have been with no AI Mode shift? (3) What AI Mode monetization ratio keeps growth at 10%?</p>
+<details><summary>Show model answer</summary>
+<pre><code>(1) Revenue = 108 x (0.85 x 1.04 + 0.15 x 1.04 x 0.60)
+            = 108 x (0.884 + 0.0936) = 108 x 0.9776 = 105.6   -> +5.6%
+(2) No shift: 108 x 1.04 = 112.3                              -> +12.3%
+    Cost of the shift: about 6.7 points of growth
+(3) Need 108 x (0.884 + 0.156 r) = 110
+    0.884 + 0.156 r = 1.0185  ->  r = 0.86</code></pre>
+<p><b>Takeaway:</b> AI Mode must monetize at about 86% of classic per query to keep growth at 10%. The strategic answer is to grow total queries (AI answers can increase engagement), close the monetization gap with new ad formats inside AI answers, and track RPQ by surface as a weekly KPI. Common mistake: treating AI Mode as pure cannibalization and ignoring that it may raise total query volume.</p>
+</details>
+
+<h3>Common mistakes when discussing Google</h3>
+<table>
+<tr><th>Mistake</th><th>Better framing</th></tr>
+<tr><td>"Negative FCF means Google is in trouble"</td><td>Operating income rose 30%; FCF is negative because capex nearly doubled by choice</td></tr>
+<tr><td>Treating Cloud growth as only demand</td><td>Backlog math says capacity is the constraint; ask about go-live timing</td></tr>
+<tr><td>Quoting Search growth without TAC or FX</td><td>Management attributed part of the Q3 slowdown to FX; separate volume, price and currency</td></tr>
+<tr><td>Ignoring non-operating items</td><td>The Q3 EPS miss was driven by an $8.7B equity securities loss, not operations</td></tr>
+</table>
+
+<div class="quiz" data-a="2">
+  <div class="q">Google Cloud revenue rose from $15.16B to $30.71B and operating income from $3.59B to $11.12B. What is the incremental operating margin?</div>
+  <button class="opt">23.7%</button>
+  <button class="opt">36.2%</button>
+  <button class="opt">About 48%</button>
+  <button class="opt">About 74%</button>
+  <div class="exp">(11.12 - 3.59) / (30.71 - 15.16) = 7.53 / 15.55 = about 48%. Incremental margin uses the change in both lines, not the ending margin.</div>
+</div>
+
+<div class="quiz" data-a="0">
+  <div class="q">A $561B backlog with about 55% converting in 24 months implies roughly $38.6B per quarter versus $30.7B of current quarterly Cloud revenue. What is the best S&amp;O reading?</div>
+  <button class="opt">Near-term growth is mostly limited by compute capacity coming online</button>
+  <button class="opt">Demand is weakening, so sales capacity should be cut</button>
+  <button class="opt">Backlog is irrelevant because it is not revenue</button>
+  <button class="opt">Cloud margins must fall next quarter</button>
+  <div class="exp">Contracted demand already exceeds the current run rate, so the binding constraint is delivering capacity. Backlog is not revenue yet, but it is the best leading indicator a Cloud operator has.</div>
 </div>
 `});
 </script>
