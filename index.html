@@ -481,6 +481,18 @@ chapter({part:"Front matter", id:"intro", num:"00", title:"How to use this handb
 chapter({part:"Front matter", id:"changelog", num:"00b", title:"Updates & Changelog", mins:3, tag:"Auto-maintained", tool:true, html:`
 <p>This handbook is maintained by a daily agent that researches news at Datadog, Spotify, Google, DoorDash and Uber, adds chapters, and freshens numbers. Newest entries first. Each entry lists sources.</p>
 
+<div class="callout hy"><span class="lbl">2026-11-23 · run 9 · DoorDash and Instacart M&amp;A case</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('case-doordash-instacart')">11 Case: DoorDash Buys Instacart. Build the Synergy Case and the Integration Plan</a> (Part VII · Case Practice), the first M&amp;A case. It has a Q3 2026 side-by-side table for both companies, a deal-terms table, a synergy tree, a hidden-answer bottom-up run-rate model, a synergy waterfall diagram, a worked example on phasing and premium coverage, a hidden model recommendation, a synergy tracker, a common-mistakes table, the case timer, and two quizzes.</li>
+  <li><b>Glossary:</b> added 10 terms (cost synergy, revenue synergy, dis-synergy, run-rate synergies, integration management office, clean team, gun-jumping, HSR waiting period, acquisition premium, bridge loan).</li>
+  <li><b>News: Instacart Q3 2026.</b> GTV $10.53B (+15%), orders 91.4M (+10%), revenue $1.095B (+17%), adjusted EBITDA $342M (+23%, 3.2% of GTV), free cash flow $307M. Instacart suspended guidance, withdrew its long-term targets and cancelled its earnings call because of the pending deal.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://www.sec.gov/Archives/edgar/data/0001579091/000119312526437014/d24470dex991.htm" target="_blank">Instacart Q3 2026 release (8-K)</a> · <a href="https://www.sec.gov/Archives/edgar/data/0001579091/000157909126000055/cart-20260930.htm" target="_blank">Instacart Q3 2026 10-Q</a> · <a href="https://zacks.com/stock/news/3020832/cart-q3-earnings-miss-revenues-beat-doordash-deal-takes-focus" target="_blank">Zacks</a></div></li>
+  <li><b>News: DoorDash and Instacart deal terms.</b> $65 per share (about $17B equity value). Holders elect cash, 0.3372 DASH shares, or a mix, with stock capped at 25% of consideration. JPMorgan committed a 364-day bridge loan of up to $13.0B. Close is expected late 2027 or 1H 2028 pending HSR and approvals in Canada and Israel.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://techcrunch.com/2026/10/29/doordash-to-acquire-instacart-for-17b/" target="_blank">TechCrunch</a> · <a href="https://www.supermarketnews.com/mergers-acquisitions/doordash-to-acquire-instacart-for-17b" target="_blank">Supermarket News</a> · <a href="https://www.sec.gov/Archives/edgar/data/0001792789/000179278926000070/dash-20260930.htm" target="_blank">DoorDash Q3 2026 10-Q</a></div></li>
+  <li><b>News: Datadog</b> said on Nov 17 it was named a Leader in the 2026 Gartner Magic Quadrant for Observability Pipelines, and it will present at the UBS (Dec 1) and Barclays (Dec 9) investor conferences.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://www.datadoghq.com/about/latest-news/press-releases/datadog-named-a-leader-in-the-2026-gartner-magic-quadrant-for-observability-pipelines/" target="_blank">Datadog press release</a> · <a href="https://investors.datadoghq.com/news-releases/news-release-details/datadog-present-upcoming-investor-conferences-17" target="_blank">Datadog IR</a></div></li>
+</ul></div>
+
 <div class="callout hy"><span class="lbl">2026-11-22 · run 8 · Google deep-dive</span>
 <ul>
   <li><b>New chapter:</b> <a onclick="show('google-deep-dive')">10 Google Deep-Dive: Search, Cloud, YouTube and the AI Capex Bet</a> (Part VI · Company Deep-Dives), with a portfolio diagram, a Q3 2026 segment table, a P&amp;L levers table, three worked examples on real numbers (Cloud incremental margin, backlog conversion, capex intensity and FCF), a strategic bets table, a table of S&amp;O team problems, interview emphasis, a hidden-answer AI Mode revenue-per-query drill, a common-mistakes table, and two quizzes.</li>
@@ -1067,6 +1079,16 @@ var GLOSS = [
 ["Google Services","Alphabet segment holding Search, YouTube ads, Google Network, and subscriptions, platforms and devices."],
 ["Other Bets","Alphabet segment for early-stage businesses such as Waymo and Verily."],
 ["TPU","Tensor Processing Unit: Google custom AI chip used internally and rented to outside customers through Google Cloud."],
+["Cost synergy","Savings from combining two companies, such as overlapping tech, G&A, procurement or fulfillment costs."],
+["Revenue synergy","Extra revenue only the combined company can earn, such as cross-selling or a larger ads network; less certain than cost synergies."],
+["Dis-synergy","Value lost because of a merger, such as partners or customers who leave; subtract it to get net synergies."],
+["Run-rate synergies","Annualized synergies once fully captured, usually 2 to 3 years after close; not what shows up in year one."],
+["Integration management office","IMO: the cross-functional team that plans Day-1 readiness and tracks synergy capture after an acquisition."],
+["Clean team","A walled-off group allowed to see competitively sensitive data from the other party before close, under strict rules."],
+["Gun-jumping","Acting as one company before regulatory approval, such as coordinating prices; illegal under US antitrust law."],
+["HSR waiting period","Hart-Scott-Rodino review period during which US antitrust agencies examine a deal before it can close."],
+["Acquisition premium","Price paid above the target pre-deal market value; compare it with the capitalized value of synergies."],
+["Bridge loan","Short-term financing committed to guarantee deal funding until longer-term debt or bonds are issued."],
 ];
 var glossHTML = '<input id="hbGloss" placeholder="🔍 Filter glossary… (try NRR, take rate, MECE)" oninput="filterHbGloss(this.value)" style="width:100%;padding:11px 14px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;color:var(--txt);font-size:14px;margin:8px 0 16px"><div id="hbGlossList">'
  + GLOSS.slice().sort(function(a,b){return a[0].localeCompare(b[0]);}).map(function(g){return '<div class="gterm" data-t="'+(g[0]+' '+g[1]).toLowerCase().replace(/"/g,'')+'"><b>'+g[0]+'</b> — '+g[1]+'</div>';}).join('') + '</div>';
@@ -2094,6 +2116,166 @@ Current quarterly Cloud revenue  = $30.7B</code></pre>
   <button class="opt">Backlog is irrelevant because it is not revenue</button>
   <button class="opt">Cloud margins must fall next quarter</button>
   <div class="exp">Contracted demand already exceeds the current run rate, so the binding constraint is delivering capacity. Backlog is not revenue yet, but it is the best leading indicator a Cloud operator has.</div>
+</div>
+`});
+</script>
+
+<script>
+chapter({part:"Part VII · Case Practice", id:"case-doordash-instacart", num:"11", title:"Case: DoorDash Buys Instacart. Build the Synergy Case and the Integration Plan", mins:25, tag:"Case · DoorDash · M&amp;A", html:`
+<p>The third full practice case, and the first on <b>M&amp;A</b>. It is built on a live deal: on Oct 28, 2026 DoorDash agreed to acquire Instacart (Maplebear) for about $17B, saying it targets more than $500M of annual net synergies and will reinvest more than 100% of synergies in year one. Corp dev and bankers negotiate the price; S&amp;O teams build the synergy model, the integration plan and the tracker that proves the synergies showed up. Attempt each step before opening the model answer. Pair it with <a onclick="show('doordash-deep-dive')">04 DoorDash Deep-Dive</a> and <a onclick="show('unit-economics')">03 Unit Economics</a>.</p>
+
+<div class="callout"><span class="lbl">The prompt (illustrative)</span>"You have joined the DoorDash integration management office (IMO) as the S&amp;O lead for the Instacart deal. The CFO wants three things by the end of the month: (1) a bottom-up synergy model that supports or challenges the public $500M+ net target, (2) a phasing plan that squares with reinvesting more than 100% in year one, and (3) a view on whether the premium we paid is covered by synergies. The deal will not close until late 2027 or the first half of 2028."</div>
+
+<h3>Step 0 · What the real companies look like</h3>
+<p>Reported figures for Q3 2026 (quarter ended Sept 30, 2026). Everything after these tables is an illustrative model, not company guidance.</p>
+<table>
+<tr><th>Q3 2026</th><th>Instacart</th><th>DoorDash</th></tr>
+<tr><td>Orders</td><td>91.4M, +10% Y/Y</td><td>993M, +28% (+17% ex-Deliveroo)</td></tr>
+<tr><td>Gross value</td><td>GTV $10.53B, +15%</td><td>Marketplace GOV $33.9B, +36%</td></tr>
+<tr><td>Average order value</td><td>about $115 (GTV / orders)</td><td>about $34 (rough: total orders include Drive)</td></tr>
+<tr><td>Revenue</td><td>$1.095B, +17% (about 10.4% of GTV)</td><td>$4.62B, +34% (13.6% of GOV)</td></tr>
+<tr><td>Adjusted EBITDA</td><td>$342M, +23% (3.2% of GTV, 31% of revenue)</td><td>$1.06B (3.1% of GOV)</td></tr>
+<tr><td>Free cash flow</td><td>$307M, +13%</td><td>n/a here</td></tr>
+</table>
+<table>
+<tr><th>Deal term</th><th>As announced</th></tr>
+<tr><td>Price</td><td>$65 per share, about $17B equity value; holders elect cash, 0.3372 DASH shares, or a mix; stock capped at 25% of consideration</td></tr>
+<tr><td>Financing</td><td>Cash on hand plus debt; JPMorgan committed a 364-day bridge loan of up to $13.0B; no financing condition</td></tr>
+<tr><td>Timing</td><td>Close expected late 2027 or 1H 2028, subject to HSR, Instacart holder approval, and approvals including Canada and Israel</td></tr>
+<tr><td>Brand</td><td>Instacart brand and app remain; companies operate independently until close</td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Sources: Instacart Q3 2026 release and 10-Q, DoorDash Q3 2026 release, TechCrunch and Supermarket News deal coverage. Links in the Changelog entry for 2026-11-23.</p>
+
+<h3>Step 1 · Clarify before you model</h3>
+<ul>
+  <li><b>Net of what?</b> Does "net synergies" mean after dis-synergies (lost revenue), after reinvestment, or both? Define it on page one; most synergy fights are definition fights.</li>
+  <li><b>Run rate vs realized:</b> $500M is an annual run rate at maturity. What year, and is one-time integration cost excluded?</li>
+  <li><b>Pre-close rules:</b> Until close the two are competitors. What can the IMO see? (Answer: only aggregated data, and anything sensitive goes through a clean team.)</li>
+  <li><b>Strategic intent:</b> Is this a cost deal (consolidate overlap) or a growth deal (cross-sell grocery to DoorDash users, restaurants to Instacart users)? The answer changes which synergies you fight for.</li>
+</ul>
+
+<h3>Step 2 · Structure: the synergy tree</h3>
+<table>
+<tr><th>Bucket</th><th>Mechanism</th><th>Driver to model</th><th>Confidence</th></tr>
+<tr><td><b>Fulfillment</b></td><td>One courier network; batch grocery and restaurant work; better utilization</td><td>Cost per order saved x share of orders affected</td><td>Medium</td></tr>
+<tr><td><b>Tech and G&amp;A</b></td><td>Overlapping platforms, support, corporate functions, cloud contracts</td><td>Overlapping cost base x reduction %</td><td>High (but slow and painful)</td></tr>
+<tr><td><b>Ads</b></td><td>One retail-media network for CPG brands; more inventory and better targeting</td><td>Ad revenue x uplift in fill and price</td><td>Medium</td></tr>
+<tr><td><b>Membership and marketing</b></td><td>One membership fee option; less paid acquisition bidding against each other</td><td>Overlapping marketing spend x reduction</td><td>Medium</td></tr>
+<tr><td><b>Payments and procurement</b></td><td>Scale pricing on card processing, insurance, vendors</td><td>Combined spend x rate cut in bps</td><td>High</td></tr>
+<tr><td><b>Dis-synergies</b></td><td>Retailers that see DoorDash as a rival pull back; overlapping customers stop double-paying</td><td>Revenue at risk x probability</td><td>Low (hard to see pre-close)</td></tr>
+</table>
+
+<h3>Step 3 · Build the run-rate model (illustrative)</h3>
+<p>Try the fulfillment line yourself first: Instacart runs about 91.4M orders a quarter. Assume half of annual orders can share the combined network and save $0.60 each.</p>
+<details><summary>Show the model</summary>
+<pre><code>Annual Instacart orders  ~ 91.4M x 4         = ~366M
+Fulfillment synergy      = 366M x 50% x $0.60 = ~$110M</code></pre>
+<table>
+<tr><th>Bucket (run rate, illustrative)</th><th>Gross $M</th><th>Key assumption</th></tr>
+<tr><td>Fulfillment</td><td>110</td><td>$0.60 per order on half of Instacart orders</td></tr>
+<tr><td>Tech and G&amp;A</td><td>200</td><td>About 20% of an overlapping $1B cost base</td></tr>
+<tr><td>Ads</td><td>150</td><td>Higher fill and pricing on combined retail media</td></tr>
+<tr><td>Membership and marketing</td><td>120</td><td>Stop bidding against each other on paid search and promos</td></tr>
+<tr><td>Payments and procurement</td><td>70</td><td>Scale pricing on combined volume</td></tr>
+<tr><td><b>Gross synergies</b></td><td><b>650</b></td><td></td></tr>
+<tr><td>Dis-synergies</td><td>-150</td><td>Retailer pullback and overlapping-member revenue</td></tr>
+<tr><td><b>Net run-rate synergies</b></td><td><b>500</b></td><td>Matches the public floor; the model is plausible but needs about $650M gross</td></tr>
+</table>
+</details>
+
+<div class="diagwrap">
+<svg viewBox="0 0 680 280" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="11">
+  <line x1="30" y1="230" x2="650" y2="230" stroke="#93a1b3"/>
+  <g fill="#3ecf8e">
+    <rect x="40" y="197" width="60" height="33"/>
+    <rect x="125" y="137" width="60" height="60"/>
+    <rect x="210" y="92" width="60" height="45"/>
+    <rect x="295" y="56" width="60" height="36"/>
+    <rect x="380" y="35" width="60" height="21"/>
+  </g>
+  <rect x="465" y="35" width="60" height="45" fill="#f05252"/>
+  <rect x="550" y="80" width="60" height="150" fill="#f5a524"/>
+  <g fill="#e8eef5" text-anchor="middle">
+    <text x="70" y="191">+110</text><text x="155" y="131">+200</text><text x="240" y="86">+150</text><text x="325" y="50">+120</text><text x="410" y="29">+70</text><text x="495" y="96">-150</text><text x="580" y="74">500</text>
+  </g>
+  <g fill="#93a1b3" text-anchor="middle">
+    <text x="70" y="246">Fulfillment</text><text x="155" y="246">Tech, G&amp;A</text><text x="240" y="246">Ads</text><text x="325" y="246">Membership</text><text x="410" y="246">Payments</text><text x="495" y="246">Dis-synergy</text><text x="580" y="246">Net run rate</text>
+  </g>
+  <text x="650" y="270" fill="#93a1b3" font-size="10" text-anchor="end">Illustrative synergy waterfall, $M per year</text>
+</svg>
+</div>
+
+<h3>Step 4 · Phase it and check the premium</h3>
+<div class="callout example"><span class="lbl">Worked example · phasing and premium coverage (illustrative)</span>
+<table>
+<tr><th>$M</th><th>Year 1</th><th>Year 2</th><th>Year 3</th></tr>
+<tr><td>Net synergies captured (30% / 70% / 100% of 500)</td><td>150</td><td>350</td><td>500</td></tr>
+<tr><td>Reinvestment (lower fees, Dasher pay, grocery selection)</td><td>-200</td><td>-100</td><td>0</td></tr>
+<tr><td><b>Net to EBITDA</b></td><td><b>-50</b></td><td><b>250</b></td><td><b>500</b></td></tr>
+<tr><td>One-time integration cost</td><td>-350</td><td>-200</td><td>-50</td></tr>
+</table>
+<p>Year 1 reinvests 200 / 150 = 133% of captured synergies, consistent with the "more than 100%" message.</p>
+<pre><code>Run-rate EBITDA (Instacart)  ~ $342M x 4      = ~$1.37B
+Price / run-rate EBITDA      ~ $17B / $1.37B   = ~12.4x
+Premium vs pre-deal value    ~ $17B - ~$13.5B  = ~$3.5B (reports put the pre-deal value at $13B to $14B)
+
+Value of synergies:
+After tax (25%)              $500M x 0.75      = $375M per year
+Capitalized at 10x           $375M x 10        = $3.75B
+Less integration cost                          = -$0.6B
+Net synergy value                              = ~$3.15B</code></pre>
+<p><b>Reading:</b> synergy value of about $3.15B roughly equals a premium of about $3.5B. The sellers captured most of the synergy value up front, so DoorDash shareholders only win if synergies beat $500M or the growth story (cross-sell, ads, grocery share) delivers beyond the model.</p>
+</div>
+
+<details><summary>Show model recommendation</summary>
+<ol>
+  <li><b>Answer:</b> The $500M net target is achievable but requires about $650M gross, with tech, G&amp;A and payments (about $270M, high confidence) as the floor and ads plus fulfillment as the upside. Present it as a range: $400M (low case, dis-synergies at $250M) to $650M (high case, ads uplift doubles).</li>
+  <li><b>Premium:</b> Synergies roughly pay for the premium, not more. Say so plainly; the investment thesis rests on growth, so the model should include a separate, clearly labeled revenue-upside case.</li>
+  <li><b>Pre-close plan (now to close):</b> Clean-team analysis of overlapping costs and customers; Day-1 readiness checklist (payroll, legal entities, merchant contracts, support routing); no joint pricing, merchant or Dasher decisions before close, because that would be gun-jumping.</li>
+  <li><b>Post-close (first 100 days):</b> Stand up a synergy tracker with an owner per line, a baseline, and monthly realized vs plan; protect top retailer relationships first, since dis-synergies are the biggest unknown.</li>
+  <li><b>Guardrails:</b> Track Instacart order growth, retailer count and shopper fulfillment quality monthly; a synergy that costs customer experience is a dis-synergy with a delay.</li>
+</ol>
+</details>
+
+<h3>Step 5 · The synergy tracker</h3>
+<table>
+<tr><th>Line</th><th>Owner</th><th>Baseline</th><th>Leading KPI</th><th>Realized when</th></tr>
+<tr><td>Fulfillment</td><td>Logistics S&amp;O</td><td>Cost per Instacart order, pre-close</td><td>Share of orders on shared network</td><td>Cost per order falls, quality flat</td></tr>
+<tr><td>Tech and G&amp;A</td><td>Finance + Eng</td><td>Combined run-rate cost base</td><td>Systems decommissioned</td><td>Contracts ended, headcount plan met</td></tr>
+<tr><td>Ads</td><td>Ads BizOps</td><td>Combined ad revenue</td><td>Fill rate, CPG advertiser count</td><td>Incremental revenue vs holdout markets</td></tr>
+<tr><td>Dis-synergy</td><td>Partnerships</td><td>Retailer revenue by partner</td><td>Renewal pipeline, partner sentiment</td><td>Losses stay under plan</td></tr>
+</table>
+
+<h3>Common mistakes</h3>
+<table>
+<tr><th>Mistake</th><th>Why it hurts</th><th>Do this instead</th></tr>
+<tr><td>Quoting only gross synergies</td><td>Ignores retailer pullback and overlapping-customer losses</td><td>Always show gross, dis-synergies and net</td></tr>
+<tr><td>Counting run rate in year 1</td><td>Capture takes 2 to 3 years and year 1 is reinvested</td><td>Phase capture and reinvestment explicitly</td></tr>
+<tr><td>Forgetting one-time costs</td><td>Integration can cost more than a full year of synergies</td><td>Net integration cost against synergy value</td></tr>
+<tr><td>Planning joint actions before close</td><td>Gun-jumping risk under antitrust law</td><td>Use a clean team and plan only Day-1 readiness</td></tr>
+<tr><td>Assuming the premium is free money</td><td>Sellers usually capture most of the synergy value</td><td>Compare capitalized synergies with the premium paid</td></tr>
+</table>
+
+<h3>Practice timer</h3>
+<p>Re-run this case cold in a week. Aim to finish the synergy tree and premium check within 25 minutes.</p>
+${TOOLS.caseTimer()}
+
+<div class="quiz" data-a="2">
+  <div class="q">Self-check: Year 1 captures $150M of net synergies and reinvests $200M. Which statement is right?</div>
+  <button class="opt">Year 1 EBITDA rises by $150M</button>
+  <button class="opt">Reinvestment does not affect EBITDA</button>
+  <button class="opt">Year 1 EBITDA impact is about -$50M, a 133% reinvestment rate</button>
+  <button class="opt">The deal has failed</button>
+  <div class="exp">150 - 200 = -50. Reinvesting more than 100% of early synergies means profits dip before they rise; that is a planned choice to buy growth, not a failure.</div>
+</div>
+
+<div class="quiz" data-a="1">
+  <div class="q">Self-check: Capitalized after-tax synergies are worth about $3.15B and the premium paid was about $3.5B. What is the best S&amp;O reading?</div>
+  <button class="opt">The acquirer captured all the synergy value</button>
+  <button class="opt">The sellers captured most of the synergy value, so the thesis depends on beating plan or on growth</button>
+  <button class="opt">Premiums never matter after close</button>
+  <button class="opt">Synergies should be capitalized before tax</button>
+  <div class="exp">When the premium roughly equals synergy value, the acquirer breaks even on synergies alone. Upside must come from outperformance or revenue growth the model labels separately.</div>
 </div>
 `});
 </script>
