@@ -481,6 +481,16 @@ chapter({part:"Front matter", id:"intro", num:"00", title:"How to use this handb
 chapter({part:"Front matter", id:"changelog", num:"00b", title:"Updates & Changelog", mins:3, tag:"Auto-maintained", tool:true, html:`
 <p>This handbook is maintained by a daily agent that researches news at Datadog, Spotify, Google, DoorDash and Uber, adds chapters, and freshens numbers. Newest entries first. Each entry lists sources.</p>
 
+<div class="callout hy"><span class="lbl">2026-11-24 · run 10 · Uber deep-dive</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('uber-deep-dive')">12 Uber Deep-Dive: Mobility, Delivery, Freight and the Autonomous Bet</a> (Part VI · Company Deep-Dives), with a platform diagram, a Q3 2026 scorecard and segment table, a callout on why revenue understates growth, three worked examples on real numbers (trip growth decomposition, incremental margin by segment, cash conversion), a strategic bets table, a table of S&amp;O team problems, interview emphasis, a hidden-answer AV unit economics drill, a common-mistakes table, and two quizzes.</li>
+  <li><b>Glossary:</b> added 8 terms (MAPC, trips per MAPC, segment operating income, principal vs agent, multi-product consumer, AV utilization, demand aggregator, cash conversion).</li>
+  <li><b>News: Uber Q3 2026 (Nov 4).</b> Gross bookings $59.8B (+20%), trips 4.06B (+16%), MAPCs 215M (+14%). Revenue $14.8B (+10%; business model changes cut growth by about 8 points). Adjusted EBITDA $2.96B (+31%, 5.0% of GB); non-GAAP operating income a record 3.9% of GB; free cash flow $2.54B. Segment operating income: Mobility $2.36B (8.0% of GB), Delivery $1.06B (3.7%), Freight -$33M. Uber now says adjusted EBITDA is no longer a key management measure. Q4 guide: GB $63.25B to $65.25B, adjusted EBITDA $3.13B to $3.23B.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://www.sec.gov/Archives/edgar/data/0001543151/000154315126000039/uberq326earningspressrelea.htm" target="_blank">Uber Q3 2026 release (8-K)</a> · <a href="https://www.sec.gov/Archives/edgar/data/0001543151/000154315126000041/uber-20260930.htm" target="_blank">Uber Q3 2026 10-Q</a></div></li>
+  <li><b>News: Uber AV rollout.</b> Zoox robotaxis are now bookable on Uber in Las Vegas, with the two named MGM Resorts rideshare and robotaxi partners and a Los Angeles expansion planned for 2027. Uber expects about 700 fully driverless vehicles on its app by end of 2026 and over 2,000 in 2027. In October Uber and Pony.ai announced plans for robotaxis in London.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://www.ttnews.com/articles/uber-amazon-zoox-las-vegas" target="_blank">Transport Topics</a> · <a href="https://stockanalysis.com/news/uber-adds-zoox-robotaxis-las-vegas/" target="_blank">StockAnalysis</a> · <a href="https://techcrunch.com/2026/10/08/uber-and-chinas-pony-ai-plan-to-launch-robotaxis-in-london/" target="_blank">TechCrunch</a></div></li>
+</ul></div>
+
 <div class="callout hy"><span class="lbl">2026-11-23 · run 9 · DoorDash and Instacart M&amp;A case</span>
 <ul>
   <li><b>New chapter:</b> <a onclick="show('case-doordash-instacart')">11 Case: DoorDash Buys Instacart. Build the Synergy Case and the Integration Plan</a> (Part VII · Case Practice), the first M&amp;A case. It has a Q3 2026 side-by-side table for both companies, a deal-terms table, a synergy tree, a hidden-answer bottom-up run-rate model, a synergy waterfall diagram, a worked example on phasing and premium coverage, a hidden model recommendation, a synergy tracker, a common-mistakes table, the case timer, and two quizzes.</li>
@@ -1089,6 +1099,14 @@ var GLOSS = [
 ["HSR waiting period","Hart-Scott-Rodino review period during which US antitrust agencies examine a deal before it can close."],
 ["Acquisition premium","Price paid above the target pre-deal market value; compare it with the capitalized value of synergies."],
 ["Bridge loan","Short-term financing committed to guarantee deal funding until longer-term debt or bonds are issued."],
+["MAPC","Monthly active platform consumer: Uber metric for unique consumers who completed a Mobility or Delivery trip in a month."],
+["Trips per MAPC","Monthly frequency per active consumer; together with MAPCs and GB per trip it decomposes Uber booking growth."],
+["Segment operating income","Uber segment profit measure (replacing segment adjusted EBITDA as the key measure); compared as a share of gross bookings."],
+["Principal vs agent","Accounting choice of whether a marketplace books the full fare as revenue (principal) or only its fee (agent); changes revenue without changing bookings."],
+["Multi-product consumer","A customer who uses more than one product line, such as rides and delivery; such users have higher frequency and retention."],
+["AV utilization","Trips or paid hours per autonomous vehicle per day; the key metric for robotaxi economics on a demand platform."],
+["Demand aggregator","A platform that supplies customers to many supply partners, such as Uber offering trips to several AV fleets."],
+["Cash conversion","Free cash flow as a share of adjusted EBITDA; high for asset-light marketplaces, low for capex-heavy businesses."],
 ];
 var glossHTML = '<input id="hbGloss" placeholder="🔍 Filter glossary… (try NRR, take rate, MECE)" oninput="filterHbGloss(this.value)" style="width:100%;padding:11px 14px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;color:var(--txt);font-size:14px;margin:8px 0 16px"><div id="hbGlossList">'
  + GLOSS.slice().sort(function(a,b){return a[0].localeCompare(b[0]);}).map(function(g){return '<div class="gterm" data-t="'+(g[0]+' '+g[1]).toLowerCase().replace(/"/g,'')+'"><b>'+g[0]+'</b> — '+g[1]+'</div>';}).join('') + '</div>';
@@ -2276,6 +2294,142 @@ ${TOOLS.caseTimer()}
   <button class="opt">Premiums never matter after close</button>
   <button class="opt">Synergies should be capitalized before tax</button>
   <div class="exp">When the premium roughly equals synergy value, the acquirer breaks even on synergies alone. Upside must come from outperformance or revenue growth the model labels separately.</div>
+</div>
+`});
+</script>
+
+<script>
+chapter({part:"Part VI · Company Deep-Dives", id:"uber-deep-dive", num:"12", title:"Uber Deep-Dive: Mobility, Delivery, Freight and the Autonomous Bet", mins:22, tag:"Company · Uber", html:`
+<p>Uber is the clearest example in this handbook of a <b>multi-product marketplace platform</b>: one app, one identity, one payments stack and one pool of earners, serving rides, food and grocery, and freight. For an S&amp;O operator, Uber is a laboratory for marketplace balance, incentive efficiency, cross-sell through membership, and a strategic bet (autonomous vehicles) that could reshape its cost structure. This chapter is built on Uber Q3 2026 results (quarter ended Sept 30, 2026, reported Nov 4, 2026). Pair it with <a onclick="show('case-uber-driver-supply')">08 Case: Uber Driver Supply Shortage at Peak</a> and <a onclick="show('driver-trees-north-star')">06 Driver Trees</a>.</p>
+
+<h3>1 · The business model in one picture</h3>
+<div class="diagwrap">
+<svg viewBox="0 0 680 280" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12">
+  <rect x="250" y="110" width="180" height="60" rx="10" fill="#3ecf8e" opacity="0.15" stroke="#3ecf8e"/>
+  <text x="340" y="135" fill="#e8eef5" text-anchor="middle" font-weight="bold">Uber platform</text>
+  <text x="340" y="153" fill="#93a1b3" text-anchor="middle" font-size="11">identity · payments · maps · Uber One</text>
+  <rect x="30" y="20" width="170" height="60" rx="8" fill="none" stroke="#f5a524"/>
+  <text x="115" y="45" fill="#e8eef5" text-anchor="middle">Mobility</text>
+  <text x="115" y="63" fill="#93a1b3" text-anchor="middle" font-size="11">GB $29.5B · 8.0% margin</text>
+  <rect x="480" y="20" width="170" height="60" rx="8" fill="none" stroke="#f5a524"/>
+  <text x="565" y="45" fill="#e8eef5" text-anchor="middle">Delivery</text>
+  <text x="565" y="63" fill="#93a1b3" text-anchor="middle" font-size="11">GB $28.5B · 3.7% margin</text>
+  <rect x="255" y="210" width="170" height="55" rx="8" fill="none" stroke="#f5a524"/>
+  <text x="340" y="233" fill="#e8eef5" text-anchor="middle">Freight</text>
+  <text x="340" y="251" fill="#93a1b3" text-anchor="middle" font-size="11">GB $1.8B · loss of $33M</text>
+  <line x1="200" y1="60" x2="255" y2="115" stroke="#93a1b3"/>
+  <line x1="480" y1="60" x2="425" y2="115" stroke="#93a1b3"/>
+  <line x1="340" y1="170" x2="340" y2="210" stroke="#93a1b3"/>
+  <text x="30" y="130" fill="#93a1b3" font-size="11">Shared earners: drivers</text>
+  <text x="30" y="146" fill="#93a1b3" font-size="11">also do deliveries</text>
+  <text x="520" y="130" fill="#93a1b3" font-size="11">Uber One cross-sell:</text>
+  <text x="520" y="146" fill="#93a1b3" font-size="11">riders become eaters</text>
+  <text x="660" y="275" fill="#93a1b3" font-size="10" text-anchor="end">Q3 2026 gross bookings and segment operating income as % of GB</text>
+</svg>
+</div>
+<p>Three sides in every trip: <b>consumers</b> (riders, eaters), <b>earners</b> (drivers, couriers) and, in Delivery and Freight, <b>merchants or shippers</b>. Uber earns a take rate on gross bookings, plus advertising (sponsored listings in Uber Eats) and membership fees. Its edge is that a consumer, an earner and a payment method acquired for one product can be reused by the others at low marginal cost.</p>
+
+<h3>2 · Q3 2026 scorecard</h3>
+<table>
+<tr><th>Metric ($M unless noted)</th><th>Q3 2026</th><th>Q3 2025</th><th>Y/Y</th></tr>
+<tr><td>Gross bookings</td><td>59,819</td><td>49,740</td><td>+20% (+20% cc)</td></tr>
+<tr><td>Revenue</td><td>14,766</td><td>13,467</td><td>+10% (business model changes cut growth by about 8 pts)</td></tr>
+<tr><td>Trips</td><td>4,061M</td><td>3,512M</td><td>+16%</td></tr>
+<tr><td>MAPCs (monthly active platform consumers)</td><td>215M</td><td>189M</td><td>+14%</td></tr>
+<tr><td>GAAP income from operations</td><td>1,447</td><td>1,113</td><td>+30%</td></tr>
+<tr><td>Non-GAAP operating income</td><td>2,304 (3.9% of GB)</td><td>1,675 (3.4%)</td><td>+38%</td></tr>
+<tr><td>Adjusted EBITDA</td><td>2,963 (5.0% of GB)</td><td>2,256 (4.5%)</td><td>+31%</td></tr>
+<tr><td>Free cash flow</td><td>2,535</td><td>2,230</td><td>+14%</td></tr>
+<tr><td>Share repurchases</td><td>750</td><td>1,463</td><td>9M 2026: 4,279</td></tr>
+</table>
+<table>
+<tr><th>Segment, Q3 2026</th><th>Gross bookings</th><th>GB growth (cc)</th><th>Revenue</th><th>Segment op. income</th><th>% of GB</th></tr>
+<tr><td>Mobility</td><td>29,512</td><td>+17%</td><td>7,520 (-2%)</td><td>2,362 (+27%)</td><td>8.0% (7.4% a year ago)</td></tr>
+<tr><td>Delivery</td><td>28,539</td><td>+23%</td><td>5,488 (+23%)</td><td>1,057 (+30%)</td><td>3.7% (3.5%)</td></tr>
+<tr><td>Freight</td><td>1,768</td><td>+35%</td><td>1,758 (+34%)</td><td>(33)</td><td>-1.9% (-3.1%)</td></tr>
+<tr><td>Corporate G&amp;A and platform R&amp;D</td><td colspan="3"></td><td>(1,082)</td><td></td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Source: Uber Q3 2026 earnings release (8-K, Nov 4, 2026). Margin percentages are calculated from the release. Uber now reports segment operating income and says adjusted EBITDA is no longer a key management measure. Q4 2026 guide: GB $63.25B to $65.25B (+18% to +22% cc), adjusted EBITDA $3.13B to $3.23B, non-GAAP EPS $0.95 to $0.99.</p>
+
+<div class="callout warn"><span class="lbl">Why revenue is the wrong headline</span>Mobility revenue fell 2% while Mobility bookings grew 18%. That is not a demand problem: Uber said business model changes cut total revenue growth by about 8 points. Changes of this kind (for example whether Uber acts as principal or agent in a market) alter how much of each booking is recognized as revenue without changing trips or bookings. Operators at Uber track <b>gross bookings, trips and segment operating income as % of GB</b>. In an interview, say this unprompted; it shows you can read a marketplace P&amp;L.</div>
+
+<h3>3 · Three worked examples on real numbers</h3>
+<div class="callout example"><span class="lbl">Worked example 1 · Decompose trip growth</span>
+<pre><code>Trips = MAPCs x trips per MAPC per month x 3 months
+Q3 2026: 4,061M / (215M x 3) = 6.30 trips per MAPC per month
+Q3 2025: 3,512M / (189M x 3) = 6.19
+Growth: MAPCs +14%, frequency +1.7%  ->  (1.14 x 1.017) - 1 = 16% trips
+GB per trip: 59,819 / 4,061 = $14.73 vs 49,740 / 3,512 = $14.16  (+4%)</code></pre>
+<p>So 20% booking growth is about 14 pts more users, 2 pts more frequency and 4 pts larger baskets or fares. The release confirms the 14% and 2% split. The S&amp;O follow-up: is frequency growth coming from Uber One members and multi-product users (healthy), or from promotions (rented)?</p></div>
+
+<div class="callout example"><span class="lbl">Worked example 2 · Incremental margin by segment</span>
+<pre><code>Mobility: (2,362 - 1,864) / (29,512 - 25,111) = 498 / 4,401 = 11.3% incremental
+Delivery: (1,057 - 811)   / (28,539 - 23,322) = 246 / 5,217 =  4.7% incremental
+Average margins: Mobility 8.0%, Delivery 3.7%</code></pre>
+<p>Each new Mobility dollar earns more than the average dollar: fixed costs (tech, insurance overhead, local ops) are being spread. Delivery incremental margin is also above its average, but still under half of Mobility because couriers, merchant discounts and grocery picking cost more per booking dollar. The strategic read: Delivery is the growth engine, Mobility is the profit engine, and the mix shift toward Delivery quietly caps blended margin expansion.</p></div>
+
+<div class="callout example"><span class="lbl">Worked example 3 · Cash conversion and capital return</span>
+<pre><code>FCF / adjusted EBITDA = 2,535 / 2,963 = 86%
+Buybacks / FCF (Q3) = 750 / 2,535 = 30%; 9-month buybacks 4,279
+Cash and short-term investments: $10.1B</code></pre>
+<p>Uber is asset-light: capex was only $104M in the quarter, so most EBITDA turns into cash. Compare <a onclick="show('google-deep-dive')">Google</a>, where AI capex pushed free cash flow negative. The risk to this profile is autonomy: if Uber ever has to own or finance vehicle fleets, capex intensity rises and the asset-light story changes.</p></div>
+
+<h3>4 · Strategic bets</h3>
+<table>
+<tr><th>Bet</th><th>What Uber is doing</th><th>Metric S&amp;O watches</th><th>Key risk</th></tr>
+<tr><td><b>Autonomous vehicles</b></td><td>Platform for AV partners (Waymo, Zoox in Las Vegas, Pony.ai, Nvidia, Lucid and Nuro and others). CEO: about 700 fully driverless vehicles on Uber by end of 2026, over 2,000 in 2027.</td><td>Utilization per AV (trips per vehicle per day), cost per mile vs human driver, share of AV trips in launch cities</td><td>Partners go direct (own app) and Uber becomes only a demand channel with a thinner take</td></tr>
+<tr><td><b>Uber One</b></td><td>Cross-product membership (about 55M members per recent disclosures), free delivery and ride discounts</td><td>Member frequency, multi-product rate, retention vs non-members, net cost of benefits</td><td>Benefits subsidize trips members would have taken anyway</td></tr>
+<tr><td><b>Delivery beyond restaurants</b></td><td>Grocery and retail, plus ads on Uber Eats</td><td>Grocery GB share, ads revenue as % of Delivery GB, basket size</td><td>Competition with DoorDash (which is buying Instacart) and Amazon</td></tr>
+<tr><td><b>Supply growth</b></td><td>Shifting incentives from rider discounts to driver pay after Q3 international undersupply</td><td>Supply hours, unfulfilled requests, cost per incremental hour</td><td>Incentive spend erodes the margin gains above</td></tr>
+<tr><td><b>Freight</b></td><td>Digital freight brokerage, now loss-narrowing</td><td>GB per load, gross margin per load, breakeven timing</td><td>Freight cycle; small relative to the core</td></tr>
+</table>
+
+<h3>5 · What S&amp;O teams at Uber work on</h3>
+<table>
+<tr><th>Team type</th><th>Typical problem</th><th>Your bridge from engineering</th></tr>
+<tr><td>Regional / city ops strategy</td><td>Why did ETAs rise in a city? Where to spend next quarter incentive budget?</td><td>Root-cause analysis on noisy data, like a fab yield excursion</td></tr>
+<tr><td>Marketplace strategy</td><td>Pricing and incentive tests, supply-demand balance, surge policy</td><td>Control loops and feedback systems</td></tr>
+<tr><td>Membership and cross-sell</td><td>Uber One benefit design, holdout measurement</td><td>Experiment design, A/B tooling</td></tr>
+<tr><td>AV / new mobility BizOps</td><td>Partner economics, fleet utilization, launch readiness by city</td><td>Vehicle and telematics domain knowledge (a real differentiator)</td></tr>
+<tr><td>Delivery growth and ads</td><td>Grocery launch playbooks, merchant ads ROI</td><td>Metric definitions and data pipelines</td></tr>
+</table>
+<div class="callout tip"><span class="lbl">Interview emphasis</span>Uber S&amp;O interviews are known for analytical cases rooted in marketplace mechanics (supply shortage, incentive ROI, pricing in a city), Excel or SQL modeling exercises, and probing on how you trade off rider, earner and merchant outcomes. Expect follow-ups like "how would you know the incentive caused that?" Bring your Hyundai telematics work into AV questions: fleet uptime, sensor data and remote operations are exactly what AV ops teams care about.</div>
+
+<h3>6 · Drill: AV unit economics (attempt first)</h3>
+<div class="callout"><span class="lbl">Prompt (illustrative numbers)</span>An AV partner proposes adding 500 vehicles in one US city. Each vehicle can run 18 hours a day. Assume average gross booking per trip of $18, 2.2 trips per vehicle-hour at full demand, and that Uber keeps 20% of GB as its fee. Uber provides demand only; the partner owns the cars. Estimate Uber annual net revenue from this fleet and name the one metric you would put in the weekly business review.</div>
+<details><summary>Show model answer</summary>
+<pre><code>Trips per vehicle per day = 18 h x 2.2 = 39.6 (at full demand)
+Realistic utilization 60% -> 23.8 trips per vehicle per day
+Fleet trips per year = 500 x 23.8 x 365 = 4.34M
+GB = 4.34M x $18 = $78M; Uber fee at 20% = $15.6M per year</code></pre>
+<p><b>Read:</b> The fleet is small relative to Mobility (about $29.5B GB a quarter), so the case is strategic, not financial: it secures supply in peak hours and positions Uber as the default demand layer. The WBR metric is <b>trips per vehicle per day</b> (utilization), because it determines whether the partner stays on Uber or builds its own app. Common mistake: assuming 100% utilization, or forgetting that AV trips may cannibalize human-driver trips, so incremental GB is lower than gross GB.</p>
+</details>
+
+<h3>7 · Common mistakes in Uber conversations</h3>
+<table>
+<tr><th>Mistake</th><th>Better</th></tr>
+<tr><td>Quoting revenue growth as the headline</td><td>Lead with GB, trips and segment margin as % of GB; note the business model change</td></tr>
+<tr><td>Treating Uber as a ride-hailing company</td><td>Delivery is nearly half of GB and growing faster</td></tr>
+<tr><td>Saying AVs will "replace drivers" soon</td><td>Hundreds to low thousands of AVs vs millions of earners; hybrid network for years</td></tr>
+<tr><td>Ignoring the earner side</td><td>Every pricing or promo idea must say what happens to earner hours and earnings</td></tr>
+</table>
+
+<div class="quiz" data-a="2">
+  <div class="q">Self-check: Mobility revenue fell 2% while Mobility gross bookings rose 18%. What is the most likely explanation?</div>
+  <button class="opt">Riders took fewer trips</button>
+  <button class="opt">Uber cut prices sharply</button>
+  <button class="opt">Business model and accounting changes reduced revenue recognized per booking dollar</button>
+  <button class="opt">Freight losses were booked in Mobility</button>
+  <div class="exp">Trips and bookings grew. Uber said business model changes reduced total revenue growth by about 8 points, so revenue understates underlying growth.</div>
+</div>
+
+<div class="quiz" data-a="1">
+  <div class="q">Self-check: Mobility incremental margin is about 11% while its average margin is 8%. What does that tell you?</div>
+  <button class="opt">Costs are growing faster than bookings</button>
+  <button class="opt">Operating leverage: new bookings carry less fixed cost, so margins should keep rising if mix holds</button>
+  <button class="opt">Mobility is losing share</button>
+  <button class="opt">Incentives were cut to zero</button>
+  <div class="exp">When incremental margin exceeds average margin, the average climbs. The caution is mix: faster-growing Delivery has a lower margin.</div>
 </div>
 `});
 </script>
