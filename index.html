@@ -481,6 +481,18 @@ chapter({part:"Front matter", id:"intro", num:"00", title:"How to use this handb
 chapter({part:"Front matter", id:"changelog", num:"00b", title:"Updates & Changelog", mins:3, tag:"Auto-maintained", tool:true, html:`
 <p>This handbook is maintained by a daily agent that researches news at Datadog, Spotify, Google, DoorDash and Uber, adds chapters, and freshens numbers. Newest entries first. Each entry lists sources.</p>
 
+<div class="callout hy"><span class="lbl">2026-11-25 · run 11 · Marketplace dynamics framework</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('marketplace-dynamics')">13 Marketplace Dynamics: Liquidity, Take Rate, Supply-Demand Balance and Network Effects</a> (Part IV · Marketplaces), the first Part IV chapter. It has a flywheel diagram, a liquidity-metric table for Uber, DoorDash, Google Ads and Spotify, a lever table that treats supply-demand balance as a control loop, a take-rate breakeven formula, a worked take-rate example with second- and third-order effects, a network-effects table and three-question test, a hidden-answer city-health drill, a common-mistakes table, and two quizzes.</li>
+  <li><b>Glossary:</b> added 8 terms (marketplace liquidity, binding constraint, cross-side and same-side network effects, multi-homing, take-rate stack, breakeven GOV retention, density).</li>
+  <li><b>News: Google agentic commerce.</b> On Nov 10 Google expanded the Gemini beta that acts through Android apps (food orders, ride requests, restaurant bookings) to the UK, India and Japan. On Nov 23 it extended Personal Intelligence in AI Mode to Google Drive, Wallet and the Gemini app. Chapter 13 frames this as a demand-aggregator risk for DoorDash and Uber.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://ppc.land/googles-gemini-can-now-use-food-and-ride-apps-for-people-in-3-more-countries/" target="_blank">PPC Land</a> · <a href="https://9to5google.com/2026/11/23/ai-mode-wallet-gemini" target="_blank">9to5Google</a></div></li>
+  <li><b>News: Datadog after Q3.</b> Revenue grew 35% to $1.20B, but the stock fell more than 12% on Nov 4 after its largest customer, an AI company, cut usage. The Q4 guide of $1.19B to $1.20B assumes that customer drops to its minimum commitment. Investing.com reported on Nov 24 that the stock was down about 39% over 30 days. Analysts (RBC) link the customer to OpenAI, but Datadog has not confirmed this. Chapter 05 covers the NRR mechanics.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://qz.com/datadog-stock-falls-ai-customer-usage-earnings-110426" target="_blank">Quartz</a> · <a href="https://investing.com/news/stock-market-news/datadog-beat-earningsthen-its-biggest-ai-customer-hit-the-brakes-5045614" target="_blank">Investing.com</a></div></li>
+  <li><b>News: DoorDash retail.</b> The DoorDash retail marketplace added Macy&#39;s, Anthropologie, The North Face, Vans and Timberland across apparel, beauty and home.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Source: <a href="https://dailyartifact.ai/tags/doordash" target="_blank">Daily Artifact (DoorDash tag)</a></div></li>
+</ul></div>
+
 <div class="callout hy"><span class="lbl">2026-11-24 · run 10 · Uber deep-dive</span>
 <ul>
   <li><b>New chapter:</b> <a onclick="show('uber-deep-dive')">12 Uber Deep-Dive: Mobility, Delivery, Freight and the Autonomous Bet</a> (Part VI · Company Deep-Dives), with a platform diagram, a Q3 2026 scorecard and segment table, a callout on why revenue understates growth, three worked examples on real numbers (trip growth decomposition, incremental margin by segment, cash conversion), a strategic bets table, a table of S&amp;O team problems, interview emphasis, a hidden-answer AV unit economics drill, a common-mistakes table, and two quizzes.</li>
@@ -977,6 +989,14 @@ var GLOSS = [
 ["Plan mix","Share of subscribers on each plan (Individual, Duo, Family, Student); shifts in it move ARPU without any price change."],
 ["Market mix","Share of users or subscribers by country; growth in lower-priced markets lowers blended ARPU."],
 ["Breakeven churn","Maximum share of customers you can lose after a price increase before total gross profit falls."],
+["Liquidity (marketplace)","Probability that a buyer gets a good match quickly and a seller gets work; measured locally by zone and hour, e.g. fulfillment rate or ETA."],
+["Binding constraint","The side of a marketplace (supply or demand) that limits volume right now; invest on that side first."],
+["Cross-side network effect","More participants on one side make the platform more valuable to the other side, e.g. more riders raise driver earnings."],
+["Same-side network effect","Participants on the same side affect each other; can be positive (social features) or negative (driver congestion)."],
+["Multi-homing","Participants using competing platforms at once, like a driver online on two apps; weakens network-effect moats."],
+["Take-rate stack","All the pieces of platform revenue as a share of GOV: commission, consumer fees, ads, membership, net of promotions and refunds."],
+["Breakeven GOV retention","Old take rate divided by new take rate; the share of GOV you must keep for revenue not to fall after a take-rate increase."],
+["Density","Orders or trips per area per hour; higher density lowers cost per order through batching and shorter dead miles."],
 ["Royalty pass-through","Portion of each revenue dollar paid to rights holders; when royalties scale with revenue, only the margin share of a price increase becomes profit."],
 ["Social charges","Swedish payroll taxes on employee equity awards that Spotify books in opex; they move with the share price."],
 ["Grandfathering","Keeping existing customers on an old price for a period after a price increase, to reduce churn."],
@@ -2430,6 +2450,131 @@ GB = 4.34M x $18 = $78M; Uber fee at 20% = $15.6M per year</code></pre>
   <button class="opt">Mobility is losing share</button>
   <button class="opt">Incentives were cut to zero</button>
   <div class="exp">When incremental margin exceeds average margin, the average climbs. The caution is mix: faster-growing Delivery has a lower margin.</div>
+</div>
+`});
+</script>
+
+<script>
+chapter({part:"Part IV · Marketplaces", id:"marketplace-dynamics", num:"13", title:"Marketplace Dynamics: Liquidity, Take Rate, Supply-Demand Balance and Network Effects", mins:20, tag:"Framework · Marketplaces", html:`
+<p>Three of your five target companies (DoorDash, Uber, and the ads side of Google) are marketplaces, and Spotify behaves like one between listeners and rights holders. Marketplace S&amp;O work keeps returning to four questions: <b>Is the market liquid? Is the take rate right? Is supply balanced with demand right now, in this place? Do network effects actually protect us?</b> This chapter gives you a vocabulary and a set of models for each.</p>
+
+<h3>1 · The marketplace flywheel</h3>
+<div class="diagwrap">
+<svg viewBox="0 0 760 230" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="13">
+  <defs><marker id="arrMk13" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#93a1b3"/></marker></defs>
+  <g fill="#1b232e" stroke="#f5a524" stroke-width="1.5">
+    <rect x="20" y="20" width="170" height="60" rx="10"/><rect x="295" y="20" width="170" height="60" rx="10"/>
+    <rect x="570" y="20" width="170" height="60" rx="10"/><rect x="570" y="150" width="170" height="60" rx="10"/>
+    <rect x="295" y="150" width="170" height="60" rx="10"/><rect x="20" y="150" width="170" height="60" rx="10"/>
+  </g>
+  <g fill="#e8eef5" text-anchor="middle">
+    <text x="105" y="46">More demand</text><text x="105" y="64" font-size="11" fill="#93a1b3">orders, trips, searches</text>
+    <text x="380" y="46">Higher utilization</text><text x="380" y="64" font-size="11" fill="#93a1b3">earnings per supply hour</text>
+    <text x="655" y="46">More supply</text><text x="655" y="64" font-size="11" fill="#93a1b3">drivers, Dashers, merchants</text>
+    <text x="655" y="176">Better liquidity</text><text x="655" y="194" font-size="11" fill="#93a1b3">faster ETAs, more selection</text>
+    <text x="380" y="176">Better experience</text><text x="380" y="194" font-size="11" fill="#93a1b3">higher conversion, retention</text>
+    <text x="105" y="176">Lower unit cost</text><text x="105" y="194" font-size="11" fill="#93a1b3">less idle time, less incentive</text>
+  </g>
+  <g stroke="#93a1b3" stroke-width="1.5" marker-end="url(#arrMk13)">
+    <line x1="190" y1="50" x2="290" y2="50"/><line x1="465" y1="50" x2="565" y2="50"/>
+    <line x1="655" y1="80" x2="655" y2="145"/><line x1="570" y1="180" x2="470" y2="180"/>
+    <line x1="295" y1="180" x2="195" y2="180"/><line x1="105" y1="150" x2="105" y2="85"/>
+  </g>
+</svg>
+</div>
+<p>The flywheel runs in both directions. When supply is short, ETAs rise, conversion falls, demand drops, earnings per hour fall, and more supply leaves. Most marketplace S&amp;O problems are about catching a flywheel that has started to spin backward in one city, one daypart or one vertical.</p>
+
+<h3>2 · Liquidity: the metric that matters most</h3>
+<p><b>Liquidity</b> is the probability that a buyer who shows up gets a good match quickly, and that a seller who shows up gets work. It is local (a city, a zone, a category) and time-specific (Friday 7pm is not Tuesday 3pm). Averages hide illiquid pockets.</p>
+<table>
+<tr><th>Company</th><th>Demand-side liquidity metric</th><th>Supply-side liquidity metric</th><th>Typical lever</th></tr>
+<tr><td><b>Uber Mobility</b></td><td>Request fulfillment rate, ETA, surge share of trips</td><td>Utilization (time on trip / online time), earnings per hour</td><td>Surge, driver incentives, dispatch radius</td></tr>
+<tr><td><b>DoorDash / Uber Eats</b></td><td>Selection (merchants in range), delivery time, order conversion</td><td>Dasher active time, orders per Dasher hour, earnings per active hour</td><td>Merchant acquisition, pay boosts, batching</td></tr>
+<tr><td><b>Google Ads</b></td><td>Share of queries showing relevant ads (coverage)</td><td>Advertiser ROI, auction density (bidders per query)</td><td>Ad formats, Smart Bidding, new surfaces like AI Mode</td></tr>
+<tr><td><b>Spotify</b></td><td>Search success, share of streams from recommendations</td><td>Creator and label payouts, podcast and audiobook catalog depth</td><td>Personalization, Marquee and Discovery Mode, catalog deals</td></tr>
+</table>
+<div class="callout tip"><span class="lbl">Interview move</span>When a case says "orders are down in a region", ask for liquidity by zone and hour before anything else. A 5% regional decline is often a 30% decline in three illiquid zones at dinner peak, plus flat everywhere else. That changes the fix from "national marketing" to "targeted supply incentives".</div>
+
+<h3>3 · Supply-demand balance as a control loop</h3>
+<p>As a systems engineer you already think in feedback loops. A ride or delivery marketplace is a control system: the <b>setpoint</b> is a target ETA or fulfillment rate, the <b>sensor</b> is real-time open requests vs available supply, and the <b>actuators</b> are price (surge, delivery fees), supply incentives (boosts, quests) and dispatch rules (batching, radius).</p>
+<table>
+<tr><th>Lever</th><th>Response time</th><th>Cost</th><th>Side effect to watch</th></tr>
+<tr><td>Dynamic pricing (surge)</td><td>Seconds to minutes</td><td>Paid by consumers</td><td>Demand suppression, brand and regulatory risk</td></tr>
+<tr><td>Short-term supply incentives</td><td>Hours</td><td>Paid by the platform</td><td>Inframarginal spend (paying for hours that would have happened anyway)</td></tr>
+<tr><td>Batching and dispatch radius</td><td>Immediate</td><td>Near zero</td><td>Longer delivery times, worse food quality</td></tr>
+<tr><td>Supply acquisition (onboarding)</td><td>Weeks</td><td>High fixed cost per earner</td><td>Oversupply later lowers earnings per hour and churns earners</td></tr>
+<tr><td>Demand promos</td><td>Days</td><td>Paid by platform or merchant</td><td>Makes undersupply worse if supply is the constraint</td></tr>
+</table>
+<div class="callout warn"><span class="lbl">Classic mistake</span>Running a demand promotion in a supply-constrained market. You pay to create orders that then wait 20 minutes or go unfilled, which damages retention of exactly the customers you just paid to acquire. Always ask which side is the binding constraint first.</div>
+
+<h3>4 · Take rate: how to set it and how to defend it</h3>
+<p>Take rate = platform revenue / gross value transacted. It is not one number but a stack: merchant commission, consumer fees, ads, membership fees, minus refunds and promotions.</p>
+<pre><code>Effective take rate = (commission + consumer fees + ads + other) / GOV
+Breakeven GOV retention for a take-rate increase = old take rate / new take rate
+Example: 12% -> 14%  =>  12 / 14 = 85.7%, so you can lose up to 14.3% of GOV before revenue falls</code></pre>
+<p>Revenue breakeven is a low bar. Contribution breakeven is stricter because lost orders also take away density (fewer orders per Dasher hour means higher cost per order on the orders you keep).</p>
+
+<div class="callout example"><span class="lbl">Worked example (illustrative numbers)</span>
+<p>A delivery marketplace does $100M monthly GOV in a metro at a 12% take rate (revenue $12.0M) with a $40 average order. It proposes raising merchant commission so the take rate becomes 14%. At constant GOV that looks like +$2.0M a month (+16.7%).</p>
+<table>
+<tr><th>Scenario</th><th>GOV</th><th>Take rate</th><th>Revenue</th><th>Change vs today</th></tr>
+<tr><td>Today</td><td>$100.0M</td><td>12%</td><td>$12.00M</td><td>baseline</td></tr>
+<tr><td>First-order: 8% of GOV lost as merchants leave or raise menu prices</td><td>$92.0M</td><td>14%</td><td>$12.88M</td><td>+$0.88M (+7.3%)</td></tr>
+<tr><td>Second-order: lower selection cuts consumer orders a further 3%</td><td>$89.2M</td><td>14%</td><td>$12.49M</td><td>+$0.49M (+4.1%)</td></tr>
+<tr><td>Third-order: lower density adds $0.15 delivery cost on about 2.23M orders</td><td>$89.2M</td><td>14%</td><td>$12.49M, less $0.33M cost</td><td>about +$0.16M net</td></tr>
+</table>
+<p><b>Read:</b> the headline +$2.0M shrinks to about +$0.16M once second- and third-order effects are counted, and the move hands share to a competitor. A better recommendation is often a <b>tiered</b> structure (merchants choose lower commission with less reach, or higher commission with more marketing), which is how DoorDash and Uber Eats price merchant plans.</p>
+</div>
+
+<h3>5 · Network effects: real, local, and often overstated</h3>
+<table>
+<tr><th>Type</th><th>Meaning</th><th>Example</th><th>How strong is the moat?</th></tr>
+<tr><td>Cross-side</td><td>More users on one side make the platform better for the other side</td><td>More riders raise driver earnings; more drivers cut rider ETAs</td><td>Strong but <b>local</b>: you must win city by city</td></tr>
+<tr><td>Same-side (positive)</td><td>More users on the same side make it better for each other</td><td>Shared playlists, social features</td><td>Moderate</td></tr>
+<tr><td>Same-side (negative)</td><td>Congestion</td><td>Too many drivers compete for the same trips</td><td>Limits how much supply you want</td></tr>
+<tr><td>Data network effect</td><td>More usage improves the product via data</td><td>Search ranking, ad targeting, ETA prediction, recommendations</td><td>Strong at scale, but diminishing returns</td></tr>
+<tr><td>Ecosystem / integration</td><td>Third parties build on the platform</td><td>Datadog integrations; Google Cloud partners</td><td>Switching cost more than a true network effect</td></tr>
+</table>
+<p>Test a claimed network effect with three questions: (1) <b>Does it plateau?</b> Once a city has 3-minute ETAs, more drivers add little. (2) <b>Is it local or global?</b> Local effects can be attacked city by city by a well-funded entrant. (3) <b>Is multi-homing cheap?</b> Drivers and restaurants run Uber and DoorDash side by side, which weakens the moat and keeps take rates in check.</p>
+
+<div class="callout hy"><span class="lbl">Live strategic question · AI agents as demand aggregators</span>In November 2026 Google expanded a Gemini beta that can act through Android apps to order food and request rides to the UK, India and Japan, and on November 23 it extended Personal Intelligence in AI Mode to Google Drive, Wallet and the Gemini app. If an AI agent owns the customer intent, the marketplace can become a back-end supplier: it keeps liquidity but loses the front door, ad inventory and membership upsell. For DoorDash and Uber S&amp;O teams this is a live question about partnering vs blocking, attribution, and how take rate holds up when an aggregator sits in front. (Sources: <a href="https://ppc.land/googles-gemini-can-now-use-food-and-ride-apps-for-people-in-3-more-countries/" target="_blank">PPC Land</a>, <a href="https://9to5google.com/2026/11/23/ai-mode-wallet-gemini" target="_blank">9to5Google</a>.)</div>
+
+<h3>6 · Drill: is this city healthy? (attempt first)</h3>
+<div class="callout"><span class="lbl">Prompt (illustrative numbers)</span>A ride-hailing city shows, week over week: requests +6%, completed trips +1%, online driver hours flat, utilization 62% to 66%, average ETA 4.8 to 6.1 minutes, surge share of trips 9% to 15%, driver earnings per hour +7%. Is the city healthy? What would you do this week and this quarter?</div>
+<details><summary>Show model answer</summary>
+<p><b>Diagnosis:</b> demand is growing and supply is flat, so the market is undersupplied. Fulfillment fell (trips +1% vs requests +6%, roughly 5 points of unmet demand). Rising utilization and earnings per hour look good in isolation but here signal scarcity, not efficiency. Surge share rising from 9% to 15% means price is doing the balancing work and suppressing demand.</p>
+<pre><code>Unfilled demand ~ requests growth - trips growth = ~5% of requests
+Supply hours needed to restore ETA ~ +5% to +7% (utilization back near 62%)</code></pre>
+<p><b>This week:</b> targeted supply incentives in the worst zones and dayparts (not citywide), driver reactivation messaging that highlights the +7% earnings per hour, and hold demand promos. <b>This quarter:</b> onboarding funnel review (background-check backlog, vehicle supply), a test of earnings guarantees in peak windows, and a check on whether a competitor is pulling drivers. <b>Metric for the WBR:</b> fulfillment rate by zone and hour, with ETA as the guardrail.</p>
+<p><b>Common mistakes:</b> celebrating higher utilization; launching rider promos; using a citywide average when the problem is concentrated in a few zones.</p>
+</details>
+
+<h3>7 · Common marketplace mistakes</h3>
+<table>
+<tr><th>Mistake</th><th>Better</th></tr>
+<tr><td>Measuring liquidity with city or national averages</td><td>Zone by hour heat maps; track the share of hours below a fulfillment threshold</td></tr>
+<tr><td>Treating take rate as only commission</td><td>Model the full stack (fees, ads, membership, promos) and the second-order volume effects</td></tr>
+<tr><td>Assuming network effects are permanent</td><td>Test for plateau, locality and multi-homing</td></tr>
+<tr><td>Growing one side without the other</td><td>Find the binding constraint first, then invest on that side</td></tr>
+<tr><td>Ignoring the merchant or earner side in a consumer case</td><td>For every lever, state what happens to each side</td></tr>
+</table>
+
+<div class="quiz" data-a="1">
+  <div class="q">Self-check: A marketplace raises take rate from 10% to 12.5%. What is the maximum share of GOV it can lose before revenue falls?</div>
+  <button class="opt">10%</button>
+  <button class="opt">20%</button>
+  <button class="opt">25%</button>
+  <button class="opt">12.5%</button>
+  <div class="exp">Breakeven GOV retention = 10 / 12.5 = 80%, so it can lose up to 20%. Contribution breakeven is stricter because density falls too.</div>
+</div>
+
+<div class="quiz" data-a="3">
+  <div class="q">Self-check: Requests are up 8%, trips up 2%, ETAs and surge are rising. Which action is most likely wrong?</div>
+  <button class="opt">Targeted driver incentives at peak in the worst zones</button>
+  <button class="opt">Driver reactivation campaign</button>
+  <button class="opt">Reviewing the onboarding backlog</button>
+  <button class="opt">A citywide rider discount to grow trips</button>
+  <div class="exp">Supply is the binding constraint. A rider discount adds demand the market cannot serve and worsens ETAs and fulfillment.</div>
 </div>
 `});
 </script>
