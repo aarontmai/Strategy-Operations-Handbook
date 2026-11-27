@@ -481,6 +481,16 @@ chapter({part:"Front matter", id:"intro", num:"00", title:"How to use this handb
 chapter({part:"Front matter", id:"changelog", num:"00b", title:"Updates & Changelog", mins:3, tag:"Auto-maintained", tool:true, html:`
 <p>This handbook is maintained by a daily agent that researches news at Datadog, Spotify, Google, DoorDash and Uber, adds chapters, and freshens numbers. Newest entries first. Each entry lists sources.</p>
 
+<div class="callout hy"><span class="lbl">2026-11-26 · run 12 · Datadog deep-dive</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('datadog-deep-dive')">14 Datadog Deep-Dive: Usage-Based Observability, Land-and-Expand and AI Concentration</a> (Part VI · Company Deep-Dives), completing deep-dives for all five target companies. It has a land-expand-commit diagram, a Q3 2026 scorecard, three worked examples (growth split into customers vs revenue per customer, customer-base concentration, how one customer at its minimum flattens the Q4 guide), a strategic bets table, an S&amp;O problem table, interview emphasis, a hidden-answer early-renewal drill, a common-mistakes table and two quizzes.</li>
+  <li><b>Glossary:</b> added 8 terms (observability, APM, platform consolidation, commit plus on-demand, early renewal, AI-native cohort, revenue per customer growth, observability pipeline).</li>
+  <li><b>News: Datadog Q3 2026 detail.</b> About 33,500 customers (+4.7%), about 4,860 at $100K+ ARR (+20%, about 91% of ARR), trailing NRR in the low 120s, GRR mid- to high-90s, non-GAAP operating margin about 28%, FCF $251M. Non-AI revenue growth reached the high 20s, accelerating for a fifth quarter. FY 2026 guide raised to $4.515B to $4.525B. Several large AI customers renewed early at higher commits with volume discounts, which management called a near-term headwind.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://finviz.com/news/415232/datadog-announces-third-quarter-2026-financial-results" target="_blank">Datadog release (Finviz)</a> · <a href="https://www.zacks.com/stock/news/3024643/datadog-q3-earnings-revenues-surpass-estimates-both-rise-y-y" target="_blank">Zacks</a> · <a href="https://www.marketbeat.com/instant-alerts/transcript-datadog-q3-earnings-call-highlights-2026-11-04/" target="_blank">MarketBeat</a> · <a href="https://stockstory.org/us/stocks/nasdaq/ddog/news/earnings-call/ddog-q3-2026-deep-dive-early-large-customer-renewals-and-ai-adoption-shape-outlook" target="_blank">StockStory</a></div></li>
+  <li><b>News: Datadog recognition.</b> Named a Leader in the 2026 Gartner Magic Quadrant for Observability Pipelines (Nov 17). Management presents at UBS (Dec 1) and Barclays (Dec 9) investor conferences.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://finviz.com/news/424225/datadog-named-a-leader-in-the-2026-gartner-magic-quadrant-for-observability-pipelines" target="_blank">Finviz</a> · <a href="https://finviz.com/news/421203/datadog-to-present-at-upcoming-investor-conferences" target="_blank">Finviz (conferences)</a></div></li>
+</ul></div>
+
 <div class="callout hy"><span class="lbl">2026-11-25 · run 11 · Marketplace dynamics framework</span>
 <ul>
   <li><b>New chapter:</b> <a onclick="show('marketplace-dynamics')">13 Marketplace Dynamics: Liquidity, Take Rate, Supply-Demand Balance and Network Effects</a> (Part IV · Marketplaces), the first Part IV chapter. It has a flywheel diagram, a liquidity-metric table for Uber, DoorDash, Google Ads and Spotify, a lever table that treats supply-demand balance as a control loop, a take-rate breakeven formula, a worked take-rate example with second- and third-order effects, a network-effects table and three-question test, a hidden-answer city-health drill, a common-mistakes table, and two quizzes.</li>
@@ -1127,6 +1137,14 @@ var GLOSS = [
 ["AV utilization","Trips or paid hours per autonomous vehicle per day; the key metric for robotaxi economics on a demand platform."],
 ["Demand aggregator","A platform that supplies customers to many supply partners, such as Uber offering trips to several AV fleets."],
 ["Cash conversion","Free cash flow as a share of adjusted EBITDA; high for asset-light marketplaces, low for capex-heavy businesses."],
+["Observability","Monitoring of systems through metrics, logs and traces so engineers can see why something broke; the market Datadog leads."],
+["APM","Application performance monitoring: tracing requests through code and services to find slow or failing parts."],
+["Platform consolidation","Customers buying several tools from one vendor instead of best-of-breed point tools; raises products per customer and switching cost."],
+["Commit plus on-demand","Usage pricing where a customer prepays an annual commitment at a discount and pays list rates for usage above it."],
+["Early renewal","Renewing a contract before it expires, usually at a higher commitment in exchange for a deeper unit discount."],
+["AI-native cohort","Customers whose core product is AI models or agents; fast-growing but concentrated and volatile spenders."],
+["Revenue per customer growth","Revenue growth left after removing customer-count growth: (1 + revenue growth) / (1 + customer growth) - 1."],
+["Observability pipeline","Software that collects, filters and routes telemetry before it reaches a storage or analytics tool; controls cost and destination."],
 ];
 var glossHTML = '<input id="hbGloss" placeholder="🔍 Filter glossary… (try NRR, take rate, MECE)" oninput="filterHbGloss(this.value)" style="width:100%;padding:11px 14px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;color:var(--txt);font-size:14px;margin:8px 0 16px"><div id="hbGlossList">'
  + GLOSS.slice().sort(function(a,b){return a[0].localeCompare(b[0]);}).map(function(g){return '<div class="gterm" data-t="'+(g[0]+' '+g[1]).toLowerCase().replace(/"/g,'')+'"><b>'+g[0]+'</b> — '+g[1]+'</div>';}).join('') + '</div>';
@@ -2575,6 +2593,135 @@ Supply hours needed to restore ETA ~ +5% to +7% (utilization back near 62%)</cod
   <button class="opt">Reviewing the onboarding backlog</button>
   <button class="opt">A citywide rider discount to grow trips</button>
   <div class="exp">Supply is the binding constraint. A rider discount adds demand the market cannot serve and worsens ETAs and fulfillment.</div>
+</div>
+`});
+</script>
+
+<script>
+chapter({part:"Part VI · Company Deep-Dives", id:"datadog-deep-dive", num:"14", title:"Datadog Deep-Dive: Usage-Based Observability, Land-and-Expand and AI Concentration", mins:20, tag:"Company · SaaS", html:`
+<p>Datadog is the cleanest example among your five targets of a <b>usage-based, product-led, land-and-expand SaaS</b> business. If you can explain its revenue as customers × spend per customer × products per customer, and explain why a single AI customer moved the stock 16% in a day, you can handle most Datadog S&amp;O interview questions. Chapter 05 (the NRR case) covers retention mechanics; this chapter covers the whole business.</p>
+
+<h3>1 · How Datadog makes money</h3>
+<div class="diagwrap">
+<svg viewBox="0 0 760 210" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="13">
+  <defs><marker id="arrMk14" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#93a1b3"/></marker></defs>
+  <g fill="#1b232e" stroke="#f5a524" stroke-width="1.5">
+    <rect x="15" y="70" width="150" height="70" rx="10"/><rect x="215" y="70" width="150" height="70" rx="10"/>
+    <rect x="415" y="70" width="150" height="70" rx="10"/><rect x="605" y="15" width="145" height="55" rx="10"/>
+    <rect x="605" y="140" width="145" height="55" rx="10"/>
+  </g>
+  <g fill="#e8eef5" text-anchor="middle">
+    <text x="90" y="100">Land</text><text x="90" y="118" font-size="11" fill="#93a1b3">free trial, one team,</text><text x="90" y="132" font-size="11" fill="#93a1b3">infra monitoring</text>
+    <text x="290" y="100">Expand usage</text><text x="290" y="118" font-size="11" fill="#93a1b3">more hosts, logs,</text><text x="290" y="132" font-size="11" fill="#93a1b3">spans, workloads</text>
+    <text x="490" y="100">Cross-sell</text><text x="490" y="118" font-size="11" fill="#93a1b3">APM, logs, security,</text><text x="490" y="132" font-size="11" fill="#93a1b3">AI observability, Bits AI</text>
+    <text x="677" y="38">Annual commit</text><text x="677" y="56" font-size="11" fill="#93a1b3">volume discount</text>
+    <text x="677" y="163">On-demand usage</text><text x="677" y="181" font-size="11" fill="#93a1b3">above commit, list price</text>
+  </g>
+  <g stroke="#93a1b3" stroke-width="1.5" marker-end="url(#arrMk14)">
+    <line x1="165" y1="105" x2="210" y2="105"/><line x1="365" y1="105" x2="410" y2="105"/>
+    <line x1="565" y1="95" x2="600" y2="50"/><line x1="565" y1="115" x2="600" y2="160"/>
+  </g>
+</svg>
+</div>
+<p>Customers are billed on consumption units (hosts, containers, ingested and indexed log GB, APM spans, sessions, and so on). Most large customers sign an <b>annual commitment</b> at a discount and pay on-demand rates for usage above it. That gives Datadog two properties an operator must hold at the same time: revenue rises automatically when customers grow (no renewal needed), and revenue falls automatically when customers optimize (no churn needed).</p>
+
+<h3>2 · Q3 2026 scorecard (reported Nov 4, 2026)</h3>
+<table>
+<tr><th>Metric</th><th>Q3 2026</th><th>Context</th></tr>
+<tr><td>Revenue</td><td>$1.20B (+35% Y/Y)</td><td>Beat consensus; growth accelerated through 2026</td></tr>
+<tr><td>Customers</td><td>~33,500 (+4.7% Y/Y)</td><td>Up from ~32,000</td></tr>
+<tr><td>Customers with $100K+ ARR</td><td>~4,860 (+20% Y/Y)</td><td>~91% of ARR</td></tr>
+<tr><td>Trailing 12-month NRR</td><td>Low-120s %</td><td>Similar to prior quarter</td></tr>
+<tr><td>Gross revenue retention</td><td>Mid- to high-90s %</td><td>Churn is not the issue; optimization is</td></tr>
+<tr><td>Non-GAAP operating margin</td><td>~28% (vs ~23%)</td><td>GAAP operating margin about 6%</td></tr>
+<tr><td>Free cash flow</td><td>$251M (21% of revenue)</td><td>Operating cash flow $290M</td></tr>
+<tr><td>AI customers</td><td>850+</td><td>About a third of customers use at least one AI product</td></tr>
+<tr><td>Non-AI customer revenue growth</td><td>High-20s %</td><td>Fifth straight quarter of acceleration</td></tr>
+<tr><td>Q4 2026 revenue guide</td><td>$1.19B to $1.20B</td><td>Assumes largest customer at minimum commitment</td></tr>
+<tr><td>FY 2026 revenue guide</td><td>$4.515B to $4.525B</td><td>Raised</td></tr>
+</table>
+<p style="font-size:12px;color:var(--muted)">Sources: <a href="https://finviz.com/news/415232/datadog-announces-third-quarter-2026-financial-results" target="_blank">Datadog Q3 2026 release (via Finviz)</a> · <a href="https://www.zacks.com/stock/news/3024643/datadog-q3-earnings-revenues-surpass-estimates-both-rise-y-y" target="_blank">Zacks</a> · <a href="https://www.marketbeat.com/instant-alerts/transcript-datadog-q3-earnings-call-highlights-2026-11-04/" target="_blank">MarketBeat call highlights</a> · <a href="https://stockstory.org/us/stocks/nasdaq/ddog/news/earnings-call/ddog-q3-2026-deep-dive-early-large-customer-renewals-and-ai-adoption-shape-outlook" target="_blank">StockStory</a></p>
+
+<h3>3 · Worked examples on the real numbers</h3>
+<div class="callout example"><span class="lbl">Worked example 1 · Where does 35% growth come from?</span>
+<pre><code>Revenue growth        = (1 + customer growth) x (1 + revenue per customer growth) - 1
+1.35                  = 1.047 x (1 + g)
+g (rev per customer)  = 1.35 / 1.047 - 1 = ~29%</code></pre>
+<p>Almost all growth comes from existing customers spending more, not from new logos. That is what land-and-expand looks like in the numbers, and it is why NRR is the single most watched Datadog metric.</p>
+</div>
+
+<div class="callout example"><span class="lbl">Worked example 2 · The shape of the customer base (approximate)</span>
+<p>Use annualized quarterly revenue as a rough ARR proxy: $1.20B × 4 = ~$4.8B.</p>
+<table>
+<tr><th>Segment</th><th>Customers</th><th>Share of ARR</th><th>Approx. ARR</th><th>Approx. ARR per customer</th></tr>
+<tr><td>$100K+ customers</td><td>~4,860</td><td>~91%</td><td>~$4.37B</td><td>~$900K</td></tr>
+<tr><td>All others</td><td>~28,640</td><td>~9%</td><td>~$0.43B</td><td>~$15K</td></tr>
+</table>
+<p><b>Read:</b> about 15% of customers produce about 91% of revenue. The long tail is mostly a pipeline of future large customers (the land), and the business is run on the top cohort (the expand). An S&amp;O analyst at Datadog spends far more time on enterprise expansion and commit structure than on self-serve acquisition.</p>
+</div>
+
+<div class="callout example"><span class="lbl">Worked example 3 · Why one customer moved the stock (illustrative numbers)</span>
+<p>Suppose a large AI customer contributed $60M of Q3 revenue (5%), running 50% above its contractual minimum. If it falls to its minimum, its revenue drops to $40M, a $20M sequential headwind. If the rest of the business grows 4% sequentially ($1.14B × 4% = ~$46M), total Q4 revenue grows about $26M, but a second large customer optimizing by $20M would bring sequential growth near zero. That is roughly the flat Q4 guide Datadog gave. The lesson: in usage-based SaaS, <b>concentration plus optionality to cut usage</b> makes guidance conservative and the stock volatile, even when the base business is accelerating.</p>
+</div>
+<p>Rule of 40 check: 35% growth + 21% FCF margin = <b>56</b>, well above the bar (see chapter 09).</p>
+
+<h3>4 · Strategic bets</h3>
+<table>
+<tr><th>Bet</th><th>What it is</th><th>Why it matters</th><th>Risk</th></tr>
+<tr><td>Platform consolidation</td><td>Sell logs, APM, security, RUM, CI and more on one platform</td><td>More products per customer raises NRR and switching costs</td><td>Best-of-breed rivals win single categories</td></tr>
+<tr><td>AI observability</td><td>Monitor LLM apps, GPU fleets and AI agents</td><td>AI-native companies are the fastest-growing cohort</td><td>Concentrated, volatile spend; customers may build in-house</td></tr>
+<tr><td>Bits AI agents</td><td>AI SRE and dev agents that investigate and resolve incidents</td><td>Moves pricing from data volume toward outcomes</td><td>Pricing model still unproven</td></tr>
+<tr><td>Cost-control products (e.g. Flex Logs, pipelines)</td><td>Let customers store data cheaply and route it</td><td>Defends share against optimization pressure</td><td>Cannibalizes some indexing revenue in the short run</td></tr>
+<tr><td>Cloud partnerships</td><td>Marketplace listings and co-selling with AWS, Azure, Google Cloud</td><td>Customers burn cloud commits on Datadog</td><td>Hyperscalers also sell native monitoring</td></tr>
+</table>
+<div class="callout tip"><span class="lbl">Recognition as signal</span>In November 2026 Datadog was named a Leader in the Gartner Magic Quadrant for Observability Pipelines, its second Gartner Leader placement of the year. Pipelines matter strategically: whoever routes the telemetry decides where it lands.</div>
+
+<h3>5 · What S&amp;O and BizOps work on at Datadog</h3>
+<table>
+<tr><th>Problem</th><th>Typical analysis</th></tr>
+<tr><td>Forecasting usage revenue</td><td>Cohort-level usage curves, commit vs on-demand split, scenarios for large-customer optimization</td></tr>
+<tr><td>Pricing and packaging</td><td>Unit price tests, commit discount ladders, bundling new products</td></tr>
+<tr><td>Sales capacity and territory planning</td><td>Rep ramp, quota coverage, enterprise vs commercial segmentation</td></tr>
+<tr><td>Cross-sell motion</td><td>Product attach rates by cohort, which second product predicts the third</td></tr>
+<tr><td>Concentration risk</td><td>Top-customer exposure, renewal calendar, early-renewal trade-offs (higher commits but deeper discounts)</td></tr>
+</table>
+<p><b>Interview emphasis:</b> expect usage-based revenue questions (separate price from volume from mix), NRR bridges, and a forecast case. Show you can talk to engineers: your telematics and data-intelligence work, where you monitored fleets and pipelines, is literally Datadog&#39;s customer use case. Say so.</p>
+
+<h3>6 · Drill: the early-renewal trade-off (attempt first)</h3>
+<div class="callout"><span class="lbl">Prompt (illustrative numbers)</span>A large customer pays $10M a year on a $8M commit plus $2M on-demand. It offers to renew a year early at a $14M commit for two years, but wants a 20% unit-price discount on all usage. Its usage is growing 30% a year. Should Datadog accept?</div>
+<details><summary>Show model answer</summary>
+<pre><code>No deal, next year:  usage at list = 10 x 1.3  = $13.0M (risk: it optimizes)
+Deal, next year:     usage at discount = 13.0 x 0.8 = $10.4M -> billed max(14, 10.4) = $14.0M
+Deal, year 2:        13.0 x 1.3 x 0.8 = $13.5M -> billed $14.0M (commit still binds)</code></pre>
+<p><b>Recommendation:</b> accept, with guardrails. The commit exceeds the discounted usage in both years, so Datadog locks in more revenue than the likely usage and removes the downside of optimization. The cost is upside: if usage grows faster than 30%, discounted overage earns less than list. Ask for multi-product adoption (for example logs or security) as part of the deal, and model a downside case where usage grows 10%.</p>
+<p><b>Common mistakes:</b> comparing only list-price revenue; ignoring that a commit is a floor; forgetting that early renewals pull forward discounts, which Datadog flagged as a near-term revenue headwind in Q3 2026.</p>
+</details>
+
+<h3>7 · Common mistakes in Datadog answers</h3>
+<table>
+<tr><th>Mistake</th><th>Better</th></tr>
+<tr><td>Treating Datadog like seat-based SaaS</td><td>Revenue follows usage, so model volume, price and mix separately</td></tr>
+<tr><td>Reading low NRR as churn</td><td>GRR is mid- to high-90s; the swing factor is optimization and expansion</td></tr>
+<tr><td>Ignoring concentration</td><td>Split AI-native and non-AI cohorts; size the top-customer exposure</td></tr>
+<tr><td>Celebrating every early renewal</td><td>Weigh a higher floor against deeper discounts on future growth</td></tr>
+</table>
+
+<div class="quiz" data-a="2">
+  <div class="q">Self-check: Revenue grew 35% and customers grew 4.7%. Roughly how much did revenue per customer grow?</div>
+  <button class="opt">~7%</button>
+  <button class="opt">~40%</button>
+  <button class="opt">~29%</button>
+  <button class="opt">~35%</button>
+  <div class="exp">1.35 / 1.047 = ~1.29, so about 29%. Growth is mostly expansion from existing customers.</div>
+</div>
+
+<div class="quiz" data-a="0">
+  <div class="q">Self-check: Datadog GRR is in the mid- to high-90s but NRR dipped. What is the most likely driver?</div>
+  <button class="opt">Existing customers optimizing usage or slower expansion</button>
+  <button class="opt">A spike in logo churn</button>
+  <button class="opt">Fewer new customers</button>
+  <button class="opt">A list-price cut</button>
+  <div class="exp">High GRR rules out heavy churn, and new logos do not enter NRR. Optimization and slower expansion are the usual cause.</div>
 </div>
 `});
 </script>
