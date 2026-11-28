@@ -481,6 +481,16 @@ chapter({part:"Front matter", id:"intro", num:"00", title:"How to use this handb
 chapter({part:"Front matter", id:"changelog", num:"00b", title:"Updates & Changelog", mins:3, tag:"Auto-maintained", tool:true, html:`
 <p>This handbook is maintained by a daily agent that researches news at Datadog, Spotify, Google, DoorDash and Uber, adds chapters, and freshens numbers. Newest entries first. Each entry lists sources.</p>
 
+<div class="callout hy"><span class="lbl">2026-11-27 · run 13 · Google Cloud sizing case</span>
+<ul>
+  <li><b>New chapter:</b> <a onclick="show('case-google-cloud-auto-sizing')">15 Case: Size the Google Cloud Opportunity in Automotive</a> (Part VII · Case Practice), the first sizing case. It sizes the market by workload (vehicle data, in-car AI, SDV engineering, ADAS/AV, enterprise IT) with a tree diagram, a hidden model answer walking TAM to SAM to SOM (about $23B, $16B and $2B, illustrative), a reconciliation against a third-party estimate, a prioritization table, a career-bridge line that uses the Hyundai telematics background, a common-mistakes table, the sizing builder and case timer, and two quizzes.</li>
+  <li><b>Glossary:</b> added 8 terms (software-defined vehicle, virtual ECU, OTA update, vehicle parc, workload-based sizing, right to win, pull-through revenue, reconciliation).</li>
+  <li><b>Context: Google Cloud in automotive.</b> Google Cloud joined Auto-ISAC as an Innovator Partner (Jan 2026). Panasonic Automotive runs vSkipGen cockpit development on Axion C4A metal, and Valtech Mobility built an SDV stack on Android Automotive and Bigtable (both Jul 2026). Third-party estimate: the automotive cloud platform and analytics market is about $28.4B in 2026.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Sources: <a href="https://cloud.google.com/solutions/automotive" target="_blank">Google Cloud automotive</a> · <a href="https://cloud.google.com/blog/products/identity-security/auto-isac-google-partner-to-boost-automotive-sector-cybersecurity" target="_blank">Google Cloud blog (Auto-ISAC)</a> · <a href="https://cloud.google.com/blog/topics/partners/panasonic-automotive-vskipgen-runs-on-axion-based-c4a-metal" target="_blank">Google Cloud blog (Panasonic)</a> · <a href="https://cloud.google.com/blog/products/databases/nexus-sdv-uses-bigtable-android-automotive-for-agentic-vehicles" target="_blank">Google Cloud blog (Valtech SDV)</a> · <a href="https://www.gminsights.com/industry-analysis/automotive-cloud-platform-services-and-analytics-market" target="_blank">GM Insights</a></div></li>
+  <li><b>News check:</b> no new earnings-level news at the five companies since the last run. Spotify Wrapped 2026 is listed for Dec 2, and Spotify added nine new AI DJ voices in English and Spanish. Datadog presents at UBS on Dec 1.
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">Source: <a href="https://www.techloy.com/brief/tag/spotify/" target="_blank">Techloy (Spotify tag)</a></div></li>
+</ul></div>
+
 <div class="callout hy"><span class="lbl">2026-11-26 · run 12 · Datadog deep-dive</span>
 <ul>
   <li><b>New chapter:</b> <a onclick="show('datadog-deep-dive')">14 Datadog Deep-Dive: Usage-Based Observability, Land-and-Expand and AI Concentration</a> (Part VI · Company Deep-Dives), completing deep-dives for all five target companies. It has a land-expand-commit diagram, a Q3 2026 scorecard, three worked examples (growth split into customers vs revenue per customer, customer-base concentration, how one customer at its minimum flattens the Q4 guide), a strategic bets table, an S&amp;O problem table, interview emphasis, a hidden-answer early-renewal drill, a common-mistakes table and two quizzes.</li>
@@ -1145,6 +1155,14 @@ var GLOSS = [
 ["AI-native cohort","Customers whose core product is AI models or agents; fast-growing but concentrated and volatile spenders."],
 ["Revenue per customer growth","Revenue growth left after removing customer-count growth: (1 + revenue growth) / (1 + customer growth) - 1."],
 ["Observability pipeline","Software that collects, filters and routes telemetry before it reaches a storage or analytics tool; controls cost and destination."],
+["Software-defined vehicle (SDV)","A car whose features are mostly delivered and updated through software on central computers rather than fixed in many separate ECUs."],
+["Virtual ECU","A software model of a vehicle electronic control unit run in the cloud, so teams can build and test code without physical hardware."],
+["OTA update","Over-the-air software update pushed to a vehicle through its telematics link; creates bursty data and compute load."],
+["Vehicle parc","The total number of vehicles in use in a market; the base for per-vehicle sizing."],
+["Workload-based sizing","Sizing a market by distinct jobs (each with its own buyer, unit and competitor set) instead of one top-down spend number."],
+["Right to win","The specific advantages that make a company likely to win a segment; sets the share assumption in SOM."],
+["Pull-through revenue","Revenue in one product that follows from winning a related product, e.g. data and IT workloads following an SDV engineering win."],
+["Reconciliation (sizing)","Cross-checking a bottom-up estimate against a top-down figure or a customer count; within about 2x is usually acceptable."],
 ];
 var glossHTML = '<input id="hbGloss" placeholder="🔍 Filter glossary… (try NRR, take rate, MECE)" oninput="filterHbGloss(this.value)" style="width:100%;padding:11px 14px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;color:var(--txt);font-size:14px;margin:8px 0 16px"><div id="hbGlossList">'
  + GLOSS.slice().sort(function(a,b){return a[0].localeCompare(b[0]);}).map(function(g){return '<div class="gterm" data-t="'+(g[0]+' '+g[1]).toLowerCase().replace(/"/g,'')+'"><b>'+g[0]+'</b> — '+g[1]+'</div>';}).join('') + '</div>';
@@ -2722,6 +2740,145 @@ Deal, year 2:        13.0 x 1.3 x 0.8 = $13.5M -> billed $14.0M (commit still bi
   <button class="opt">Fewer new customers</button>
   <button class="opt">A list-price cut</button>
   <div class="exp">High GRR rules out heavy churn, and new logos do not enter NRR. Optimization and slower expansion are the usual cause.</div>
+</div>
+`});
+</script>
+
+<script>
+chapter({part:"Part VII · Case Practice", id:"case-google-cloud-auto-sizing", num:"15", title:"Case: Size the Google Cloud Opportunity in Automotive", mins:26, tag:"Case · Google · Market sizing", html:`
+<p>The fourth full practice case, and the first one built on <b>market sizing</b>. Sizing questions are common in Google Cloud GTM and BizOps interviews because the real job includes them: which industry verticals get dedicated sellers, partner money and product investment. This case is also the one where your Hyundai body electrical and telematics background is a real edge. You know what an ECU is, how much data a connected car sends, and how OTA updates work. Most candidates do not.</p>
+
+<div class="callout"><span class="lbl">The prompt (illustrative)</span>"You are on the Google Cloud Strategy &amp; Operations team. Leadership is deciding whether to expand the automotive industry team: more dedicated sellers, solution engineers and partner budget. Size the annual Google Cloud revenue opportunity in automotive by 2030 and recommend where to focus. You have 25 minutes."</div>
+
+<h3>Step 0 · What the real company looks like</h3>
+<table>
+<tr><th>Fact</th><th>Value / status</th><th>Why it matters here</th></tr>
+<tr><td>Google Cloud revenue, Q3 2026</td><td>$30.7B in the quarter (about $123B annualized), 36.2% operating margin, $561B backlog</td><td>Any vertical SOM must be read against this base: $1B is under 1% of Cloud</td></tr>
+<tr><td>Automotive positioning</td><td>Industry page pitches an SDV solution, AI for in-car assistants, data platforms and security; Renault cited for Gemini Code Assist in development</td><td>Google sells into engineering and the car itself, not only IT</td></tr>
+<tr><td>Recent automotive moves</td><td>Joined Auto-ISAC as an Innovator Partner (Jan 2026); Panasonic Automotive runs vSkipGen cockpit development on Axion C4A metal (Jul 2026); Valtech Mobility built an SDV stack on Android Automotive and Bigtable (Jul 2026); Mercedes-Benz MBUX uses the Automotive AI Agent</td><td>Evidence of a right to win in SDV engineering and in-car AI</td></tr>
+<tr><td>Third-party market estimate</td><td>Automotive cloud platform services and analytics: about $25.9B (2025) to about $28.4B (2026), 15% CAGR to 2035; AWS, Google, Huawei, Microsoft and SAP hold about 51%</td><td>A top-down anchor to reconcile against. Paid-report scopes differ, so treat as a range, not a fact</td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--muted)">Sources: Alphabet Q3 2026 release (see the Google deep-dive, chapter 10), Google Cloud automotive page and blog, GM Insights. Links in the Changelog entry for 2026-11-27. Everything below about workloads and spend per unit is illustrative.</p>
+
+<h3>Step 1 · Clarify before you size</h3>
+<ul>
+  <li><b>What counts as automotive?</b> OEMs and tier-1 suppliers only, or also dealers, fleets, insurers and mobility companies? (Answer: OEMs and tier-1s.)</li>
+  <li><b>What counts as revenue?</b> Google Cloud consumption (compute, storage, data, AI) and Workspace, or also Android Automotive and Maps licensing? (Answer: Cloud consumption only; Android is a pull-through lever, not revenue in scope.)</li>
+  <li><b>Geography and year:</b> Global, 2030 annual run rate. Ask whether China is in scope; local rules make it hard to serve.</li>
+  <li><b>Decision it feeds:</b> Headcount and partner budget. So the output needs a ranked list of sub-segments, not just one big number.</li>
+</ul>
+
+<h3>Step 2 · Structure: size by workload, not by "cloud spend"</h3>
+<p>A single top-down number (industry revenue x IT share x cloud share) is fast but useless for the decision. Split the market into <b>workloads</b>, because each has a different buyer, competitor set and Google right to win.</p>
+<div class="diagwrap">
+<svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12">
+  <rect x="250" y="12" width="180" height="36" rx="6" fill="#4f7cff" opacity="0.18" stroke="#4f7cff"/>
+  <text x="340" y="35" text-anchor="middle" font-weight="bold">Automotive cloud TAM</text>
+  <line x1="340" y1="48" x2="340" y2="70" stroke="#93a1b3"/>
+  <line x1="70" y1="70" x2="610" y2="70" stroke="#93a1b3"/>
+  <g>
+    <line x1="70" y1="70" x2="70" y2="92" stroke="#93a1b3"/><rect x="10" y="92" width="120" height="58" rx="6" fill="#22c55e" opacity="0.15" stroke="#22c55e"/>
+    <text x="70" y="114" text-anchor="middle">Vehicle data</text><text x="70" y="132" text-anchor="middle" font-size="11">vehicles x $/vehicle</text>
+    <line x1="205" y1="70" x2="205" y2="92" stroke="#93a1b3"/><rect x="145" y="92" width="120" height="58" rx="6" fill="#22c55e" opacity="0.15" stroke="#22c55e"/>
+    <text x="205" y="114" text-anchor="middle">In-car AI</text><text x="205" y="132" text-anchor="middle" font-size="11">sessions x $/session</text>
+    <line x1="340" y1="70" x2="340" y2="92" stroke="#93a1b3"/><rect x="280" y="92" width="120" height="58" rx="6" fill="#22c55e" opacity="0.15" stroke="#22c55e"/>
+    <text x="340" y="114" text-anchor="middle">SDV engineering</text><text x="340" y="132" text-anchor="middle" font-size="11">engineers x $/engineer</text>
+    <line x1="475" y1="70" x2="475" y2="92" stroke="#93a1b3"/><rect x="415" y="92" width="120" height="58" rx="6" fill="#22c55e" opacity="0.15" stroke="#22c55e"/>
+    <text x="475" y="114" text-anchor="middle">ADAS / AV data</text><text x="475" y="132" text-anchor="middle" font-size="11">programs x $/program</text>
+    <line x1="610" y1="70" x2="610" y2="92" stroke="#93a1b3"/><rect x="550" y="92" width="120" height="58" rx="6" fill="#f59e0b" opacity="0.15" stroke="#f59e0b"/>
+    <text x="610" y="114" text-anchor="middle">Enterprise IT</text><text x="610" y="132" text-anchor="middle" font-size="11">revenue x IT% x cloud%</text>
+  </g>
+  <text x="340" y="185" text-anchor="middle" font-size="11.5">Green = car-specific workloads (Google differentiated). Amber = horizontal workload (hyperscaler price fight).</text>
+  <text x="340" y="205" text-anchor="middle" font-size="11.5">Then TAM to SAM (ex-China) to SOM (share by workload).</text>
+</svg>
+</div>
+
+<h4>Data you would ask for</h4>
+<table>
+<tr><th>Workload</th><th>Inputs</th><th>Where the number comes from</th></tr>
+<tr><td>Vehicle data platform</td><td>Connected vehicles in the global parc, data per vehicle per month, cloud cost per vehicle</td><td>OEM telematics teams, industry reports, current Google customers</td></tr>
+<tr><td>In-car AI assistant</td><td>Vehicles with a cloud assistant, sessions per day, inference cost per session</td><td>Mercedes MBUX-type deployments, Gemini pricing</td></tr>
+<tr><td>SDV engineering</td><td>Automotive software engineers, cloud spend per engineer (virtual ECUs, CI builds, simulation)</td><td>OEM and tier-1 headcount disclosures, existing customer spend</td></tr>
+<tr><td>ADAS / AV development</td><td>Active programs, training and simulation spend per program</td><td>Public AV budgets, GPU / TPU deal sizes</td></tr>
+<tr><td>Enterprise IT</td><td>Industry revenue, IT spend as % of revenue, public cloud share</td><td>Analyst IT benchmarks</td></tr>
+</table>
+
+${TOOLS.caseTimer()}
+
+<h3>Step 3 · Worked sizing (attempt first)</h3>
+<p>Build your own numbers before opening the model answer. State every assumption out loud; interviewers grade the logic and the sanity checks, not whether you match a report.</p>
+
+<div class="callout example"><span class="lbl">Worked solution · illustrative numbers</span>
+<details><summary>Show model answer</summary>
+<p><b>TAM by workload (2030, illustrative):</b></p>
+<table>
+<tr><th>Workload</th><th>Math</th><th>TAM</th></tr>
+<tr><td>Vehicle data</td><td>450M connected vehicles x $4 per vehicle per year</td><td>$1.8B</td></tr>
+<tr><td>In-car AI</td><td>60M vehicles x 2 sessions per day x 365 x $0.01 per session</td><td>$0.44B</td></tr>
+<tr><td>SDV engineering</td><td>400K software engineers x $6K per engineer per year</td><td>$2.4B</td></tr>
+<tr><td>ADAS / AV</td><td>25 serious programs x $150M per year</td><td>$3.75B</td></tr>
+<tr><td>Enterprise IT</td><td>$3.0T industry revenue x 2% IT x 25% public cloud</td><td>$15.0B</td></tr>
+<tr><td><b>Total</b></td><td></td><td><b>about $23B</b></td></tr>
+</table>
+<p><b>Reconcile:</b> the third-party estimate is about $28B for 2026, growing about 15% a year. Its scope likely includes software platforms and analytics vendors, not only hyperscaler consumption, so a hyperscaler-only bottom-up near $23B is in the right range. Say this out loud: two methods within about 2x of each other is a pass; a 10x gap means an input is wrong.</p>
+<p><b>SAM (ex-China, 70% of spend):</b> about $16.4B.</p>
+<p><b>SOM (Google share by workload):</b></p>
+<table>
+<tr><th>Workload</th><th>SAM</th><th>Google share</th><th>SOM</th><th>Why that share</th></tr>
+<tr><td>Vehicle data</td><td>$1.26B</td><td>10%</td><td>$0.13B</td><td>Incumbent AWS and Azure telematics stacks</td></tr>
+<tr><td>In-car AI</td><td>$0.31B</td><td>30%</td><td>$0.09B</td><td>Gemini plus Android Automotive is a real edge</td></tr>
+<tr><td>SDV engineering</td><td>$1.68B</td><td>20%</td><td>$0.34B</td><td>Arm-based Axion matches vehicle chips; Gemini Code Assist</td></tr>
+<tr><td>ADAS / AV</td><td>$2.63B</td><td>15%</td><td>$0.39B</td><td>TPU capacity, but many programs own GPU clusters</td></tr>
+<tr><td>Enterprise IT</td><td>$10.5B</td><td>12%</td><td>$1.26B</td><td>Horizontal fight; won through the other four</td></tr>
+<tr><td><b>Total</b></td><td><b>$16.4B</b></td><td></td><td><b>about $2.2B</b></td><td>About 1.8% of current Cloud run rate</td></tr>
+</table>
+<p><b>Sanity check from the customer side:</b> about 15 large OEMs and 20 large tier-1s. If Google wins 6 OEMs at about $150M a year and 8 tier-1s at about $40M, that is about $1.2B, plus a long tail. Same order of magnitude as $2.2B, so the top-down is plausible.</p>
+<p><b>Recommendation:</b> Yes, expand, but lead with the car-specific workloads. Enterprise IT is the biggest dollar pool, but Google cannot win it on price alone. SDV engineering and in-car AI are smaller, yet they are where Google has a right to win, and they create <b>pull-through</b>: an OEM that builds its vehicle software pipeline on Google Cloud is much more likely to move its data platform and IT. Put new sellers and solution engineers on the top 10 OEMs with active SDV programs, fund tier-1 partners (the Panasonic pattern), and track a leading indicator: share of target OEMs with an SDV workload in production.</p>
+<p><b>What would change the answer:</b> if AV programs consolidate onto two or three players with their own data centers, cut that bucket; if in-car AI moves mostly on-device, the inference pool shrinks while the engineering pool grows.</p>
+</details>
+</div>
+
+<h3>Prioritization lens</h3>
+<table>
+<tr><th>Workload</th><th>Size of pool</th><th>Right to win</th><th>Time to revenue</th><th>Pull-through</th></tr>
+<tr><td>SDV engineering</td><td>Medium</td><td>High</td><td>Medium (design cycles)</td><td>High</td></tr>
+<tr><td>In-car AI</td><td>Small, fast-growing</td><td>High</td><td>Slow (tied to model years)</td><td>High</td></tr>
+<tr><td>ADAS / AV</td><td>Large</td><td>Medium</td><td>Fast when capacity exists</td><td>Medium</td></tr>
+<tr><td>Vehicle data</td><td>Medium</td><td>Low to medium</td><td>Slow (incumbents)</td><td>Medium</td></tr>
+<tr><td>Enterprise IT</td><td>Largest</td><td>Low alone</td><td>Medium</td><td>Low</td></tr>
+</table>
+
+<div class="callout tip"><span class="lbl">Career bridge</span>Say it in the interview: "At Hyundai I worked on body electrical and telematics, so I know a connected car sends a steady stream of signals and that OTA campaigns create bursty load. That is why I priced vehicle data per vehicle, not per gigabyte." One sentence like this turns your background into evidence of judgment about inputs.</div>
+
+<h3>Common mistakes</h3>
+<table>
+<tr><th>Mistake</th><th>Better move</th></tr>
+<tr><td>One top-down number with no segments</td><td>Size by workload so the answer maps to a staffing decision</td></tr>
+<tr><td>Calling TAM the opportunity</td><td>Walk TAM to SAM to SOM and say why each share is what it is</td></tr>
+<tr><td>Including Android or Maps licensing</td><td>Agree scope early; name pull-through levers separately</td></tr>
+<tr><td>No reconciliation</td><td>Cross-check bottom-up against a report and against a customer count</td></tr>
+<tr><td>False precision ($2.208B)</td><td>Round ("about $2B") and state the range</td></tr>
+</table>
+
+<h3>Try your own inputs</h3>
+${TOOLS.marketSizing()}
+
+<div class="quiz" data-a="1">
+  <div class="q">Enterprise IT is the largest pool in this case. Why does the model answer still not lead with it?</div>
+  <button class="opt">It is too small to matter</button>
+  <button class="opt">Google has little right to win there alone, and car-specific workloads pull it through</button>
+  <button class="opt">It is outside the agreed scope</button>
+  <button class="opt">It cannot be sized bottom-up</button>
+  <div class="exp">Size alone does not set priority. The car-specific workloads are where Google is differentiated, and winning them makes the IT move more likely.</div>
+</div>
+
+<div class="quiz" data-a="2">
+  <div class="q">Your bottom-up TAM is $23B and a third-party report says $28B. What should you conclude?</div>
+  <button class="opt">Your model is wrong; use the report</button>
+  <button class="opt">The report is wrong; use your model</button>
+  <button class="opt">The two are within range; explain the scope difference and move on</button>
+  <button class="opt">Average them to $25.5B</button>
+  <div class="exp">Within about 2x is a pass when scopes differ. Explaining the difference shows judgment; averaging hides it.</div>
 </div>
 `});
 </script>
